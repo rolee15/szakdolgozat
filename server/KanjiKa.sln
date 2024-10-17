@@ -1,0 +1,50 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{33890FD7-595C-49AD-BC92-0DC051A48D2E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KanjiKaApi", "src\KanjiKaApi\KanjiKaApi.csproj", "{0A4A15A2-1682-4517-AE62-1FCBB4D00266}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KanjiKa.Core", "src\KanjiKa.Core\KanjiKa.Core.csproj", "{1BA731AA-62FE-4B1A-B7C7-592BCA15D38B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{342B2612-94AA-495C-B411-85D384FE067A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KanjiKa.UnitTests", "test\KanjiKa.UnitTests\KanjiKa.UnitTests.csproj", "{41B43FE9-64E2-4031-ACE4-E9E1341728E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KanjiKa.IntegrationTests", "test\KanjiKa.IntegrationTests\KanjiKa.IntegrationTests.csproj", "{7A485280-1634-4671-96FA-0F348E9CCFA3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0A4A15A2-1682-4517-AE62-1FCBB4D00266}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A4A15A2-1682-4517-AE62-1FCBB4D00266}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A4A15A2-1682-4517-AE62-1FCBB4D00266}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A4A15A2-1682-4517-AE62-1FCBB4D00266}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BA731AA-62FE-4B1A-B7C7-592BCA15D38B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BA731AA-62FE-4B1A-B7C7-592BCA15D38B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BA731AA-62FE-4B1A-B7C7-592BCA15D38B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BA731AA-62FE-4B1A-B7C7-592BCA15D38B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{41B43FE9-64E2-4031-ACE4-E9E1341728E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{41B43FE9-64E2-4031-ACE4-E9E1341728E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{41B43FE9-64E2-4031-ACE4-E9E1341728E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{41B43FE9-64E2-4031-ACE4-E9E1341728E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A485280-1634-4671-96FA-0F348E9CCFA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A485280-1634-4671-96FA-0F348E9CCFA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A485280-1634-4671-96FA-0F348E9CCFA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A485280-1634-4671-96FA-0F348E9CCFA3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0A4A15A2-1682-4517-AE62-1FCBB4D00266} = {33890FD7-595C-49AD-BC92-0DC051A48D2E}
+		{1BA731AA-62FE-4B1A-B7C7-592BCA15D38B} = {33890FD7-595C-49AD-BC92-0DC051A48D2E}
+		{41B43FE9-64E2-4031-ACE4-E9E1341728E3} = {342B2612-94AA-495C-B411-85D384FE067A}
+		{7A485280-1634-4671-96FA-0F348E9CCFA3} = {342B2612-94AA-495C-B411-85D384FE067A}
+	EndGlobalSection
+EndGlobal
