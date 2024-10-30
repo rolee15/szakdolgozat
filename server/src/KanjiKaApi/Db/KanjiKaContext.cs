@@ -1,5 +1,4 @@
-﻿using KanjiKaApi.Db.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace KanjiKaApi.Db;
 

@@ -1,10 +1,10 @@
-using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,8 +33,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 // Define API endpoints
-app.MapPost("/register", async (AppDbContext db, UserRegistrationDto userDto) =>
-{
+app.MapPost("/register", async (AppDbContext db, UserRegistrationDto userDto) => {
     if (await db.Users.AnyAsync(u => u.Email == userDto.Email))
     {
         return Results.BadRequest("Email already registered");
@@ -52,8 +51,7 @@ app.MapPost("/register", async (AppDbContext db, UserRegistrationDto userDto) =>
     return Results.Ok("User registered successfully");
 });
 
-app.MapPost("/login", async (AppDbContext db, UserLoginDto userDto) =>
-{
+app.MapPost("/login", async (AppDbContext db, UserLoginDto userDto) => {
     var user = await db.Users.FirstOrDefaultAsync(u => u.Email == userDto.Email);
     if (user == null || !BCrypt.Net.BCrypt.Verify(userDto.Password, user.PasswordHash))
     {
@@ -64,8 +62,7 @@ app.MapPost("/login", async (AppDbContext db, UserLoginDto userDto) =>
     return Results.Ok(new { Token = token });
 });
 
-app.MapPost("/forgot-password", async (AppDbContext db, ForgotPasswordDto forgotPasswordDto) =>
-{
+app.MapPost("/forgot-password", async (AppDbContext db, ForgotPasswordDto forgotPasswordDto) => {
     var user = await db.Users.FirstOrDefaultAsync(u => u.Email == forgotPasswordDto.Email);
     if (user == null)
     {
@@ -84,8 +81,7 @@ app.MapPost("/forgot-password", async (AppDbContext db, ForgotPasswordDto forgot
     return Results.Ok(new { ResetToken = resetToken });
 });
 
-app.MapPost("/reset-password", async (AppDbContext db, ResetPasswordDto resetPasswordDto) =>
-{
+app.MapPost("/reset-password", async (AppDbContext db, ResetPasswordDto resetPasswordDto) => {
     var user = await db.Users.FirstOrDefaultAsync(u => u.ResetToken == resetPasswordDto.ResetToken);
     if (user == null || user.ResetTokenExpires < DateTime.UtcNow)
     {
