@@ -1,13 +1,12 @@
-﻿namespace KanjiKa.Core.Entities;
+﻿namespace KanjiKa.Core.Entities.Kana;
 
-public class KanaCharacter
+public class Character
 {
     public string Id { get; set; }
     public string Symbol { get; set; }
     public string Romanization { get; set; }
     public KanaType Type { get; set; }
     public List<Example> Examples { get; set; } = new();
-    public List<CharacterProficiency> Proficiencies { get; set; } = new();
 }
 
 public enum KanaType

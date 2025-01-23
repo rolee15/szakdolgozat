@@ -5,6 +5,7 @@ import HomePage from "./components/common/HomePage";
 import ErrorPage from "./components/common/ErrorPage";
 import HiraganaPage from "./components/hiragana/HiraganaPage";
 import KatakanaPage from "./components/katakana/KatakanaPage";
+import CharacterDetail from "./components/common/CharacterDetail";
 
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
       {
         path: "katakana",
         element: <KatakanaPage />,
+      },
+      {
+        path: "/:type/:character",
+        element: <CharacterDetail />,
       },
     ],
   },

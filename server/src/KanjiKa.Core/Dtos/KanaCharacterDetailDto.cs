@@ -1,8 +1,8 @@
-﻿using KanjiKa.Core.Entities;
+﻿using KanjiKa.Core.Entities.Kana;
 
-namespace KanjiKa.Core.Interfaces;
+namespace KanjiKa.Core.Dtos;
 
-internal class KanaCharacterDetailDto
+public class KanaCharacterDetailDto
 {
     public string Character { get; set; }
     public string Romanization { get; set; }

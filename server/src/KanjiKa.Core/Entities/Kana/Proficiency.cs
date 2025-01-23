@@ -1,6 +1,6 @@
-﻿namespace KanjiKa.Core.Entities;
+﻿namespace KanjiKa.Core.Entities.Kana;
 
-public class CharacterProficiency
+public class Proficiency
 {
     public string Id { get; set; }
     public string UserId { get; set; }
