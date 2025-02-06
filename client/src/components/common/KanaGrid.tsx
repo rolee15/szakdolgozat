@@ -1,4 +1,4 @@
-import api from "@/services/kanaService";
+import api from "@services/kanaService";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -27,6 +27,12 @@ const KanaGrid = ({ type }: { type: "hiragana" | "katakana" }) => {
     return acc;
   }, []);
 
+  // TODO: pad some cells so the endings are aligned
+  //console.log(rows);
+  // insert null values to space out the grid
+  // const yaRow = rows[8];
+  // yaRow.splice(1, 0, null);
+
   if (error) {
     return <div className="p-4 text-red-500">Error: {error}</div>;
   }
@@ -41,11 +47,11 @@ const KanaGrid = ({ type }: { type: "hiragana" | "katakana" }) => {
               <button
                 key={char.character}
                 onClick={() => navigate(`/${type}/${char.character}`)}
-                className="w-20 h-20 rounded-lg border-2 border-blue-500 hover:bg-blue-50
+                className="w-20 h-20 rounded-lg border-2 border-blue-500 hover:bg-blue-500 hover:text-white
                              transition-colors duration-200 flex flex-col items-center justify-center"
               >
                 <span className="text-2xl font-bold">{char.character}</span>
-                <span className="text-sm text-gray-600">{char.romanization}</span>
+                <span className="text-sm text-gray-400">{char.romanization}</span>
               </button>
             ))}
           </div>

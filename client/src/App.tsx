@@ -1,11 +1,13 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import Layout from "./components/layout/Layout";
-import HomePage from "./components/common/HomePage";
-import ErrorPage from "./components/common/ErrorPage";
-import HiraganaPage from "./components/hiragana/HiraganaPage";
-import KatakanaPage from "./components/katakana/KatakanaPage";
-import CharacterDetail from "./components/common/CharacterDetail";
+import Layout from "@components/layout/Layout";
+import HomePage from "@pages/HomePage";
+import ErrorPage from "@pages/ErrorPage";
+import HiraganaPage from "@pages/HiraganaPage";
+import KatakanaPage from "@pages/KatakanaPage";
+import CharacterDetail from "@components/common/CharacterDetail";
+import SignInPage from "@pages/SignInPage";
+import RegisterPage from "@pages/RegisterPage";
 
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
@@ -17,6 +19,14 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <HomePage />,
+      },
+      {
+        path: "signin",
+        element: <SignInPage />,
+      },
+      {
+        path: "register",
+        element: <RegisterPage />,
       },
       {
         path: "hiragana",
