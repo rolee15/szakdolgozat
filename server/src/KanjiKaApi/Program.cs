@@ -9,8 +9,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddScoped<IKanaService, KanaService>();
 
-builder.Services.AddCors(options =>
-{
+builder.Services.AddCors(options => {
     options.AddPolicy("AllowReactApp",
         x => x
             .AllowAnyOrigin()
@@ -19,6 +18,8 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+// test main comment
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
