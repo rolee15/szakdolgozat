@@ -20,6 +20,7 @@ builder.Services.AddCors(options => {
 var app = builder.Build();
 
 // feature1 comment
+// feature1 2nd comment
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
