@@ -1,5 +1,4 @@
 ﻿using KanjiKa.Core.Dtos;
-using KanjiKa.Core.Entities;
 using KanjiKa.Core.Entities.Kana;
 using KanjiKa.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +17,7 @@ public class KanaCharactersController : ControllerBase
     }
 
     [HttpGet("")]
-    public async Task<ActionResult<IEnumerable<KanaCharacterDto>>> GetCharacters(string type, string userId)
+    public async Task<ActionResult<IEnumerable<KanaCharacterDto>>> GetCharacters(string type, int userId)
     {
         var kanaType = Enum.Parse<KanaType>(type, true);
         var characters = await _kanaService.GetKanaCharacters(kanaType, userId);
@@ -26,7 +25,7 @@ public class KanaCharactersController : ControllerBase
     }
 
     [HttpGet("{character}")]
-    public async Task<ActionResult<KanaCharacterDetailDto>> GetCharacterDetail(string type, string character, string userId)
+    public async Task<ActionResult<KanaCharacterDetailDto>> GetCharacterDetail(string type, string character, int userId)
     {
         var kanaType = Enum.Parse<KanaType>(type, true);
         var charDetail = await _kanaService.GetCharacterDetail(character, kanaType, userId);

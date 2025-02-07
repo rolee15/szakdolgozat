@@ -2,7 +2,7 @@
 
 public class Character
 {
-    public string Id { get; set; }
+    public int Id { get; set; }
     public string Symbol { get; set; }
     public string Romanization { get; set; }
     public KanaType Type { get; set; }

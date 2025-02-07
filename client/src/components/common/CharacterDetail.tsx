@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 const CharacterDetail = () => {
   const { type, character } = useParams();
   const [charData, setCharData] = useState<KanaCharacter | null>(null);
-  const [examples, setExamples] = useState<string[]>([]);
+  const [examples, setExamples] = useState<Example[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -56,7 +56,7 @@ const CharacterDetail = () => {
             <div className="py-4 grid grid-cols-1 gap-1">
               {examples.map((example, index) => (
                 <div key={index} className="p-3 rounded-lg">
-                  {example}
+                  {example.word} ({example.romanization}) - {example.meaning}
                 </div>
               ))}
             </div>

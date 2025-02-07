@@ -2,8 +2,8 @@
 
 public class Example
 {
-    public string Id { get; set; }
-    public string CharacterId { get; set; }
+    public int Id { get; set; }
+    public int CharacterId { get; set; }
     public Character Character { get; set; }
     public string Word { get; set; }
     public string Romanization { get; set; }
