@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{33890FD7-595C-49AD-BC92-0DC051A48D2E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KanjiKaApi", "src\KanjiKaApi\KanjiKaApi.csproj", "{0A4A15A2-1682-4517-AE62-1FCBB4D00266}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KanjiKa.Api", "src\KanjiKa.Api\KanjiKa.Api.csproj", "{0A4A15A2-1682-4517-AE62-1FCBB4D00266}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KanjiKa.Core", "src\KanjiKa.Core\KanjiKa.Core.csproj", "{1BA731AA-62FE-4B1A-B7C7-592BCA15D38B}"
 EndProject

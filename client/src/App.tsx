@@ -6,8 +6,11 @@ import ErrorPage from "@pages/ErrorPage";
 import HiraganaPage from "@pages/HiraganaPage";
 import KatakanaPage from "@pages/KatakanaPage";
 import CharacterDetail from "@components/common/CharacterDetail";
-import SignInPage from "@pages/SignInPage";
+import LoginPage from "@/pages/LoginPage";
 import RegisterPage from "@pages/RegisterPage";
+import LessonsPage from "./pages/LessonsPage";
+import NewLessonsPage from "./pages/NewLessonsPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
@@ -21,12 +24,16 @@ const router = createBrowserRouter([
         element: <HomePage />,
       },
       {
-        path: "signin",
-        element: <SignInPage />,
+        path: "login",
+        element: <LoginPage />,
       },
       {
         path: "register",
         element: <RegisterPage />,
+      },
+      {
+        path: "forgot-password",
+        element: <ForgotPasswordPage />,
       },
       {
         path: "hiragana",
@@ -39,6 +46,14 @@ const router = createBrowserRouter([
       {
         path: "/:type/:character",
         element: <CharacterDetail />,
+      },
+      {
+        path: "lessons",
+        element: <LessonsPage />,
+      },
+      {
+        path: "lessons/new",
+        element: <NewLessonsPage />,
       },
     ],
   },

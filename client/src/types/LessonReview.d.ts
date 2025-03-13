@@ -1,0 +1,3 @@
+type LessonReview = {
+    character: string;
+};

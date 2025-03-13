@@ -10,6 +10,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 
 builder.Services.AddScoped<IKanaService, KanaService>();
+builder.Services.AddScoped<ILessonService, LessonService>();
 
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowReactApp",

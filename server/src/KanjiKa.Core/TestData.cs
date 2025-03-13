@@ -2244,7 +2244,8 @@ public static class TestData
                         UserId = 1,
                         CharacterId = 1,
                         Level = 80,
-                        LastPracticed = DateTime.UtcNow.AddDays(-1)
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-10),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
 
                     new Proficiency
@@ -2253,7 +2254,8 @@ public static class TestData
                         UserId = 1,
                         CharacterId = 2,
                         Level = 60,
-                        LastPracticed = DateTime.UtcNow.AddDays(-2)
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-9),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-2)
                     }
                 ]
             }

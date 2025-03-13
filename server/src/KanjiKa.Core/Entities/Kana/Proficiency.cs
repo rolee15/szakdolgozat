@@ -1,12 +1,31 @@
-﻿namespace KanjiKa.Core.Entities.Kana;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace KanjiKa.Core.Entities.Kana;
 
 public class Proficiency
 {
-    public int Id { get; set; }
-    public int UserId { get; set; }
-    public User User { get; set; }
-    public int CharacterId { get; set; }
-    public Character Character { get; set; }
+    public const int MaxLevel = 100;
+    public const int MinLevel = 0;
+
+    public int Id { get; init; }
+    public int UserId { get; init; }
+    public User User { get; init; }
+    public int CharacterId { get; init; }
+    public Character Character { get; init; }
+
     public int Level { get; set; }
-    public DateTime LastPracticed { get; set; }
+    public DateTimeOffset LearnedAt { get; init; }
+    public DateTimeOffset LastPracticed { get; set; }
+
+    public void Increase(int amount)
+    {
+        Level = Level + amount > MaxLevel ? MaxLevel : Level + amount;
+        LastPracticed = DateTimeOffset.UtcNow;
+    }
+
+    public void Decrease(int amount)
+    {
+        Level = Level - amount < MinLevel ? MinLevel : Level - amount;
+        LastPracticed = DateTimeOffset.UtcNow;
+    }
 }

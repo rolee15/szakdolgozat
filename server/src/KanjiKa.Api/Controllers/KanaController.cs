@@ -3,7 +3,7 @@ using KanjiKa.Core.Entities.Kana;
 using KanjiKa.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace KanjiKaApi.Controllers;
+namespace KanjiKa.Api.Controllers;
 
 [ApiController]
 [Route("api/characters/{type}")]

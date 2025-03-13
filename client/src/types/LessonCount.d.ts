@@ -1,0 +1,3 @@
+type LessonCount = {
+    count: number;
+};

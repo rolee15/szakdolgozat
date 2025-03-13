@@ -3,7 +3,7 @@ import Logo from "./Logo";
 import MenuItem from "./MenuItem";
 
 const Navbar = () => {
-  const menuItems = ["Hiragana", "Katakana"];
+  const menuItems = ["Hiragana", "Katakana", "Lessons"];
 
   return (
     <header className="bg-black shadow-sm">
@@ -19,8 +19,8 @@ const Navbar = () => {
             </nav>
 
             <div className="flex items-center space-x-4">
-              <NavLink to="/signin">
-                <button>Sign In</button>
+              <NavLink to="/login">
+                <button>Login</button>
               </NavLink>
               <NavLink to="/register">
                 <button>Register</button>

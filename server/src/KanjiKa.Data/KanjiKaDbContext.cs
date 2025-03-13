@@ -7,7 +7,8 @@ namespace KanjiKa.Data;
 public class KanjiKaDbContext : DbContext
 {
 
-    public KanjiKaDbContext(DbContextOptions<KanjiKaDbContext> options) : base(options) { }
+    public KanjiKaDbContext(DbContextOptions<KanjiKaDbContext> options) : base(options)
+    { }
 
     public DbSet<User> Users { get; set; }
     public DbSet<Proficiency> Proficiencies { get; set; }
