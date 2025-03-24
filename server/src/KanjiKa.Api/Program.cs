@@ -1,6 +1,8 @@
+using KanjiKa.Api.Controllers;
+using KanjiKa.Api.Services;
 using KanjiKa.Core.Interfaces;
+using KanjiKa.Core.Services;
 using KanjiKa.Data;
-using KanjiKaApi.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +13,10 @@ builder.Services.AddControllers();
 
 builder.Services.AddScoped<IKanaService, KanaService>();
 builder.Services.AddScoped<ILessonService, LessonService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IHashService, HashService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IEmailService, DummyEmailService>();
 
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowReactApp",

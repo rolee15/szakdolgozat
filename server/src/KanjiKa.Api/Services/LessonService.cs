@@ -1,11 +1,11 @@
-﻿using KanjiKa.Core.Dtos;
-using KanjiKa.Core.Dtos.Learning;
+﻿using KanjiKa.Core.DTOs.Learning;
 using KanjiKa.Core.Entities.Kana;
-using KanjiKa.Data;
+using KanjiKa.Core.Entities.Learning;
 using KanjiKa.Core.Interfaces;
+using KanjiKa.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace KanjiKaApi.Services;
+namespace KanjiKa.Api.Services;
 
 internal class LessonService : ILessonService
 {
@@ -20,32 +20,57 @@ internal class LessonService : ILessonService
 
     public async Task<TodayLessonCountDto> GetTodayLessonCountAsync(int userId)
     {
-        var count = await _db.Characters.CountAsync(c =>
-            !_db.Proficiencies
-                .Where(p => p.UserId == userId)
-                .Select(p => p.Id)
-                .Distinct()
-                .Contains(c.Id));
+        var user = await _db.Users
+            .Include(u => u.Proficiencies)
+            .FirstOrDefaultAsync(u => u.Id == userId);
 
-        return new TodayLessonCountDto()
+        if (user == null)
         {
-            //TODO decrement within a day
-            Count = count > 15 ? 15 : count
+            throw new ArgumentException("User not found", nameof(userId));
+        }
+
+        var today = DateTimeOffset.UtcNow.Date;
+        var lessonsLearnedToday = await _db.LessonCompletions
+            .CountAsync(lc => lc.UserId == userId && lc.CompletionDate.Date == today);
+        var count = 15 - lessonsLearnedToday;
+
+        return new TodayLessonCountDto
+        {
+            Count = Math.Max(count, 0)
         };
     }
 
     public async Task<IEnumerable<LessonDto>> GetNewLessonsAsync(int userId, int pageIndex, int pageSize)
     {
-        var lessons=  await _db.Characters.Where(c =>
-            !_db.Proficiencies
-                .Where(p => p.UserId == userId)
-                .Select(p => p.Id)
-                .Distinct()
-                .Contains(c.Id))
+        var user = await _db.Users
+            .Include(u => u.Proficiencies)
+            .FirstOrDefaultAsync(u => u.Id == userId);
+
+        if (user == null)
+        {
+            throw new ArgumentException("User not found", nameof(userId));
+        }
+
+        var today = DateTimeOffset.UtcNow.Date;
+        var lessonsLearnedToday = await _db.LessonCompletions
+            .CountAsync(lc => lc.UserId == userId && lc.CompletionDate.Date == today);
+        var count = 15 - lessonsLearnedToday;
+
+        if (count <= 0)
+        {
+            return Array.Empty<LessonDto>();
+        }
+
+        var allCharacters = await _db.Characters.ToListAsync();
+        var newCharacters = allCharacters
+            .Where(ch => user.Proficiencies.All(p => p.CharacterId != ch.Id))
+            .ToList();
+
+        var takeSize = Math.Min(count, pageSize);
+        var lessons = newCharacters
             .Skip(pageIndex * pageSize)
-            .Take(pageSize)
-            .Select(c => MapToLessonDto(c))
-            .ToListAsync();
+            .Take(takeSize)
+            .Select(MapToLessonDto);
 
         return lessons;
     }
@@ -65,21 +90,43 @@ internal class LessonService : ILessonService
 
     public async Task<Proficiency> LearnLessonAsync(int userId, int characterId)
     {
-        var found = await _db.Characters.AnyAsync(c => c.Id == characterId);
-        if (!found)
+        var user = await _db.Users
+            .FirstOrDefaultAsync(u => u.Id == userId);
+        if (user == null)
+        {
+            throw new ArgumentException("User not found", nameof(userId));
+        }
+
+        var character = await _db.Characters.FirstOrDefaultAsync(c => c.Id == characterId);
+        if (character == null)
         {
             throw new ArgumentException("Character not found", nameof(characterId));
         }
 
+        var existingProficiency = await _db.Proficiencies
+            .FirstOrDefaultAsync(p => p.UserId == userId && p.CharacterId == characterId);
+        if (existingProficiency != null)
+        {
+            throw new ArgumentException("Character already learned", nameof(characterId));
+        }
+
         var proficiency = new Proficiency
         {
-            UserId = userId,
-            CharacterId = characterId,
+            UserId = user.Id,
+            CharacterId = character.Id,
             Level = 0,
             LearnedAt = DateTimeOffset.UtcNow
         };
-
         _db.Proficiencies.Add(proficiency);
+
+        var lessonCompletion = new LessonCompletion
+        {
+            UserId = user.Id,
+            CharacterId = character.Id,
+            CompletionDate = DateTimeOffset.UtcNow
+        };
+        _db.LessonCompletions.Add(lessonCompletion);
+
         await _db.SaveChangesAsync();
 
         return proficiency;

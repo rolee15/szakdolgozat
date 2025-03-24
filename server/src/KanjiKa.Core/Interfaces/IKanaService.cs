@@ -1,4 +1,5 @@
-﻿using KanjiKa.Core.Dtos;
+﻿using KanjiKa.Core.DTOs;
+using KanjiKa.Core.DTOs.Kana;
 using KanjiKa.Core.Entities.Kana;
 
 namespace KanjiKa.Core.Interfaces;

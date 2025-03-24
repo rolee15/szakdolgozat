@@ -1,4 +1,4 @@
-﻿namespace KanjiKa.Core.Dtos;
+﻿namespace KanjiKa.Core.DTOs.Learning;
 
 public class TodayLessonCountDto
 {

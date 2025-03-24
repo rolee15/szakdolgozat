@@ -1,5 +1,7 @@
 ﻿using KanjiKa.Core.Entities;
 using KanjiKa.Core.Entities.Kana;
+using KanjiKa.Core.Entities.Learning;
+using KanjiKa.Core.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace KanjiKa.Data;
@@ -12,6 +14,7 @@ public class KanjiKaDbContext : DbContext
 
     public DbSet<User> Users { get; set; }
     public DbSet<Proficiency> Proficiencies { get; set; }
+    public DbSet<LessonCompletion> LessonCompletions { get; set; }
     public DbSet<Character> Characters { get; set; }
     public DbSet<Example> Examples { get; set; }
 
@@ -22,10 +25,17 @@ public class KanjiKaDbContext : DbContext
             entity.HasMany(x => x.Proficiencies)
                 .WithOne(proficiency => proficiency.User)
                 .HasForeignKey(proficiency => proficiency.UserId);
+            entity.HasMany(x => x.LessonCompletions)
+                .WithOne(lessonCompletion => lessonCompletion.User)
+                .HasForeignKey(lessonCompletion => lessonCompletion.UserId);
         });
 
         modelBuilder.Entity<Proficiency>(entity => {
             entity.HasKey(proficiency => proficiency.Id);
+        });
+
+        modelBuilder.Entity<LessonCompletion>(entity => {
+            entity.HasKey(lessonCompletion => new { lessonCompletion.UserId, lessonCompletion.CharacterId });
         });
 
         modelBuilder.Entity<Character>(entity => {

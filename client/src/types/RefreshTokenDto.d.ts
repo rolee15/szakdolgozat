@@ -1,0 +1,3 @@
+type RefreshTokenDto = {
+    token: string;
+}

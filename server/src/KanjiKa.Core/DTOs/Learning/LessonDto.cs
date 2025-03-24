@@ -1,6 +1,6 @@
 ﻿using KanjiKa.Core.Entities.Kana;
 
-namespace KanjiKa.Core.Dtos.Learning;
+namespace KanjiKa.Core.DTOs.Learning;
 
 public class LessonDto
 {

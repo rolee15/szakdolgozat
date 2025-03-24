@@ -25,7 +25,7 @@ const router = createBrowserRouter([
       },
       {
         path: "login",
-        element: <LoginPage />,
+        element: <LoginPage setToken={setToken} />,
       },
       {
         path: "register",
@@ -59,7 +59,23 @@ const router = createBrowserRouter([
   },
 ]);
 
+function setToken(userToken: string) {
+  sessionStorage.setItem('token', JSON.stringify(userToken));
+}
+
+// function getToken() {
+//   const tokenString = sessionStorage.getItem('token');
+//   const userToken = JSON.parse(tokenString as string);
+//   return userToken?.token;
+// }
+
 function App() {
+  // const token = getToken();
+
+  // if(!token) {
+  //   return <LoginPage setToken={setToken} />
+  // }
+
   return (
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />

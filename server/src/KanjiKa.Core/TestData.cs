@@ -1,5 +1,7 @@
 ﻿using KanjiKa.Core.Entities;
 using KanjiKa.Core.Entities.Kana;
+using KanjiKa.Core.Entities.Users;
+using KanjiKa.Core.Services;
 
 namespace KanjiKa.Core;
 
@@ -2230,12 +2232,17 @@ public static class TestData
 
     public static List<User> GetUsers()
     {
+        const string testPassword = "12345";
+        var hashService = new HashService();
+        var (hash, salt) = hashService.Hash(testPassword);
         return
         [
             new User
             {
                 Id = 1,
-                Username = "TestUser1",
+                Username = "testuser1@kanjika.com",
+                PasswordHash = hash,
+                PasswordSalt = salt,
                 Proficiencies =
                 [
                     new Proficiency

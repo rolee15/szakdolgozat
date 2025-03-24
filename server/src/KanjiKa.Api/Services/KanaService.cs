@@ -1,11 +1,11 @@
-﻿using KanjiKa.Core.Dtos;
-using KanjiKa.Core.Entities;
+﻿using KanjiKa.Core.DTOs.Kana;
 using KanjiKa.Core.Entities.Kana;
+using KanjiKa.Core.Entities.Users;
 using KanjiKa.Core.Interfaces;
 using KanjiKa.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace KanjiKaApi.Services;
+namespace KanjiKa.Api.Services;
 
 public class KanaService : IKanaService
 {

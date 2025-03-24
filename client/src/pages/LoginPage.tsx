@@ -1,20 +1,46 @@
+import api from "@/services/userService";
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
 
-const LoginPage = () => {
+type PropType = {
+  setToken: (token: string) => void;
+};
+const LoginPage = (props: PropType) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const dto = await api.login(email, password);
+    props.setToken(dto.token);
+  };
+
   return (
     <div className="mx-auto my-24 max-w-md p-4">
-      <form>
+      <form onSubmit={handleSubmit}>
         <div className="flex flex-col gap-y-2 mb-4">
           <label htmlFor="email" className="text-xl">
             Email
           </label>
-          <input type="email" id="email" name="email" className="w-80 p-2 text-xl" />
+          <input
+            type="email"
+            id="email"
+            name="email"
+            className="w-80 p-2 text-xl"
+            onChange={(e) => setEmail(e.target.value)}
+          />
         </div>
         <div className="flex flex-col gap-y-2">
           <label htmlFor="password" className="text-xl">
             Password
           </label>
-          <input type="password" id="password" name="password" className="w-80 p-2 text-xl" />
+          <input
+            type="password"
+            id="password"
+            name="password"
+            className="w-80 p-2 text-xl"
+            onChange={(e) => setPassword(e.target.value)}
+          />
         </div>
         <div>
           <NavLink to="/forgot-password" className="text-blue-500">

@@ -1,4 +1,4 @@
-import api from "@/services/userService";
+
 import { FormEvent, useState } from "react";
 
 const ForgotPasswordPage = () => {
@@ -12,7 +12,6 @@ const ForgotPasswordPage = () => {
     setError("");
 
     try {
-      await api.forgotPassword(email);
       setLoading(false);
     } catch (error) {
       setError(error instanceof Error ? error.message : "An error occurred");
