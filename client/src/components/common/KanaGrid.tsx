@@ -1,11 +1,10 @@
 import api from "@services/kanaService";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import KanaButton from "./KanaButton";
 
 const KanaGrid = ({ type }: { type: "hiragana" | "katakana" }) => {
   const [characters, setCharacters] = useState<KanaCharacter[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCharacters = async () => {
@@ -44,15 +43,13 @@ const KanaGrid = ({ type }: { type: "hiragana" | "katakana" }) => {
         {rows.map((row, rowIndex) => (
           <div key={rowIndex} className="flex justify-center space-x-2">
             {row.map((char) => (
-              <button
+              <KanaButton
                 key={char.character}
-                onClick={() => navigate(`/${type}/${char.character}`)}
-                className="w-20 h-20 rounded-lg border-2 border-blue-500 hover:bg-blue-500 hover:text-white
-                             transition-colors duration-200 flex flex-col items-center justify-center"
-              >
-                <span className="text-2xl font-bold">{char.character}</span>
-                <span className="text-sm text-gray-400">{char.romanization}</span>
-              </button>
+                type={type}
+                character={char.character}
+                romanization={char.romanization}
+                proficiency={char.proficiency}
+              />
             ))}
           </div>
         ))}

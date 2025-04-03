@@ -2260,9 +2260,540 @@ public static class TestData
                         Id = 2,
                         UserId = 1,
                         CharacterId = 2,
-                        Level = 60,
+                        Level = 80,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-9),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-2)
+                    },
+                    new Proficiency
+                    {
+                        Id = 3,
+                        UserId = 1,
+                        CharacterId = 3,
+                        Level = 75,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-8),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 4,
+                        UserId = 1,
+                        CharacterId = 4,
+                        Level = 70,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-7),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 5,
+                        UserId = 1,
+                        CharacterId = 5,
+                        Level = 60,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-6),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 6,
+                        UserId = 1,
+                        CharacterId = 6,
+                        Level = 70,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-5),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 7,
+                        UserId = 1,
+                        CharacterId = 7,
+                        Level = 80,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-4),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 8,
+                        UserId = 1,
+                        CharacterId = 8,
+                        Level = 90,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-3),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 9,
+                        UserId = 1,
+                        CharacterId = 9,
+                        Level = 100,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-2),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 10,
+                        UserId = 1,
+                        CharacterId = 10,
+                        Level = 100,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 11,
+                        UserId = 1,
+                        CharacterId = 11,
+                        Level = 100,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 12,
+                        UserId = 1,
+                        CharacterId = 12,
+                        Level = 60,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 13,
+                        UserId = 1,
+                        CharacterId = 13,
+                        Level = 70,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 14,
+                        UserId = 1,
+                        CharacterId = 14,
+                        Level = 40,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 15,
+                        UserId = 1,
+                        CharacterId = 15,
+                        Level = 50,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 16,
+                        UserId = 1,
+                        CharacterId = 16,
+                        Level = 60,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 17,
+                        UserId = 1,
+                        CharacterId = 17,
+                        Level = 70,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-20),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-10)
+                    },
+                    new Proficiency
+                    {
+                        Id = 18,
+                        UserId = 1,
+                        CharacterId = 18,
+                        Level = 80,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-30),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-20)
+                    },
+                    new Proficiency
+                    {
+                        Id = 19,
+                        UserId = 1,
+                        CharacterId = 19,
+                        Level = 90,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-40),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-30)
+                    },
+                    new Proficiency
+                    {
+                        Id = 20,
+                        UserId = 1,
+                        CharacterId = 20,
+                        Level = 100,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-50),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-40)
+                    },
+                    new Proficiency
+                    {
+                        Id = 21,
+                        UserId = 1,
+                        CharacterId = 21,
+                        Level = 100,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-60),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-50)
+                    },
+                    new Proficiency
+                    {
+                        Id = 22,
+                        UserId = 1,
+                        CharacterId = 22,
+                        Level = 100,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-20),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-10)
+                    },
+                    new Proficiency
+                    {
+                        Id = 23,
+                        UserId = 1,
+                        CharacterId = 23,
+                        Level = 80,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-20),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-10)
+                    },
+                    new Proficiency
+                    {
+                        Id = 24,
+                        UserId = 1,
+                        CharacterId = 24,
+                        Level = 20,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-2),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 25,
+                        UserId = 1,
+                        CharacterId = 25,
+                        Level = 10,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-2),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 26,
+                        UserId = 1,
+                        CharacterId = 26,
+                        Level = 5,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 27,
+                        UserId = 1,
+                        CharacterId = 27,
+                        Level = 0,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 28,
+                        UserId = 1,
+                        CharacterId = 28,
+                        Level = 0,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 29,
+                        UserId = 1,
+                        CharacterId = 29,
+                        Level = 0,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 30,
+                        UserId = 1,
+                        CharacterId = 30,
+                        Level = 10,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 31,
+                        UserId = 1,
+                        CharacterId = 31,
+                        Level = 20,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-2),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 32,
+                        UserId = 1,
+                        CharacterId = 32,
+                        Level = 10,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 33,
+                        UserId = 1,
+                        CharacterId = 33,
+                        Level = 0,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 34,
+                        UserId = 1,
+                        CharacterId = 34,
+                        Level = 0,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 35,
+                        UserId = 1,
+                        CharacterId = 35,
+                        Level = 0,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 36,
+                        UserId = 1,
+                        CharacterId = 36,
+                        Level = 0,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 37,
+                        UserId = 1,
+                        CharacterId = 37,
+                        Level = 0,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 38,
+                        UserId = 1,
+                        CharacterId = 38,
+                        Level = 0,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 39,
+                        UserId = 1,
+                        CharacterId = 39,
+                        Level = 0,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 40,
+                        UserId = 1,
+                        CharacterId = 40,
+                        Level = 0,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 41,
+                        UserId = 1,
+                        CharacterId = 41,
+                        Level = 0,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 42,
+                        UserId = 1,
+                        CharacterId = 42,
+                        Level = 0,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 43,
+                        UserId = 1,
+                        CharacterId = 43,
+                        Level = 0,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 44,
+                        UserId = 1,
+                        CharacterId = 44,
+                        Level = 0,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 45,
+                        UserId = 1,
+                        CharacterId = 45,
+                        Level = 0,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 46,
+                        UserId = 1,
+                        CharacterId = 46,
+                        Level = 0,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 47,
+                        UserId = 1,
+                        CharacterId = 47,
+                        Level = 0,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 48,
+                        UserId = 1,
+                        CharacterId = 48,
+                        Level = 0,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 49,
+                        UserId = 1,
+                        CharacterId = 49,
+                        Level = 0,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 50,
+                        UserId = 1,
+                        CharacterId = 50,
+                        Level = 0,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 51,
+                        UserId = 1,
+                        CharacterId = 51,
+                        Level = 0,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 52,
+                        UserId = 1,
+                        CharacterId = 52,
+                        Level = 0,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 53,
+                        UserId = 1,
+                        CharacterId = 53,
+                        Level = 0,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 54,
+                        UserId = 1,
+                        CharacterId = 54,
+                        Level = 0,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 55,
+                        UserId = 1,
+                        CharacterId = 55,
+                        Level = 0,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 56,
+                        UserId = 1,
+                        CharacterId = 56,
+                        Level = 0,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 57,
+                        UserId = 1,
+                        CharacterId = 57,
+                        Level = 0,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 58,
+                        UserId = 1,
+                        CharacterId = 58,
+                        Level = 0,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 59,
+                        UserId = 1,
+                        CharacterId = 59,
+                        Level = 0,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 60,
+                        UserId = 1,
+                        CharacterId = 60,
+                        Level = 0,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Id = 61,
+                        UserId = 1,
+                        CharacterId = 61,
+                        Level = 0,
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     }
                 ]
             }
