@@ -2,6 +2,6 @@
 
 public class LessonReviewDto
 {
-    public string Symbol { get; set; }
+    public string Question { get; set; }
 
 }

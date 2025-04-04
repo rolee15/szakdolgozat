@@ -1,5 +1,7 @@
 type Lesson = {
+    characterId: number;
     symbol: string;
     romanization: string;
-    type: string;
+    type: number;
+    examples: string[]?;
 };
