@@ -1,0 +1,3 @@
+type LessonReviewCount = {
+    count: number;
+};

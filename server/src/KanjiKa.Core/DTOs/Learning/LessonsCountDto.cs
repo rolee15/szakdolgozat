@@ -1,6 +1,6 @@
 ﻿namespace KanjiKa.Core.DTOs.Learning;
 
-public class TodayLessonCountDto
+public class LessonsCountDto
 {
     public int Count { get; set; }
 }

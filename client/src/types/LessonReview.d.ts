@@ -1,3 +1,3 @@
 type LessonReview = {
-    character: string;
+    question: string;
 };

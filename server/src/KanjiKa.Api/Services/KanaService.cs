@@ -51,15 +51,15 @@ public class KanaService : IKanaService
         }
 
         var userProficiency = user.Proficiencies
-            .First(p => p.CharacterId == kanaCharacter.Id)
-            .Level;
+            .FirstOrDefault(p => p.CharacterId == kanaCharacter.Id);
+        var level = userProficiency?.Level ?? 0;
 
         return new KanaCharacterDetailDto
         {
             Character = kanaCharacter.Symbol,
             Romanization = kanaCharacter.Romanization,
             Type = kanaCharacter.Type,
-            Proficiency = userProficiency
+            Proficiency = level
         };
     }
 

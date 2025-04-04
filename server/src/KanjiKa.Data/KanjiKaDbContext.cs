@@ -31,7 +31,7 @@ public class KanjiKaDbContext : DbContext
         });
 
         modelBuilder.Entity<Proficiency>(entity => {
-            entity.HasKey(proficiency => proficiency.Id);
+            entity.HasKey(proficiency => new { proficiency.UserId, proficiency.CharacterId });
         });
 
         modelBuilder.Entity<LessonCompletion>(entity => {
