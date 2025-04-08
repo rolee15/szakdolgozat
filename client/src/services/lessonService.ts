@@ -5,14 +5,12 @@ const MOCK_USER_ID = '1';
 const api = {
     async getLessonsCount(): Promise<LessonCount> {
       const response = await fetch(`${API_BASE_URL}/count?userId=${MOCK_USER_ID}`);
-      console.log('Get lesson count response:', response);
       if (!response.ok) throw new Error('Failed to fetch lesson count');
       return response.json();
     },
 
     async getLessons(pageIndex: number, pageSize: number): Promise<Lesson[]> {
       const response = await fetch(`${API_BASE_URL}/?userId=${MOCK_USER_ID}&pageIndex=${pageIndex}&pageSize=${pageSize}`);
-      console.log('Get lessons response:', response);
       if (!response.ok) throw new Error('Failed to fetch new lessons');
       return response.json();
     },
@@ -42,7 +40,6 @@ const api = {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ '"question"': `"${question}"`, '"answer"': `"${answer}"` }),
         });
-        console.log(repsonse);
         if (!repsonse.ok) throw new Error('Failed to post lesson review answer');
         return repsonse.json();
     }
