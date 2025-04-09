@@ -1,4 +1,3 @@
-using KanjiKa.Api.Controllers;
 using KanjiKa.Api.Services;
 using KanjiKa.Core.Interfaces;
 using KanjiKa.Core.Services;
@@ -54,3 +53,5 @@ if (app.Environment.IsDevelopment())
 }
 
 await app.RunAsync();
+
+public partial class Program { }
