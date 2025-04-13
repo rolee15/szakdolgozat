@@ -7,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace KanjiKa.PerformanceTest;
 
-
 public class LessonServiceBenchmark
 {
     private ILessonService? _lessonService;
@@ -18,7 +17,7 @@ public class LessonServiceBenchmark
     {
         var services = new ServiceCollection();
         services.AddDbContext<KanjiKaDbContext>(options =>
-            options.UseNpgsql("Host=localhost;Database=KanjiKaDb;Port=5432;Username=kanjika_admin;Password=12345"));
+            options.UseNpgsql("Host=localhost;Database=kanjika_db;Port=5432;Username=admin;Password=12345"));
         services.AddScoped<ILessonService, LessonService>();
         services.AddScoped<KanjiKaDataSeeder>();
 

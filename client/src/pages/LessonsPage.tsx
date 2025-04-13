@@ -60,4 +60,5 @@ const LessonsPage = () => {
     </div>
   );
 };
+
 export default LessonsPage;

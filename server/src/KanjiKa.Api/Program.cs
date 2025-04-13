@@ -44,7 +44,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 
-// Seed test data
+// Seed test data.
 if (app.Environment.IsDevelopment())
 {
     using var scope = app.Services.CreateScope();
@@ -53,5 +53,3 @@ if (app.Environment.IsDevelopment())
 }
 
 await app.RunAsync();
-
-public partial class Program { }

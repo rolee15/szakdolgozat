@@ -2,7 +2,7 @@
 
 namespace KanjiKa.Core.Entities.Learning;
 
-public class LessonItem
+public class Lesson
 {
     public int Id { get; set; }
     public Character Character { get; set; }

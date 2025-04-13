@@ -9,9 +9,9 @@ namespace KanjiKa.Api.Services;
 public class UserService : IUserService
 {
     private readonly KanjiKaDbContext _db;
+    private readonly IEmailService _emailService;
     private readonly IHashService _hashService;
     private readonly ITokenService _tokenService;
-    private readonly IEmailService _emailService;
 
     public UserService(KanjiKaDbContext db, IHashService hashService, ITokenService tokenService, IEmailService emailService)
     {
@@ -60,8 +60,8 @@ public class UserService : IUserService
         {
             return new RegisterDto
             {
-                isSuccess = false,
-                errorMessage = "Username already exists"
+                IsSuccess = false,
+                ErrorMessage = "Username already exists"
             };
         }
 
@@ -80,7 +80,7 @@ public class UserService : IUserService
 
         return new RegisterDto
         {
-            isSuccess = true,
+            IsSuccess = true,
             Token = token,
             RefreshToken = refreshToken
         };
@@ -99,8 +99,8 @@ public class UserService : IUserService
         {
             return new ResetPasswordDto
             {
-                isSuccess = false,
-                errorMessage = "User not found"
+                IsSuccess = false,
+                ErrorMessage = "User not found"
             };
         }
 
@@ -109,8 +109,8 @@ public class UserService : IUserService
         {
             return new ResetPasswordDto
             {
-                isSuccess = false,
-                errorMessage = "Invalid reset code"
+                IsSuccess = false,
+                ErrorMessage = "Invalid reset code"
             };
         }
 
@@ -121,7 +121,7 @@ public class UserService : IUserService
 
         return new ResetPasswordDto
         {
-            isSuccess = true
+            IsSuccess = true
         };
     }
 
@@ -134,5 +134,4 @@ public class UserService : IUserService
         };
         return await Task.FromResult(result);
     }
-
 }

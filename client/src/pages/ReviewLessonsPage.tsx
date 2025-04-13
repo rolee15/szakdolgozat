@@ -32,6 +32,8 @@ const ReviewLessonsPage = () => {
     if (!currentReview) return;
 
     const isCorrect = await api.postLessonReviewCheck(currentReview.question, answer);
+    console.log("Question:", currentReview.question);
+    console.log("Answer submitted:", answer);
     if (isCorrect) {
       console.log("Correct!");
     } else {

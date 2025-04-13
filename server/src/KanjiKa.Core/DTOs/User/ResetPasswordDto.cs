@@ -2,6 +2,6 @@
 
 public class ResetPasswordDto
 {
-    public bool isSuccess { get; set; }
-    public string errorMessage { get; set; }
+    public bool IsSuccess { get; set; }
+    public string ErrorMessage { get; set; }
 }
