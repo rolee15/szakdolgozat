@@ -13,8 +13,8 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"]
-      interval: 5s
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
       timeout: 5s
       retries: 5
     networks:
@@ -26,10 +26,7 @@ services:
       dockerfile: Dockerfile
     container_name: kanjika-api
     ports:
-      - "8080:8080"
-      - "8081:8081"
-      - "5039:5039"
-      - "7161:7161"
+      - "5000:8080"
     depends_on:
       db:
         condition: service_healthy
@@ -42,7 +39,7 @@ services:
       dockerfile: Dockerfile
     container_name: kanjika-web
     ports:
-      - "5173:5173"
+      - "3000:3000"
     depends_on:
       - api
 
