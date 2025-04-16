@@ -58,9 +58,8 @@ public sealed class CustomWebApplicationFactory : WebApplicationFactory<IApiMark
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureServices(services => {
-            services.Remove(services.SingleOrDefault(service => service.ServiceType == typeof(DbContextOptions<KanjiKaDbContext>)));
-            services.Remove(services.SingleOrDefault(service => service.ServiceType == typeof(KanjiKaDbContext)));
-
+            services.Remove(services.SingleOrDefault(service => service.ServiceType == typeof(DbContextOptions<KanjiKaDbContext>))!);
+            services.Remove(services.SingleOrDefault(service => service.ServiceType == typeof(KanjiKaDbContext))!);
             services.AddDbContext<KanjiKaDbContext>(options => options.UseNpgsql(_dbContainer.GetConnectionString()));
         });
     }

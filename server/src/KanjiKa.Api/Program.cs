@@ -40,12 +40,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowReactApp");
+// Disabled because the self-signed certificate doesn't work in containers.
 //app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 
 // Seed test data.
-//if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
     using var scope = app.Services.CreateScope();
     var seeder = scope.ServiceProvider.GetRequiredService<KanjiKaDataSeeder>();
