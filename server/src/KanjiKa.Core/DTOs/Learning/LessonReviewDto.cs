@@ -2,6 +2,5 @@
 
 public class LessonReviewDto
 {
-    public string Question { get; set; }
-
+    public required string Question { get; set; }
 }

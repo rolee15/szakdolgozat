@@ -5,6 +5,6 @@ namespace KanjiKa.Core.Entities.Learning;
 public class Lesson
 {
     public int Id { get; set; }
-    public Character Character { get; set; }
-    public string Answer { get; set; }
+    public required Character Character { get; set; }
+    public required string Answer { get; set; }
 }
