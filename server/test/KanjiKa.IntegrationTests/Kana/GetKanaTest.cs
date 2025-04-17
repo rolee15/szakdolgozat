@@ -1,29 +1,41 @@
-﻿using System.Net.Http.Json;
+﻿using System.Net;
+using System.Net.Http.Json;
 
 namespace KanjiKa.IntegrationTests.Kana;
 
-[Collection("IntegrationTests")]
+[Collection("TestContainer")]
 public class GetKanaTest(CustomWebApplicationFactory factory) : IAsyncLifetime
 {
-    public Task InitializeAsync() => Task.CompletedTask;
+    public async Task InitializeAsync() => await Task.CompletedTask;
+    //await factory.SetUpDatabaseAsync();
 
-    public async Task DisposeAsync() => await factory.ResetDatabaseAsync();
+    public async Task DisposeAsync() => await Task.CompletedTask;
 
     [Fact]
-    public async Task GetAllKana_ShouldReturnOk()
+    public async Task GetAllKana_Hiragana_ShouldReturnOk()
     {
         // Arrange & Act
-        var response = factory.HttpClient.GetFromJsonAsAsyncEnumerable<KanaCharacterDto>("/api/characters/hiragana?userId=1");
+        var response = await factory.HttpClient.GetAsync("/api/characters/hiragana?userId=1");
 
         // Assert
-        await foreach (var character in response)
-        {
-            Assert.NotNull(character);
-            Assert.NotEmpty(character.Character);
-            Assert.NotEmpty(character.Romaji);
-            Assert.NotEmpty(character.Meaning);
-            Assert.True(character.UserId > 0);
-        }
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetAllKana_Hiragana_ShouldReturnExpectedCharacters()
+    {
+        // Arrange
+        string[] expectedHiragana = ["あ", "い", "う", "え", "お"];
+
+        // Act
+        var response = await factory.HttpClient.GetFromJsonAsync<IEnumerable<KanaCharacterDto>>("/api/characters/hiragana?userId=1");
+        var result = response?.ToList();
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(69, result.Count);
+        Assert.All(expectedHiragana, expected =>
+            Assert.Contains(expected, result.Select(dto => dto.Character)));
     }
 }
 

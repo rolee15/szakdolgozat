@@ -13,30 +13,31 @@ namespace KanjiKa.IntegrationTests;
 
 public sealed class CustomWebApplicationFactory : WebApplicationFactory<IApiMarker>, IAsyncLifetime
 {
-    private readonly PostgreSqlContainer _dbContainer = new PostgreSqlBuilder()
-        .WithImage("postgres:17.2")
-        .WithDatabase("test")
-        .WithUsername("admin")
-        .WithPassword("admin")
-        .Build();
-
     private DbConnection _dbConnection = null!;
+    private PostgreSqlContainer _dbContainer = null!;
     private Respawner _respawner = null!;
 
     public HttpClient HttpClient { get; private set; } = null!;
 
+    // Do not change the order of initialization!
     public async Task InitializeAsync()
     {
+        _dbContainer = new PostgreSqlBuilder()
+            .WithImage("postgres:17.2")
+            .WithDatabase("test")
+            .WithUsername("admin")
+            .WithPassword("admin")
+            .Build();
         await _dbContainer.StartAsync();
+
         _dbConnection = new NpgsqlConnection(_dbContainer.GetConnectionString());
 
         HttpClient = CreateClient();
 
-        using var scope = Services.CreateScope();
-        var seeder = scope.ServiceProvider.GetRequiredService<KanjiKaDataSeeder>();
-        await seeder.SeedAsync();
+        await SeedDatabaseAsync();
 
         await _dbConnection.OpenAsync();
+
         _respawner = await Respawner.CreateAsync(_dbConnection, new RespawnerOptions
         {
             SchemasToInclude = ["public"],
@@ -50,7 +51,14 @@ public sealed class CustomWebApplicationFactory : WebApplicationFactory<IApiMark
         await _dbConnection.DisposeAsync();
     }
 
-    public async Task ResetDatabaseAsync()
+    public async Task SeedDatabaseAsync()
+    {
+        using var scope = Services.CreateScope();
+        var seeder = scope.ServiceProvider.GetRequiredService<KanjiKaDataSeeder>();
+        await seeder.SeedAsync();
+    }
+
+    public async Task TearDownDatabaseAsync()
     {
         await _respawner.ResetAsync(_dbConnection);
     }

@@ -1,4 +1,4 @@
 ﻿namespace KanjiKa.IntegrationTests;
 
-[CollectionDefinition("IntegrationTests")]
+[CollectionDefinition("TestContainer")]
 public class SharedTestCollection : ICollectionFixture<CustomWebApplicationFactory>;
