@@ -4,5 +4,8 @@
 out
 gen
 
+# Bruno
+.bruno
+
 # env file
 .env
