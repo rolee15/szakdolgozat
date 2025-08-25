@@ -20,7 +20,12 @@
 
     <ItemGroup>
       <ProjectReference Include="..\KanjiKa.Core\KanjiKa.Core.csproj" />
-        <ProjectReference Include="..\KanjiKa.Data\KanjiKa.Data.csproj"/>
+      <ProjectReference Include="..\KanjiKa.Data\KanjiKa.Data.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="KanjiKa.PerformanceTests" />
+        <InternalsVisibleTo Include="KanjiKa.UnitTests"/>
     </ItemGroup>
 
 </Project>

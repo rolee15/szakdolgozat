@@ -1,4 +1,3 @@
-using KanjiKa.Api.Controllers;
 using KanjiKa.Api.Services;
 using KanjiKa.Core.Interfaces;
 using KanjiKa.Core.Services;
@@ -41,11 +40,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowReactApp");
-app.UseHttpsRedirection();
+// Disabled because the self-signed certificate doesn't work in containers.
+//app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 
-// Seed test data
+// Seed test data.
 if (app.Environment.IsDevelopment())
 {
     using var scope = app.Services.CreateScope();

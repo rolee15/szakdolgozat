@@ -9,7 +9,8 @@ namespace KanjiKa.Api.Services;
 
 internal class LessonService : ILessonService
 {
-    private const int LessonReviewItemCount = 5;
+    private const int SkillUp = 10;
+    private const int SkillDown = 5;
 
     private readonly KanjiKaDbContext _db;
 
@@ -18,7 +19,7 @@ internal class LessonService : ILessonService
         _db = db;
     }
 
-    public async Task<TodayLessonCountDto> GetTodayLessonCountAsync(int userId)
+    public async Task<LessonsCountDto> GetLessonsCountAsync(int userId)
     {
         var user = await _db.Users
             .Include(u => u.Proficiencies)
@@ -34,13 +35,13 @@ internal class LessonService : ILessonService
             .CountAsync(lc => lc.UserId == userId && lc.CompletionDate.Date == today);
         var count = 15 - lessonsLearnedToday;
 
-        return new TodayLessonCountDto
+        return new LessonsCountDto
         {
             Count = Math.Max(count, 0)
         };
     }
 
-    public async Task<IEnumerable<LessonDto>> GetNewLessonsAsync(int userId, int pageIndex, int pageSize)
+    public async Task<IEnumerable<LessonDto>> GetLessonsAsync(int userId, int pageIndex, int pageSize)
     {
         var user = await _db.Users
             .Include(u => u.Proficiencies)
@@ -132,49 +133,49 @@ internal class LessonService : ILessonService
         return proficiency;
     }
 
-    public async Task<IEnumerable<LessonReviewDto>> GetLessonReviews(int userId)
+    public async Task<LessonReviewsCountDto> GetLessonReviewsCountAsync(int userId)
     {
-        var lessons=  await _db.Characters.Where(c =>
-                !_db.Proficiencies
-                    .Where(p => p.UserId == userId)
-                    .Select(p => p.Id)
-                    .Distinct()
-                    .Contains(c.Id))
-            .Take(LessonReviewItemCount)
-            .Select(c => MapToLessonReviewDto(c))
+        var completedLessons = await _db.LessonCompletions
+            .Where(lc => lc.UserId == userId)
             .ToListAsync();
 
-        return lessons;
-    }
-
-    private static LessonReviewDto MapToLessonReviewDto(Character character)
-    {
-        return new LessonReviewDto
+        return new LessonReviewsCountDto
         {
-            Symbol = character.Symbol,
+            Count = completedLessons.Count
         };
     }
 
-    public async Task<bool> CheckReviewItemAnswerAsync(int userId, string character, LessonReviewAnswerDto answer)
+    public async Task<IEnumerable<LessonReviewDto>> GetLessonReviewsAsync(int userId)
     {
-        var ch = await _db.Characters.FirstOrDefaultAsync(c => c.Symbol == character);
-        if (ch == null)
+        var completedLessons = await _db.LessonCompletions
+            .Where(lc => lc.UserId == userId)
+            .OrderBy(lc => lc.CompletionDate)
+            .Select(lc => new LessonReviewDto { Question = lc.Character.Symbol })
+            .ToListAsync();
+
+        return completedLessons;
+    }
+
+    public async Task<LessonReviewAnswerResultDto> CheckLessonReviewAnswerAsync(int userId, LessonReviewAnswerDto answer)
+    {
+        var character = await _db.Characters.FirstOrDefaultAsync(c => c.Symbol == answer.Question);
+        if (character == null)
         {
-            throw new ArgumentException("Character not found", nameof(character));
+            throw new ArgumentException("Character not found", nameof(answer));
         }
 
         var proficiency = await _db.Proficiencies
-            .FirstOrDefaultAsync(p => p.UserId == userId && p.CharacterId == ch.Id) ?? await LearnLessonAsync(userId, ch.Id);
+            .FirstOrDefaultAsync(p => p.UserId == userId && p.CharacterId == character.Id) ?? await LearnLessonAsync(userId, character.Id);
 
-        if (answer.Answer == ch.Romanization)
+        if (answer.Answer == character.Romanization)
         {
-            proficiency.Increase(10);
+            proficiency.Increase(SkillUp);
             await _db.SaveChangesAsync();
-            return true;
+            return new LessonReviewAnswerResultDto { IsCorrect = true };
         }
 
-        proficiency.Decrease(5);
+        proficiency.Decrease(SkillDown);
         await _db.SaveChangesAsync();
-        return false;
+        return new LessonReviewAnswerResultDto { IsCorrect = false };
     }
 }

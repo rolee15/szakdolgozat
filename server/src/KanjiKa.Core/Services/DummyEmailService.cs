@@ -1,6 +1,6 @@
 ﻿using KanjiKa.Core.Interfaces;
 
-namespace KanjiKa.Api.Services;
+namespace KanjiKa.Core.Services;
 
 public class DummyEmailService : IEmailService
 {

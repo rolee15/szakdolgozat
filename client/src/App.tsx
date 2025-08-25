@@ -11,6 +11,7 @@ import RegisterPage from "@pages/RegisterPage";
 import LessonsPage from "./pages/LessonsPage";
 import NewLessonsPage from "./pages/NewLessonsPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import ReviewLessonsPage from "./pages/ReviewLessonsPage";
 
 const queryClient = new QueryClient();
 const router = createBrowserRouter([
@@ -55,6 +56,10 @@ const router = createBrowserRouter([
         path: "lessons/new",
         element: <NewLessonsPage />,
       },
+      {
+        path: "lessons/review",
+        element: <ReviewLessonsPage />,
+      }
     ],
   },
 ]);

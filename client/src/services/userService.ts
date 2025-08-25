@@ -1,9 +1,9 @@
-const API_BASE_URL = 'https://localhost:7161/api/users';
+import { API_USERS_URL } from "@/services/routes";
 
 const api = {
 
     async login(email: string, password: string): Promise<LoginDto> {
-        const response = await fetch(`${API_BASE_URL}/login`, {
+        const response = await fetch(`${API_USERS_URL}/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password }),
@@ -13,7 +13,7 @@ const api = {
     },
 
     async register(email: string, password: string): Promise<RegisterDto> {
-        const response = await fetch(`${API_BASE_URL}/register`, {
+        const response = await fetch(`${API_USERS_URL}/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password }),
@@ -23,7 +23,7 @@ const api = {
     },
 
     async resetPassword(email: string): Promise<ResetPasswordDto> {
-        const response = await fetch(`${API_BASE_URL}/resetPassword`, {
+        const response = await fetch(`${API_USERS_URL}/resetPassword`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email }),
@@ -33,7 +33,7 @@ const api = {
     },
 
     async refreshToken(token: string): Promise<RefreshTokenDto> {
-        const response = await fetch(`${API_BASE_URL}/refreshToken`, {
+        const response = await fetch(`${API_USERS_URL}/refreshToken`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ token }),

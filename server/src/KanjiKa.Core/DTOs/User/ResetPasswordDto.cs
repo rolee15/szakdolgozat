@@ -1,7 +1,11 @@
-﻿namespace KanjiKa.Core.DTOs.User;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace KanjiKa.Core.DTOs.User;
 
 public class ResetPasswordDto
 {
-    public bool isSuccess { get; set; }
-    public string errorMessage { get; set; }
+    [MemberNotNullWhen(false, nameof(ErrorMessage))]
+    public bool IsSuccess { get; set; }
+
+    public string? ErrorMessage { get; set; }
 }

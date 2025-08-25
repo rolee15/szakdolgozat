@@ -1,5 +1,4 @@
-﻿using KanjiKa.Core.Entities;
-using KanjiKa.Core.Entities.Kana;
+﻿using KanjiKa.Core.Entities.Kana;
 using KanjiKa.Core.Entities.Learning;
 using KanjiKa.Core.Entities.Users;
 using Microsoft.EntityFrameworkCore;
@@ -9,14 +8,18 @@ namespace KanjiKa.Data;
 public class KanjiKaDbContext : DbContext
 {
 
-    public KanjiKaDbContext(DbContextOptions<KanjiKaDbContext> options) : base(options)
-    { }
+    public KanjiKaDbContext(DbContextOptions<KanjiKaDbContext> options) : base(options) { }
 
     public DbSet<User> Users { get; set; }
     public DbSet<Proficiency> Proficiencies { get; set; }
     public DbSet<LessonCompletion> LessonCompletions { get; set; }
     public DbSet<Character> Characters { get; set; }
     public DbSet<Example> Examples { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseSnakeCaseNamingConvention();
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -31,7 +34,7 @@ public class KanjiKaDbContext : DbContext
         });
 
         modelBuilder.Entity<Proficiency>(entity => {
-            entity.HasKey(proficiency => proficiency.Id);
+            entity.HasKey(proficiency => new { proficiency.UserId, proficiency.CharacterId });
         });
 
         modelBuilder.Entity<LessonCompletion>(entity => {

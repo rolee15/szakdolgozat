@@ -10,7 +10,8 @@ public class UsersController : ControllerBase
 {
     private readonly IUserService _userService;
 
-    public UsersController(IUserService userService) {
+    public UsersController(IUserService userService)
+    {
         _userService = userService;
     }
 
@@ -32,7 +33,7 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
         var registerDto = await _userService.Register(request.Email, request.Password);
-        if (!registerDto.isSuccess)
+        if (!registerDto.IsSuccess)
         {
             return BadRequest(registerDto);
         }
@@ -51,7 +52,7 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
     {
         var resetPasswordDto = await _userService.ResetPassword(request.Email, request.ResetCode, request.NewPassword);
-        if (!resetPasswordDto.isSuccess)
+        if (!resetPasswordDto.IsSuccess)
         {
             return BadRequest(resetPasswordDto);
         }
