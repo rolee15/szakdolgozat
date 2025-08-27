@@ -28,4 +28,8 @@
         <InternalsVisibleTo Include="KanjiKa.UnitTests"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <Folder Include="Extensions\"/>
+    </ItemGroup>
+
 </Project>
