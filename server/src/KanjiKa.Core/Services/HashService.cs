@@ -20,8 +20,8 @@ public class HashService : IHashService
     public bool Verify(string password, byte[] userPasswordHash, byte[] userPasswordSalt)
     {
         ArgumentException.ThrowIfNullOrEmpty(password, nameof(password));
-        ArgumentNullException.ThrowIfNull(userPasswordHash);
-        ArgumentNullException.ThrowIfNull(userPasswordSalt);
+        ArgumentNullException.ThrowIfNull(userPasswordHash, nameof(userPasswordHash));
+        ArgumentNullException.ThrowIfNull(userPasswordSalt, nameof(userPasswordSalt));
 
         if (userPasswordHash.Length == 0)
             throw new ArgumentException("Password hash is empty", nameof(userPasswordHash));
