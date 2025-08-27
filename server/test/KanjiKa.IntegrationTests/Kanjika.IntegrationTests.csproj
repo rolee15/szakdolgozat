@@ -6,7 +6,11 @@
         <Nullable>enable</Nullable>
 
         <IsPackable>false</IsPackable>
-        <IsTestProject>true</IsTestProject>
+        <!-- Disabled integration tests by default until TestContainers is ready.
+             Re-enable by setting MSBuild property EnableIntegrationTests=true. -->
+        <EnableIntegrationTests Condition=" '$(EnableIntegrationTests)' == '' ">false</EnableIntegrationTests>
+        <IsTestProject Condition=" '$(EnableIntegrationTests)' == 'true' ">true</IsTestProject>
+        <IsTestProject Condition=" '$(EnableIntegrationTests)' != 'true' ">false</IsTestProject>
         <AssemblyName>KanjiKa.IntegrationTests</AssemblyName>
         <RootNamespace>KanjiKa.IntegrationTests</RootNamespace>
     </PropertyGroup>

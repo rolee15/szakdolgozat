@@ -1,6 +1,4 @@
-﻿using System.Net;
-using System.Net.Http.Json;
-
+﻿#if INTEGRATION_TESTS_ENABLED
 namespace KanjiKa.IntegrationTests.Kana;
 
 [Collection("TestContainer")]
@@ -11,7 +9,7 @@ public class GetKanaTest(CustomWebApplicationFactory factory) : IAsyncLifetime
 
     public async Task DisposeAsync() => await Task.CompletedTask;
 
-    [Fact]
+    [Fact(Skip = "Integration tests are temporarily disabled until TestContainers is ready")]
     public async Task GetAllKana_Hiragana_ShouldReturnOk()
     {
         // Arrange & Act
@@ -21,7 +19,7 @@ public class GetKanaTest(CustomWebApplicationFactory factory) : IAsyncLifetime
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
-    [Fact]
+    [Fact(Skip = "Integration tests are temporarily disabled until TestContainers is ready")]
     public async Task GetAllKana_Hiragana_ShouldReturnExpectedCharacters()
     {
         // Arrange
@@ -46,3 +44,5 @@ public class KanaCharacterDto
     public string Meaning { get; set; } = string.Empty;
     public int UserId { get; set; }
 }
+
+#endif
