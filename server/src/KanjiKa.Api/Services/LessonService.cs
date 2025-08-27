@@ -2,8 +2,6 @@
 using KanjiKa.Core.Entities.Kana;
 using KanjiKa.Core.Entities.Learning;
 using KanjiKa.Core.Interfaces;
-using KanjiKa.Data;
-using Microsoft.EntityFrameworkCore;
 
 namespace KanjiKa.Api.Services;
 
@@ -12,27 +10,23 @@ internal class LessonService : ILessonService
     private const int SkillUp = 10;
     private const int SkillDown = 5;
 
-    private readonly KanjiKaDbContext _db;
+    private readonly ILessonRepository _repo;
 
-    public LessonService(KanjiKaDbContext db)
+    public LessonService(ILessonRepository repo)
     {
-        _db = db;
+        _repo = repo;
     }
 
     public async Task<LessonsCountDto> GetLessonsCountAsync(int userId)
     {
-        var user = await _db.Users
-            .Include(u => u.Proficiencies)
-            .FirstOrDefaultAsync(u => u.Id == userId);
+        var user = await _repo.GetUserWithProficienciesAsync(userId);
 
         if (user == null)
         {
             throw new ArgumentException("User not found", nameof(userId));
         }
 
-        var today = DateTimeOffset.UtcNow.Date;
-        var lessonsLearnedToday = await _db.LessonCompletions
-            .CountAsync(lc => lc.UserId == userId && lc.CompletionDate.Date == today);
+        var lessonsLearnedToday = await _repo.CountLessonsCompletedTodayAsync(userId, DateTimeOffset.UtcNow);
         var count = 15 - lessonsLearnedToday;
 
         return new LessonsCountDto
@@ -43,18 +37,14 @@ internal class LessonService : ILessonService
 
     public async Task<IEnumerable<LessonDto>> GetLessonsAsync(int userId, int pageIndex, int pageSize)
     {
-        var user = await _db.Users
-            .Include(u => u.Proficiencies)
-            .FirstOrDefaultAsync(u => u.Id == userId);
+        var user = await _repo.GetUserWithProficienciesAsync(userId);
 
         if (user == null)
         {
             throw new ArgumentException("User not found", nameof(userId));
         }
 
-        var today = DateTimeOffset.UtcNow.Date;
-        var lessonsLearnedToday = await _db.LessonCompletions
-            .CountAsync(lc => lc.UserId == userId && lc.CompletionDate.Date == today);
+        var lessonsLearnedToday = await _repo.CountLessonsCompletedTodayAsync(userId, DateTimeOffset.UtcNow);
         var count = 15 - lessonsLearnedToday;
 
         if (count <= 0)
@@ -62,7 +52,7 @@ internal class LessonService : ILessonService
             return Array.Empty<LessonDto>();
         }
 
-        var allCharacters = await _db.Characters.ToListAsync();
+        var allCharacters = await _repo.GetAllCharactersAsync();
         var newCharacters = allCharacters
             .Where(ch => user.Proficiencies.All(p => p.CharacterId != ch.Id))
             .ToList();
@@ -76,36 +66,21 @@ internal class LessonService : ILessonService
         return lessons;
     }
 
-    private static LessonDto MapToLessonDto(Character character)
-    {
-        return new LessonDto
-        {
-            CharacterId = character.Id,
-            Symbol = character.Symbol,
-            Romanization = character.Romanization,
-            Type = character.Type,
-            //TODO: Solve the problem of circular reference for Examples
-            // Examples = character.Examples
-        };
-    }
-
     public async Task<Proficiency> LearnLessonAsync(int userId, int characterId)
     {
-        var user = await _db.Users
-            .FirstOrDefaultAsync(u => u.Id == userId);
+        var user = await _repo.GetUserWithProficienciesAsync(userId);
         if (user == null)
         {
             throw new ArgumentException("User not found", nameof(userId));
         }
 
-        var character = await _db.Characters.FirstOrDefaultAsync(c => c.Id == characterId);
+        var character = await _repo.GetCharacterByIdAsync(characterId);
         if (character == null)
         {
             throw new ArgumentException("Character not found", nameof(characterId));
         }
 
-        var existingProficiency = await _db.Proficiencies
-            .FirstOrDefaultAsync(p => p.UserId == userId && p.CharacterId == characterId);
+        var existingProficiency = await _repo.GetProficiencyAsync(userId, characterId);
         if (existingProficiency != null)
         {
             throw new ArgumentException("Character already learned", nameof(characterId));
@@ -118,7 +93,7 @@ internal class LessonService : ILessonService
             Level = 0,
             LearnedAt = DateTimeOffset.UtcNow
         };
-        _db.Proficiencies.Add(proficiency);
+        await _repo.AddProficiencyAsync(proficiency);
 
         var lessonCompletion = new LessonCompletion
         {
@@ -126,18 +101,16 @@ internal class LessonService : ILessonService
             CharacterId = character.Id,
             CompletionDate = DateTimeOffset.UtcNow
         };
-        _db.LessonCompletions.Add(lessonCompletion);
+        await _repo.AddLessonCompletionAsync(lessonCompletion);
 
-        await _db.SaveChangesAsync();
+        await _repo.SaveChangesAsync();
 
         return proficiency;
     }
 
     public async Task<LessonReviewsCountDto> GetLessonReviewsCountAsync(int userId)
     {
-        var completedLessons = await _db.LessonCompletions
-            .Where(lc => lc.UserId == userId)
-            .ToListAsync();
+        var completedLessons = await _repo.GetLessonCompletionsByUserAsync(userId);
 
         return new LessonReviewsCountDto
         {
@@ -147,35 +120,47 @@ internal class LessonService : ILessonService
 
     public async Task<IEnumerable<LessonReviewDto>> GetLessonReviewsAsync(int userId)
     {
-        var completedLessons = await _db.LessonCompletions
-            .Where(lc => lc.UserId == userId)
+        var completedLessons = await _repo.GetLessonCompletionsByUserAsync(userId);
+        var ordered = completedLessons
             .OrderBy(lc => lc.CompletionDate)
             .Select(lc => new LessonReviewDto { Question = lc.Character.Symbol })
-            .ToListAsync();
+            .ToList();
 
-        return completedLessons;
+        return ordered;
     }
 
     public async Task<LessonReviewAnswerResultDto> CheckLessonReviewAnswerAsync(int userId, LessonReviewAnswerDto answer)
     {
-        var character = await _db.Characters.FirstOrDefaultAsync(c => c.Symbol == answer.Question);
+        var character = await _repo.GetCharacterBySymbolAsync(answer.Question);
         if (character == null)
         {
             throw new ArgumentException("Character not found", nameof(answer));
         }
 
-        var proficiency = await _db.Proficiencies
-            .FirstOrDefaultAsync(p => p.UserId == userId && p.CharacterId == character.Id) ?? await LearnLessonAsync(userId, character.Id);
+        var proficiency = await _repo.GetProficiencyAsync(userId, character.Id) ?? await LearnLessonAsync(userId, character.Id);
 
         if (answer.Answer == character.Romanization)
         {
             proficiency.Increase(SkillUp);
-            await _db.SaveChangesAsync();
+            await _repo.SaveChangesAsync();
             return new LessonReviewAnswerResultDto { IsCorrect = true };
         }
 
         proficiency.Decrease(SkillDown);
-        await _db.SaveChangesAsync();
+        await _repo.SaveChangesAsync();
         return new LessonReviewAnswerResultDto { IsCorrect = false };
+    }
+
+    private static LessonDto MapToLessonDto(Character character)
+    {
+        return new LessonDto
+        {
+            CharacterId = character.Id,
+            Symbol = character.Symbol,
+            Romanization = character.Romanization,
+            Type = character.Type,
+            //TODO: Solve the problem of circular reference for Examples
+            // Examples = character.Examples
+        };
     }
 }
