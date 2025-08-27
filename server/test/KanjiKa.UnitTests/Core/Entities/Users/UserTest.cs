@@ -1,4 +1,6 @@
-﻿using KanjiKa.Core.Entities.Users;
+﻿using KanjiKa.Core.Entities.Kana;
+using KanjiKa.Core.Entities.Learning;
+using KanjiKa.Core.Entities.Users;
 
 namespace KanjiKa.UnitTests.Core.Entities.Users;
 
@@ -14,7 +16,9 @@ public class UserTest
             Id = 1,
             Username = "testUser",
             PasswordHash = hashBytes,
-            PasswordSalt = saltBytes
+            PasswordSalt = saltBytes,
+            Proficiencies = new List<Proficiency>(),
+            LessonCompletions = new List<LessonCompletion>()
         };
 
         Assert.Multiple(

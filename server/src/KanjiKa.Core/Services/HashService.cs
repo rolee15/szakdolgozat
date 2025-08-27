@@ -19,12 +19,19 @@ public class HashService : IHashService
 
     public bool Verify(string password, byte[] userPasswordHash, byte[] userPasswordSalt)
     {
+        ArgumentException.ThrowIfNullOrEmpty(password, nameof(password));
+        ArgumentNullException.ThrowIfNull(userPasswordHash, nameof(userPasswordHash));
+        ArgumentNullException.ThrowIfNull(userPasswordSalt, nameof(userPasswordSalt));
+
+        if (userPasswordHash.Length == 0)
+            throw new ArgumentException("Password hash is empty", nameof(userPasswordHash));
+        if (userPasswordSalt.Length == 0)
+            throw new ArgumentException("Password salt is empty", nameof(userPasswordSalt));
+
         byte[] inputHash = Rfc2898DeriveBytes.Pbkdf2(password, userPasswordSalt, Pbkdf2Iterations, HashAlgorithm, HashByteSize);
 
         // use CryptographicOperations.FixedTimeEquals instead of inputHash.SequenceEqual(userPasswordHash)
         // so that the comparison is not vulnerable to timing attacks
         return CryptographicOperations.FixedTimeEquals(inputHash, userPasswordHash);
     }
-
-
 }
