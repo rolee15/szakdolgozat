@@ -114,8 +114,8 @@ public class HashServiceTest
         // Act + Assert
         Assert.Multiple(
             () => Assert.Throws<ArgumentException>(() => service.Verify("", hash, salt)),
-            () => Assert.Throws<ArgumentException>(() => service.Verify(password, new byte[0], salt)),
-            () => Assert.Throws<ArgumentException>(() => service.Verify(password, hash, new byte[0]))
+            () => Assert.Throws<ArgumentException>(() => service.Verify(password, Array.Empty<byte>(), salt)),
+            () => Assert.Throws<ArgumentException>(() => service.Verify(password, hash, Array.Empty<byte>()))
         );
     }
 }
