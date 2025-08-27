@@ -1,21 +1,21 @@
 ﻿using KanjiKa.Core.DTOs.User;
 using KanjiKa.Core.Entities.Users;
 using KanjiKa.Core.Interfaces;
-using KanjiKa.Data;
-using Microsoft.EntityFrameworkCore;
 
 namespace KanjiKa.Api.Services;
 
+// TODO: implement reset code
+// TODO: implement token generation for new and refresh tokens
 public class UserService : IUserService
 {
-    private readonly KanjiKaDbContext _db;
     private readonly IEmailService _emailService;
     private readonly IHashService _hashService;
+    private readonly IUserRepository _repo;
     private readonly ITokenService _tokenService;
 
-    public UserService(KanjiKaDbContext db, IHashService hashService, ITokenService tokenService, IEmailService emailService)
+    public UserService(IUserRepository repo, IHashService hashService, ITokenService tokenService, IEmailService emailService)
     {
-        _db = db;
+        _repo = repo;
         _hashService = hashService;
         _tokenService = tokenService;
         _emailService = emailService;
@@ -23,7 +23,7 @@ public class UserService : IUserService
 
     public async Task<LoginDto> Login(string username, string password)
     {
-        var user = await _db.Users.FirstOrDefaultAsync(u => u.Username == username);
+        var user = await _repo.GetByUsernameAsync(username);
         if (user == null)
         {
             return new LoginDto()
@@ -55,7 +55,7 @@ public class UserService : IUserService
 
     public async Task<RegisterDto> Register(string username, string password)
     {
-        var user = await _db.Users.FirstOrDefaultAsync(u => u.Username == username);
+        var user = await _repo.GetByUsernameAsync(username);
         if (user != null)
         {
             return new RegisterDto
@@ -73,8 +73,8 @@ public class UserService : IUserService
             PasswordSalt = passwordSalt
         };
 
-        await _db.Users.AddAsync(newUser);
-        await _db.SaveChangesAsync();
+        await _repo.AddAsync(newUser);
+        await _repo.SaveChangesAsync();
 
         var (token, refreshToken) = _tokenService.GenerateToken(newUser.Id);
 
@@ -94,7 +94,7 @@ public class UserService : IUserService
 
     public async Task<ResetPasswordDto> ResetPassword(string username, string resetCode, string newPassword)
     {
-        var user = await _db.Users.FirstOrDefaultAsync(u => u.Username == username);
+        var user = await _repo.GetByUsernameAsync(username);
         if (user == null)
         {
             return new ResetPasswordDto
@@ -117,7 +117,8 @@ public class UserService : IUserService
         var (passwordHash, passwordSalt) = _hashService.Hash(newPassword);
         user.PasswordHash = passwordHash;
         user.PasswordSalt = passwordSalt;
-        await _db.SaveChangesAsync();
+        await _repo.UpdateAsync(user);
+        await _repo.SaveChangesAsync();
 
         return new ResetPasswordDto
         {

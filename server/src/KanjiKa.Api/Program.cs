@@ -2,6 +2,7 @@ using KanjiKa.Api.Services;
 using KanjiKa.Core.Interfaces;
 using KanjiKa.Core.Services;
 using KanjiKa.Data;
+using KanjiKa.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,7 +13,9 @@ builder.Services.AddControllers();
 
 builder.Services.AddScoped<IKanaService, KanaService>();
 builder.Services.AddScoped<ILessonService, LessonService>();
+builder.Services.AddScoped<ILessonRepository, LessonRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IHashService, HashService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IEmailService, DummyEmailService>();
