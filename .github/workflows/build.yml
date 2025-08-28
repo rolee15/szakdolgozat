@@ -46,7 +46,11 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"rolee15_szakdolgozat" /o:"rolee15" /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" /d:sonar.coverage.exclusions="**/*Tests*/**"
+          .\.sonar\scanner\dotnet-sonarscanner begin `
+            /k:"rolee15_szakdolgozat" `
+            /o:"rolee15" `
+            /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" `
+            /d:sonar.coverage.exclusions="**/*Tests*/**"
           dotnet build .\server\KanjiKa.sln
           dotnet test .\server\KanjiKa.sln `
             --filter "FullyQualifiedName~UnitTests" `
