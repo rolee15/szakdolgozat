@@ -9,6 +9,10 @@ jobs:
   build:
     name: Build and analyze
     runs-on: windows-latest
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
     steps:
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -42,6 +46,23 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"rolee15_szakdolgozat" /o:"rolee15" /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          .\.sonar\scanner\dotnet-sonarscanner begin `
+            /k:"rolee15_szakdolgozat" `
+            /o:"rolee15" `
+            /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" `
+            /d:sonar.coverage.exclusions="**/*Tests*/**"
           dotnet build .\server\KanjiKa.sln
-          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          dotnet test .\server\KanjiKa.sln `
+            --filter "FullyQualifiedName~UnitTests" `
+            --logger trx `
+            --results-directory .\server\TestResults `
+            --collect:"XPlat Code Coverage" `
+            -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+          .\.sonar\scanner\dotnet-sonarscanner end
+      - name: Publish test results
+        uses: dorny/test-reporter@dc3a92680fcc15842eef52e8c4606ea7ce6bd3f3 # v2.1.1 - Commit SHA is used because this way it will always use the same code
+        if: success() || failure()
+        with:
+          name: Unit Tests
+          path: server/TestResults/*.trx
+          reporter: dotnet-trx
