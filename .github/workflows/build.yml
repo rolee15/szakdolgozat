@@ -48,7 +48,12 @@ jobs:
         run: |
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"rolee15_szakdolgozat" /o:"rolee15" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" /d:sonar.coverage.exclusions="**/*Tests*/**"
           dotnet build .\server\KanjiKa.sln
-          dotnet test .\server\KanjiKa.sln --filter "FullyQualifiedName~UnitTests" --logger trx --results-directory .\server\TestResults --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+          dotnet test .\server\KanjiKa.sln `
+            --filter "FullyQualifiedName~UnitTests" `
+            --logger trx `
+            --results-directory .\server\TestResults `
+            --collect:"XPlat Code Coverage" `
+            -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
       - name: Publish test results
         uses: dorny/test-reporter@dc3a92680fcc15842eef52e8c4606ea7ce6bd3f3
