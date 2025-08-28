@@ -46,7 +46,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"rolee15_szakdolgozat" /o:"rolee15" /d:sonar.token="$SONAR_TOKEN" /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" /d:sonar.coverage.exclusions="**/*Tests*/**"
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"rolee15_szakdolgozat" /o:"rolee15" /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" /d:sonar.coverage.exclusions="**/*Tests*/**"
           dotnet build .\server\KanjiKa.sln
           dotnet test .\server\KanjiKa.sln `
             --filter "FullyQualifiedName~UnitTests" `
@@ -54,7 +54,7 @@ jobs:
             --results-directory .\server\TestResults `
             --collect:"XPlat Code Coverage" `
             -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
-          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          .\.sonar\scanner\dotnet-sonarscanner end
       - name: Publish test results
         uses: dorny/test-reporter@v2.1.1
         if: success() || failure()
