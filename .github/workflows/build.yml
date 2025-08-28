@@ -9,6 +9,10 @@ jobs:
   build:
     name: Build and analyze
     runs-on: windows-latest
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
     steps:
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -47,7 +51,7 @@ jobs:
           dotnet test .\server\KanjiKa.sln --filter "FullyQualifiedName~UnitTests" --logger trx --results-directory .\server\TestResults --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
       - name: Publish test results
-        uses: dorny/test-reporter@v1
+        uses: dorny/test-reporter@dc3a92680fcc15842eef52e8c4606ea7ce6bd3f3
         if: success() || failure()
         with:
           name: Unit Tests
