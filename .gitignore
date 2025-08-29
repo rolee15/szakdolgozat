@@ -7,5 +7,6 @@ gen
 # Bruno
 .bruno
 
-# env file
+# env files
 .env
+.env.*
