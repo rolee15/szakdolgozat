@@ -62,7 +62,9 @@ public class LessonRepository : ILessonRepository
 
     public async Task<List<LessonCompletion>> GetLessonCompletionsByUserAsync(int userId)
     {
-        return await _db.LessonCompletions.Where(lc => lc.UserId == userId).ToListAsync();
+        return await _db.LessonCompletions
+            .Include(lc => lc.Character)
+            .Where(lc => lc.UserId == userId).ToListAsync();
     }
 
     public Task SaveChangesAsync()
