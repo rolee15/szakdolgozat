@@ -7,7 +7,6 @@ interface LessonReviewInputProps {
 const LessonReviewInput: React.FC<LessonReviewInputProps> = ({ onSubmit }) => {
   const [answer, setAnswer] = useState<string>("");
 
-  const [warning, setWarning] = useState<string>("");
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -22,15 +21,8 @@ const LessonReviewInput: React.FC<LessonReviewInputProps> = ({ onSubmit }) => {
   };
 
   const checkAnswer = (answer: string) => {
-    if (answer.trim()) {
-      onSubmit(answer.trim());
-    } else {
-      setWarning("Type your answer first. Or hit Enter to mark it as wrong.");
-      setTimeout(() => {
-        setWarning("");
-      }, 3000);
-
-    }
+    // Always submit, even if empty (counts as wrong)
+    onSubmit(answer.trim());
   };
 
   return (
@@ -56,8 +48,6 @@ const LessonReviewInput: React.FC<LessonReviewInputProps> = ({ onSubmit }) => {
           &gt;
         </button>
       </form>
-
-      {warning !== "" && <div className="w-full bg-black font-semibold text-orange-400 p-2 rounded-md mb-4 text-center">{warning}</div>}
     </div>
   );
 };
