@@ -17,4 +17,14 @@ export default defineConfig({
       '@styles': path.resolve(__dirname, './src/styles'),
     },
   },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './test/setupTests.ts',
+    css: true,
+    include: ['test/**/*.test.ts', 'test/**/*.test.tsx', 'test/**/*.spec.ts', 'test/**/*.spec.tsx'],
+    coverage: {
+      reporter: ['text', 'html'],
+    },
+  },
 })
