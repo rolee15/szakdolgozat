@@ -1,7 +1,7 @@
-﻿import React from 'react'
+﻿import { describe, it, expect } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { vi } from 'vitest'
-import KanaButton from '@/components/common/KanaButton'
+import KanaButton from '@components/common/KanaButton'
 
 // Mock react-router-dom's useNavigate to capture navigation
 const mockNavigate = vi.fn()
