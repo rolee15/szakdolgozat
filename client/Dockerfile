@@ -6,7 +6,7 @@ COPY package*.json ./
 
 RUN npm install
 
-RUN npm i -g serve
+RUN npm i -g --ignore-scripts serve
 
 COPY . .
 
