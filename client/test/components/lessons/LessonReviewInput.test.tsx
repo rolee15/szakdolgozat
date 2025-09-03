@@ -1,7 +1,7 @@
 ﻿import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import LessonReviewInput from '@/components/lessons/LessonReviewInput'
+import LessonReviewInput from '@components/lessons/LessonReviewInput'
 
 describe('LessonReviewInput', () => {
   beforeEach(() => {

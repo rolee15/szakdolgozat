@@ -1,7 +1,7 @@
 ﻿import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import RomajiInputField from '@/components/common/RomajiInputField'
+import RomajiInputField from '@components/common/RomajiInputField'
 
 describe('RomajiInputField', () => {
   it('renders input and clicking submit calls onChange with empty string', async () => {
