@@ -32,6 +32,5 @@ export default defineConfig({
         'src/App.tsx',
       ]
     },
-
   },
 })
