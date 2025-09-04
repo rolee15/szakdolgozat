@@ -143,12 +143,12 @@ internal class LessonService : ILessonService
         {
             proficiency.Increase(SkillUp);
             await _repo.SaveChangesAsync();
-            return new LessonReviewAnswerResultDto { IsCorrect = true };
+            return new LessonReviewAnswerResultDto { IsCorrect = true, CorrectAnswer = character.Romanization };
         }
 
         proficiency.Decrease(SkillDown);
         await _repo.SaveChangesAsync();
-        return new LessonReviewAnswerResultDto { IsCorrect = false };
+        return new LessonReviewAnswerResultDto { IsCorrect = false, CorrectAnswer = character.Romanization };
     }
 
     private static LessonDto MapToLessonDto(Character character)
