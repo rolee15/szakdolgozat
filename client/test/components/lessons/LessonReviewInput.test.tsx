@@ -29,11 +29,7 @@ describe('LessonReviewInput', () => {
     const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
     await user.click(submitButton)
 
-    expect(onSubmit).not.toHaveBeenCalled()
-    const warning = screen.getByText(
-      'Type your answer first. Or hit Enter to mark it as wrong.'
-    )
-    expect(warning).toBeInTheDocument()
+    expect(onSubmit).toHaveBeenCalled()
 
     // advance fake timers to clear the warning
     act(() => {

@@ -6,11 +6,13 @@ namespace KanjiKa.Core.Interfaces;
 
 public interface ILessonRepository
 {
+    Task<User?> GetUserAsync(int userId);
+
     Task<User?> GetUserWithProficienciesAsync(int userId);
 
-    Task<int> CountLessonsCompletedTodayAsync(int userId, DateTimeOffset todayUtcDate);
+    Task<int> CountLessonsCompletedTodayAsync(int userId);
 
-    Task<List<Character>> GetAllCharactersAsync();
+    Task<List<Character>> GetNewCharactersAsync(List<Proficiency> proficiencies);
 
     Task<Character?> GetCharacterByIdAsync(int characterId);
 

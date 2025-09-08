@@ -27,10 +27,10 @@ public class HashServiceTest
         // Arrange
         var service = new HashService();
         const string password = "P@ssw0rd-ä";
-        var (hash, salt) = service.Hash(password);
+        (byte[] hash, byte[] salt) = service.Hash(password);
 
         // Act
-        var result = service.Verify(password, hash, salt);
+        bool result = service.Verify(password, hash, salt);
 
         // Assert
         Assert.True(result);
@@ -43,10 +43,10 @@ public class HashServiceTest
         var service = new HashService();
         const string password = "correct password";
         const string wrongPassword = "wrong password";
-        var (hash, salt) = service.Hash(password);
+        (byte[] hash, byte[] salt) = service.Hash(password);
 
         // Act
-        var result = service.Verify(wrongPassword, hash, salt);
+        bool result = service.Verify(wrongPassword, hash, salt);
 
         // Assert
         Assert.False(result);
@@ -58,11 +58,11 @@ public class HashServiceTest
         // Arrange
         var service = new HashService();
         const string password = "abc123";
-        var (hash, salt) = service.Hash(password);
+        (byte[] hash, byte[] salt) = service.Hash(password);
 
         // Act
-        var first = service.Verify(password, hash, salt);
-        var second = service.Verify(password, hash, salt);
+        bool first = service.Verify(password, hash, salt);
+        bool second = service.Verify(password, hash, salt);
 
         // Assert
         Assert.True(first);
@@ -77,8 +77,8 @@ public class HashServiceTest
         const string password = "repeat";
 
         // Act
-        var (hash1, salt1) = service.Hash(password);
-        var (hash2, salt2) = service.Hash(password);
+        (byte[] hash1, byte[] salt1) = service.Hash(password);
+        (byte[] hash2, byte[] salt2) = service.Hash(password);
 
         // Assert
         Assert.False(hash1.SequenceEqual(hash2));
@@ -95,7 +95,7 @@ public class HashServiceTest
         // Arrange
         var service = new HashService();
         const string password = "pw";
-        var (hash, salt) = service.Hash(password);
+        (byte[] hash, byte[] salt) = service.Hash(password);
 
         // Act + Assert
         Assert.Throws<ArgumentNullException>(() => service.Verify(password, null!, salt));
@@ -109,7 +109,7 @@ public class HashServiceTest
         // Arrange
         var service = new HashService();
         const string password = "pw";
-        var (hash, salt) = service.Hash(password);
+        (byte[] hash, byte[] salt) = service.Hash(password);
 
         // Act + Assert
         Assert.Multiple(

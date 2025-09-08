@@ -15,6 +15,11 @@ public class LessonRepository : ILessonRepository
         _db = db;
     }
 
+    public async Task<User?> GetUserAsync(int userId)
+    {
+        return await _db.Users.FirstOrDefaultAsync(u => u.Id == userId);
+    }
+
     public async Task<User?> GetUserWithProficienciesAsync(int userId)
     {
         return await _db.Users
@@ -22,15 +27,23 @@ public class LessonRepository : ILessonRepository
             .FirstOrDefaultAsync(u => u.Id == userId);
     }
 
-    public async Task<int> CountLessonsCompletedTodayAsync(int userId, DateTimeOffset todayUtcDate)
+    public async Task<int> CountLessonsCompletedTodayAsync(int userId)
     {
-        var today = todayUtcDate.Date;
-        return await _db.LessonCompletions.CountAsync(lc => lc.UserId == userId && lc.CompletionDate.Date == today);
+        DateTimeOffset today = DateTimeOffset.Now;
+        return await _db.LessonCompletions.CountAsync(lc => lc.UserId == userId && lc.CompletionDate.Date == today.Date);
     }
 
-    public async Task<List<Character>> GetAllCharactersAsync()
+    public async Task<List<Character>> GetNewCharactersAsync(List<Proficiency> proficiencies)
     {
-        return await _db.Characters.ToListAsync();
+        if (proficiencies.Count == 0)
+            return await _db.Characters.ToListAsync();
+
+        List<Character> result =  await _db.Characters
+            .Where(ch =>
+                proficiencies.All(p => p.CharacterId != ch.Id))
+            .ToListAsync();
+
+        return result;
     }
 
     public async Task<Character?> GetCharacterByIdAsync(int characterId)
@@ -48,16 +61,14 @@ public class LessonRepository : ILessonRepository
         return await _db.Proficiencies.FirstOrDefaultAsync(p => p.UserId == userId && p.CharacterId == characterId);
     }
 
-    public Task AddProficiencyAsync(Proficiency proficiency)
+    public async Task AddProficiencyAsync(Proficiency proficiency)
     {
-        _db.Proficiencies.Add(proficiency);
-        return Task.CompletedTask;
+        await _db.Proficiencies.AddAsync(proficiency);
     }
 
-    public Task AddLessonCompletionAsync(LessonCompletion completion)
+    public async Task AddLessonCompletionAsync(LessonCompletion completion)
     {
-        _db.LessonCompletions.Add(completion);
-        return Task.CompletedTask;
+        await _db.LessonCompletions.AddAsync(completion);
     }
 
     public async Task<List<LessonCompletion>> GetLessonCompletionsByUserAsync(int userId)

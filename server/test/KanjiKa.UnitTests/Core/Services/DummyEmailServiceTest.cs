@@ -9,7 +9,7 @@ public class DummyEmailServiceTest
     {
         var service = new DummyEmailService();
 
-        var task = service.SendEmail("dummy@test.com", "Test Subject", "Test Body");
+        Task task = service.SendEmail("dummy@test.com", "Test Subject", "Test Body");
         await task;
 
         Assert.True(task.IsCompletedSuccessfully);
