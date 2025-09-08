@@ -1,4 +1,4 @@
-import { useState, KeyboardEvent, FormEvent } from "react";
+import React, { useState, KeyboardEvent, FormEvent } from "react";
 
 interface LessonReviewInputProps {
   onSubmit: (answer: string) => void;
