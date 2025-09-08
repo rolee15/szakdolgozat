@@ -18,7 +18,7 @@ public class UserServiceTest
         repo.Setup(r => r.GetByUsernameAsync("u")).ReturnsAsync((User?)null);
 
         var service = new UserService(repo.Object, hash.Object, token.Object, email.Object);
-        var result = await service.Login("u", "p");
+        LoginDto result = await service.Login("u", "p");
 
         Assert.False(result.IsSuccess);
         Assert.NotNull(result.ErrorMessage);
@@ -36,7 +36,7 @@ public class UserServiceTest
         hash.Setup(h => h.Verify("p", user.PasswordHash, user.PasswordSalt)).Returns(false);
 
         var service = new UserService(repo.Object, hash.Object, token.Object, email.Object);
-        var result = await service.Login("u", "p");
+        LoginDto result = await service.Login("u", "p");
 
         Assert.False(result.IsSuccess);
         Assert.NotNull(result.ErrorMessage);
@@ -55,7 +55,7 @@ public class UserServiceTest
         token.Setup(t => t.GenerateToken(1)).Returns(("tkn","rtkn"));
 
         var service = new UserService(repo.Object, hash.Object, token.Object, email.Object);
-        var result = await service.Login("u", "p");
+        LoginDto result = await service.Login("u", "p");
 
         Assert.True(result.IsSuccess);
         Assert.Equal("tkn", result.Token);
@@ -73,7 +73,7 @@ public class UserServiceTest
         repo.Setup(r => r.GetByUsernameAsync("u")).ReturnsAsync(existing);
 
         var service = new UserService(repo.Object, hash.Object, token.Object, email.Object);
-        var result = await service.Register("u", "p");
+        RegisterDto result = await service.Register("u", "p");
 
         Assert.False(result.IsSuccess);
         Assert.NotNull(result.ErrorMessage);
@@ -93,7 +93,7 @@ public class UserServiceTest
         token.Setup(t => t.GenerateToken(It.IsAny<int>())).Returns(("t2","rt2"));
 
         var service = new UserService(repo.Object, hash.Object, token.Object, email.Object);
-        var result = await service.Register("u", "p");
+        RegisterDto result = await service.Register("u", "p");
 
         Assert.True(result.IsSuccess);
         Assert.Equal("t2", result.Token);
@@ -111,7 +111,7 @@ public class UserServiceTest
         email.Setup(e => e.SendEmail("e@x.com", It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask).Verifiable();
 
         var service = new UserService(repo.Object, hash.Object, token.Object, email.Object);
-        var result = await service.ForgotPassword("e@x.com");
+        ForgotPasswordDto result = await service.ForgotPassword("e@x.com");
 
         Assert.NotNull(result);
         repo.Verify();
@@ -128,7 +128,7 @@ public class UserServiceTest
         repo.Setup(r => r.GetByUsernameAsync("u")).ReturnsAsync((User?)null);
 
         var service = new UserService(repo.Object, hash.Object, token.Object, email.Object);
-        var result = await service.ResetPassword("u", "12345", "new");
+        ResetPasswordDto result = await service.ResetPassword("u", "12345", "new");
 
         Assert.False(result.IsSuccess);
     }
@@ -144,7 +144,7 @@ public class UserServiceTest
         repo.Setup(r => r.GetByUsernameAsync("u")).ReturnsAsync(user);
 
         var service = new UserService(repo.Object, hash.Object, token.Object, email.Object);
-        var result = await service.ResetPassword("u", "99999", "new");
+        ResetPasswordDto result = await service.ResetPassword("u", "99999", "new");
 
         Assert.False(result.IsSuccess);
     }
@@ -163,7 +163,7 @@ public class UserServiceTest
         repo.Setup(r => r.SaveChangesAsync()).Returns(Task.CompletedTask).Verifiable();
 
         var service = new UserService(repo.Object, hash.Object, token.Object, email.Object);
-        var result = await service.ResetPassword("u", "12345", "new");
+        ResetPasswordDto result = await service.ResetPassword("u", "12345", "new");
 
         Assert.True(result.IsSuccess);
         Assert.Equal(new byte[] { 7 }, user.PasswordHash);
@@ -180,7 +180,7 @@ public class UserServiceTest
         var email = new Mock<IEmailService>();
 
         var service = new UserService(repo.Object, hash.Object, token.Object, email.Object);
-        var result = await service.RefreshToken("old", "refresh");
+        RefreshTokenDto result = await service.RefreshToken("old", "refresh");
 
         Assert.Equal("test23456", result.Token);
     }

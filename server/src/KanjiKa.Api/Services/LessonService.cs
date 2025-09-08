@@ -57,7 +57,7 @@ internal class LessonService : ILessonService
             return [];
 
         int takeSize = Math.Min(count, pageSize);
-        IEnumerable<LessonDto> lessons = (await _repo.GetNewCharactersAsync(user))
+        IEnumerable<LessonDto> lessons = (await _repo.GetNewCharactersAsync(user.Proficiencies))
             .Skip(pageIndex * takeSize)
             .Take(takeSize)
             .Select(MapToLessonDto);

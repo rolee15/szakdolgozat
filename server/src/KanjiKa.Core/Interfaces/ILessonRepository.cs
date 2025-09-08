@@ -12,9 +12,7 @@ public interface ILessonRepository
 
     Task<int> CountLessonsCompletedTodayAsync(int userId);
 
-    Task<List<Character>> GetAllCharactersAsync();
-
-    Task<List<Character>> GetNewCharactersAsync(User user);
+    Task<List<Character>> GetNewCharactersAsync(List<Proficiency> proficiencies);
 
     Task<Character?> GetCharacterByIdAsync(int characterId);
 

@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using KanjiKa.Api.Services;
 using KanjiKa.Core.DTOs.Learning;
 using KanjiKa.Core.Entities.Kana;
@@ -7,8 +8,42 @@ using Moq;
 
 namespace KanjiKa.UnitTests.Api.Services.Lesson;
 
-public class GetLessonsAsync
+public class GetLessonsAsyncTests
 {
+    [Theory]
+    [InlineData(-1)]
+    [InlineData(int.MinValue)]
+    public async Task GetLessonsAsync_WhenPageIndexOutOfRange_ThrowsArgumentException(int pageIndex)
+    {
+        // Arrange
+        var user = new User { Id = 1, Username = "user", PasswordHash = [0], PasswordSalt = [0] };
+        var repo = new Mock<ILessonRepository>();
+        repo.Setup(r => r.GetUserWithProficienciesAsync(1)).ReturnsAsync(user);
+        repo.Setup(r => r.CountLessonsCompletedTodayAsync(1)).ReturnsAsync(0);
+        var service = new LessonService(repo.Object);
+
+        // Act & Assert
+        var ex = await Assert.ThrowsAsync<ArgumentException>(() => service.GetLessonsAsync(1, pageIndex, 10));
+        Assert.Equal("pageIndex", ex.ParamName);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    [InlineData(int.MinValue)]
+    public async Task GetLessonsAsync_WhenPageSizeOutOfRange_ThrowsArgumentException(int pageSize)
+    {
+        // Arrange
+        var user = new User { Id = 1, Username = "user", PasswordHash = [0], PasswordSalt = [0] };
+        var repo = new Mock<ILessonRepository>();
+        repo.Setup(r => r.GetUserWithProficienciesAsync(1)).ReturnsAsync(user);
+        repo.Setup(r => r.CountLessonsCompletedTodayAsync(1)).ReturnsAsync(0);
+        var service = new LessonService(repo.Object);
+
+        // Act & Assert
+        var ex = await Assert.ThrowsAsync<ArgumentException>(() => service.GetLessonsAsync(1, 0, pageSize));
+        Assert.Equal("pageSize", ex.ParamName);
+    }
 
     [Fact]
     public async Task GetLessonsAsync_WhenUserNotFound_ThrowsArgumentException()
@@ -23,50 +58,57 @@ public class GetLessonsAsync
         Assert.Equal("userId", ex.ParamName);
     }
 
+    // This one is for when the user did a different number of lessons today
     [Theory]
-    [InlineData(15)]
-    [InlineData(20)]
-    public async Task GetLessonsAsync_WhenNoLessonsLeft_ReturnsEmpty(int completedToday)
+    [InlineData(-5, 15)]
+    [InlineData(0, 15)]
+    [InlineData(5, 10)]
+    [InlineData(10, 5)]
+    [InlineData(15, 0)]
+    [InlineData(20, 0)]
+    public async Task GetLessonsAsync_WhenLessonsLeft_ReturnsExpectedCount(int completedToday, int expected)
     {
         // Arrange
         var user = new User { Id = 1, Username = "user", PasswordHash = [0], PasswordSalt = [0] };
-        List<Character> characters = Enumerable.Range(1, 10).Select(i => new Character { Id = i, Symbol = $"Symbol{i}", Romanization = $"Romanization{i}" }).ToList();
+        List<Character> characters = Enumerable.Range(1, 15).Select(i => new Character { Id = i, Symbol = $"Symbol{i}", Romanization = $"Romanization{i}" }).ToList();
 
         var repo = new Mock<ILessonRepository>();
         repo.Setup(r => r.GetUserWithProficienciesAsync(1)).ReturnsAsync(user);
         repo.Setup(r => r.CountLessonsCompletedTodayAsync(1)).ReturnsAsync(completedToday);
-        repo.Setup(r => r.GetAllCharactersAsync()).ReturnsAsync(characters);
+        repo.Setup(r => r.GetNewCharactersAsync(user.Proficiencies)).ReturnsAsync(characters);
         var service = new LessonService(repo.Object);
 
         // Act
-        IEnumerable<LessonDto> result = await service.GetLessonsAsync(1, 0, 10);
+        int result = (await service.GetLessonsAsync(1, 0, 20)).Count();
 
         // Assert
-        Assert.Empty(result);
+        Assert.Equal(expected, result);
     }
 
+    // This one is for when the user has no proficiency, but there are different number of characters
     [Theory]
-    [InlineData(10, 0, 0)]
-    [InlineData(10, 15, 0)]
-    [InlineData(5, 14, 1)]
-    public async Task GetLessonsAsync_WhenLessonsLeft_ReturnsLessons(int proficiency, int completedToday, int expected)
+    [InlineData(20, 15)]
+    [InlineData(15, 15)]
+    [InlineData(10, 10)]
+    [InlineData(5, 5)]
+    [InlineData(0, 0)]
+    public async Task GetLessonsAsync_WhenNoProficiency_ReturnsExpectedCount(int charactersCount, int expected)
     {
         // Arrange
         var user = new User { Id = 1, Username = "user", PasswordHash = [0], PasswordSalt = [0] };
-        List<Character> characters = Enumerable.Range(1, 10).Select(i => new Character { Id = i, Symbol = $"Symbol{i}", Romanization = $"Romanization{i}" }).ToList();
-        user.Proficiencies.AddRange(Enumerable.Range(1, proficiency).Select(i => new Proficiency { UserId = 1, CharacterId = i, Level = 0, LearnedAt = DateTimeOffset.UtcNow }));
+        List<Character> characters = Enumerable.Range(1, charactersCount).Select(i => new Character { Id = i, Symbol = $"Symbol{i}", Romanization = $"Romanization{i}" }).ToList();
 
         var repo = new Mock<ILessonRepository>();
         repo.Setup(r => r.GetUserWithProficienciesAsync(1)).ReturnsAsync(user);
-        repo.Setup(r => r.CountLessonsCompletedTodayAsync(1)).ReturnsAsync(completedToday);
-        repo.Setup(r => r.GetAllCharactersAsync()).ReturnsAsync(characters);
+        repo.Setup(r => r.CountLessonsCompletedTodayAsync(1)).ReturnsAsync(0);
+        repo.Setup(r => r.GetNewCharactersAsync(user.Proficiencies)).ReturnsAsync(characters);
         var service = new LessonService(repo.Object);
 
         // Act
-        IEnumerable<LessonDto> result = await service.GetLessonsAsync(1, 0, 10);
+        int result = (await service.GetLessonsAsync(1, 0, 20)).Count();
 
         // Assert
-        Assert.Equal(expected, result.Count());
+        Assert.Equal(expected, result);
     }
 
     // Test edge cases of pagination
@@ -88,7 +130,7 @@ public class GetLessonsAsync
         var repo = new Mock<ILessonRepository>();
         repo.Setup(r => r.GetUserWithProficienciesAsync(1)).ReturnsAsync(user);
         repo.Setup(r => r.CountLessonsCompletedTodayAsync(1)).ReturnsAsync(0);
-        repo.Setup(r => r.GetAllCharactersAsync()).ReturnsAsync([]);
+        repo.Setup(r => r.GetNewCharactersAsync(user.Proficiencies)).ReturnsAsync([]);
         var service = new LessonService(repo.Object);
 
         // Act
@@ -109,7 +151,7 @@ public class GetLessonsAsync
         var repo = new Mock<ILessonRepository>();
         repo.Setup(r => r.GetUserWithProficienciesAsync(1)).ReturnsAsync(user);
         repo.Setup(r => r.CountLessonsCompletedTodayAsync(1)).ReturnsAsync(0);
-        repo.Setup(r => r.GetAllCharactersAsync()).ReturnsAsync(characters);
+        repo.Setup(r => r.GetNewCharactersAsync(user.Proficiencies)).ReturnsAsync(characters);
         var service = new LessonService(repo.Object);
 
         // Act & Assert
@@ -128,7 +170,7 @@ public class GetLessonsAsync
         var repo = new Mock<ILessonRepository>();
         repo.Setup(r => r.GetUserWithProficienciesAsync(1)).ReturnsAsync(user);
         repo.Setup(r => r.CountLessonsCompletedTodayAsync(1)).ReturnsAsync(0);
-        repo.Setup(r => r.GetAllCharactersAsync()).ReturnsAsync(characters);
+        repo.Setup(r => r.GetNewCharactersAsync(user.Proficiencies)).ReturnsAsync(characters);
         var service = new LessonService(repo.Object);
 
         // Act
@@ -151,7 +193,7 @@ public class GetLessonsAsync
         var repo = new Mock<ILessonRepository>();
         repo.Setup(r => r.GetUserWithProficienciesAsync(1)).ReturnsAsync(user);
         repo.Setup(r => r.CountLessonsCompletedTodayAsync(1)).ReturnsAsync(0);
-        repo.Setup(r => r.GetAllCharactersAsync()).ReturnsAsync(characters);
+        repo.Setup(r => r.GetNewCharactersAsync(user.Proficiencies)).ReturnsAsync(characters);
         var service = new LessonService(repo.Object);
 
         // Act
@@ -191,7 +233,7 @@ public class GetLessonsAsync
         var repo = new Mock<ILessonRepository>();
         repo.Setup(r => r.GetUserWithProficienciesAsync(1)).ReturnsAsync(user);
         repo.Setup(r => r.CountLessonsCompletedTodayAsync(1)).ReturnsAsync(0);
-        repo.Setup(r => r.GetAllCharactersAsync()).ReturnsAsync(characters);
+        repo.Setup(r => r.GetNewCharactersAsync(user.Proficiencies)).ReturnsAsync(characters);
         var service = new LessonService(repo.Object);
 
         // Act
@@ -212,7 +254,7 @@ public class GetLessonsAsync
         var repo = new Mock<ILessonRepository>();
         repo.Setup(r => r.GetUserWithProficienciesAsync(1)).ReturnsAsync(user);
         repo.Setup(r => r.CountLessonsCompletedTodayAsync(1)).ReturnsAsync(0);
-        repo.Setup(r => r.GetAllCharactersAsync()).ReturnsAsync(characters);
+        repo.Setup(r => r.GetNewCharactersAsync(user.Proficiencies)).ReturnsAsync(characters);
         var service = new LessonService(repo.Object);
 
         // Act
@@ -238,7 +280,7 @@ public class GetLessonsAsync
         var repo = new Mock<ILessonRepository>();
         repo.Setup(r => r.GetUserWithProficienciesAsync(1)).ReturnsAsync(user);
         repo.Setup(r => r.CountLessonsCompletedTodayAsync(1)).ReturnsAsync(0);
-        repo.Setup(r => r.GetAllCharactersAsync()).ReturnsAsync(characters);
+        repo.Setup(r => r.GetNewCharactersAsync(user.Proficiencies)).ReturnsAsync(characters);
         var service = new LessonService(repo.Object);
 
         // Act
@@ -250,32 +292,5 @@ public class GetLessonsAsync
         Assert.DoesNotContain(1, result.Select(l => l.CharacterId));
         Assert.DoesNotContain(10, result.Select(l => l.CharacterId));
         Assert.DoesNotContain(21, result.Select(l => l.CharacterId));
-    }
-
-    // Edge cases for user's proficiency
-    // 1. User has no proficiency
-    // 2. User has proficiency
-    // 3. User has proficiency and completed lessons today
-    // 4. User has all proficiency
-
-    // 1.
-    [Fact]
-    public async Task GetLessonsAsync_WhenUserHasNoProficiency_ReturnsAll()
-    {
-        // Arrange
-        var user = new User { Id = 1, Username = "user", PasswordHash = [0], PasswordSalt = [0] };
-        List<Character> characters = Enumerable.Range(1, 10).Select(i => new Character { Id = i, Symbol = $"Symbol{i}", Romanization = $"Romanization{i}" }).ToList();
-
-        var repo = new Mock<ILessonRepository>();
-        repo.Setup(r => r.GetUserWithProficienciesAsync(1)).ReturnsAsync(user);
-        repo.Setup(r => r.CountLessonsCompletedTodayAsync(1)).ReturnsAsync(0);
-        repo.Setup(r => r.GetAllCharactersAsync()).ReturnsAsync(characters);
-        var service = new LessonService(repo.Object);
-
-        // Act
-        List<LessonDto> result = (await service.GetLessonsAsync(1, 0, 10)).ToList();
-
-        // Assert
-        Assert.Empty(result);
     }
 }

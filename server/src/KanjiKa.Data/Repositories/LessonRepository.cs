@@ -33,17 +33,17 @@ public class LessonRepository : ILessonRepository
         return await _db.LessonCompletions.CountAsync(lc => lc.UserId == userId && lc.CompletionDate.Date == today.Date);
     }
 
-    public async Task<List<Character>> GetAllCharactersAsync()
+    public async Task<List<Character>> GetNewCharactersAsync(List<Proficiency> proficiencies)
     {
-        return await _db.Characters.ToListAsync();
-    }
+        if (proficiencies.Count == 0)
+            return await _db.Characters.ToListAsync();
 
-    public async Task<List<Character>> GetNewCharactersAsync(User user)
-    {
-        return await _db.Characters
+        List<Character> result =  await _db.Characters
             .Where(ch =>
-                user.Proficiencies.All(p => p.CharacterId != ch.Id))
+                proficiencies.All(p => p.CharacterId != ch.Id))
             .ToListAsync();
+
+        return result;
     }
 
     public async Task<Character?> GetCharacterByIdAsync(int characterId)
