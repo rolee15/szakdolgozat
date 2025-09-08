@@ -13,6 +13,7 @@ public class CharacterTest
             Symbol = "あ",
             Romanization = "a",
             Type = KanaType.Hiragana,
+            Examples = new List<Example>()
         };
 
         Assert.Multiple(
