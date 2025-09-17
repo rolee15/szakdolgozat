@@ -62,10 +62,17 @@ jobs:
           path: server/TestResults/*.trx
           reporter: dotnet-trx
 
-      # ---------- SonarQube analysis ----------
-      - name: Analyze with SonarQube
-        uses: SonarSource/sonarqube-scan-action@7295e71c9583053f5bf40e9d4068a0c974603ec8
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      # ---------- Upload coverage artifacts ----------
+      - name: Upload client coverage (lcov)
+        uses: actions/upload-artifact@v4
+        with:
+          name: client-coverage
+          path: client/coverage/lcov.info
+          if-no-files-found: error
+
+      - name: Upload server coverage (OpenCover)
+        uses: actions/upload-artifact@v4
+        with:
+          name: server-coverage
+          path: server/TestResults/**/coverage.opencover.xml
+          if-no-files-found: error
