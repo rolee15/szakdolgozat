@@ -62,12 +62,6 @@ const ReviewLessonsPage = () => {
     setFeedback({ result: null, lastAnswer: null });
   };
 
-  const handleContainerClick = () => {
-    if (feedback.result) {
-      advanceToNext();
-    }
-  };
-
   if (error) {
     return <div className="p-4 text-red-500">Error: {error}</div>;
   }
@@ -83,24 +77,29 @@ const ReviewLessonsPage = () => {
   const onSubmit = feedback.result ? (() => advanceToNext()) : handleSubmit;
 
   return (
-    <div className="flex flex-col items-center justify-center p-6 w-full" onClick={handleContainerClick}>
+    <div className="flex flex-col items-center justify-center p-6 w-full">
       <span className="text-4xl font-bold mb-4 text-white">{currentReview.question}</span>
 
       <LessonReviewInput key={`${currentReview.question}:${currentReviewIndex}`} onSubmit={onSubmit} />
 
       {feedback.result && (
-        <div className={`mt-4 px-4 py-2 rounded text-center ${feedback.result.isCorrect ? "bg-green-600 text-white" : "bg-red-700 text-white"}`}>
-          {feedback.result.isCorrect
-            ? "Correct! Press Enter or click to continue."
-            : (
-              <div>
-                <div className="font-semibold">Incorrect.</div>
-                <div className="mt-1">Your answer: <span className="font-mono">{feedback.lastAnswer}</span></div>
-                <div className="mt-1">Correct answer: <span className="font-mono">{feedback.result.correctAnswer}</span></div>
-                <div className="mt-2">Press Enter or click to continue.</div>
-              </div>
-            )}
-        </div>
+        <button
+          type="button"
+          onClick={advanceToNext}
+          aria-label="Continue"
+          className={`mt-4 px-4 py-2 rounded text-center focus:outline-none focus:ring-2 focus:ring-offset-2 ${feedback.result.isCorrect ? "bg-green-600 text-white focus:ring-green-300" : "bg-red-700 text-white focus:ring-red-300"}`}
+        >
+          {feedback.result.isCorrect ? (
+            <span>Correct! Press Enter or click to continue.</span>
+          ) : (
+            <div>
+              <div className="font-semibold">Incorrect.</div>
+              <div className="mt-1">Your answer: <span className="font-mono">{feedback.lastAnswer}</span></div>
+              <div className="mt-1">Correct answer: <span className="font-mono">{feedback.result.correctAnswer}</span></div>
+              <div className="mt-2">Press Enter or click to continue.</div>
+            </div>
+          )}
+        </button>
       )}
     </div>
   );

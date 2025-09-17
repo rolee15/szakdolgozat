@@ -45,16 +45,16 @@ describe('ReviewLessonsPage', () => {
     // initial question
     expect(await screen.findByText('Q1')).toBeInTheDocument()
 
-    // click mocked submit button -> triggers onSubmit('ans')
+    // click the mocked submit button -> triggers onSubmit('ans')
     fireEvent.click(screen.getByRole('button', { name: 'SubmitMock' }))
 
-    // Feedback renders for correct answer
+    // Feedback renders for the correct answer
     expect(await screen.findByText(/correct!/i)).toBeInTheDocument()
 
-    // Click container to advance
-    fireEvent.click(screen.getByText('Q1').parentElement as Element)
+    // Click Continue button to advance
+    fireEvent.click(screen.getByRole('button', { name: /continue/i }))
 
-    // Next question should appear
+    // The next question should appear
     expect(await screen.findByText('Q2')).toBeInTheDocument()
   })
 })
