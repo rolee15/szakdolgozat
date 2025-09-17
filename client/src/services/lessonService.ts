@@ -34,14 +34,14 @@ const api = {
         return response.json();
     },
 
-    async postLessonReviewCheck(question: string, answer: string): Promise<boolean> {
-        const repsonse = await fetch(`${API_LESSONS_URL}/reviews/check?userId=${MOCK_USER_ID}`, {
+    async postLessonReviewCheck(question: string, answer: string): Promise<LessonReviewResult> {
+        const response = await fetch(`${API_LESSONS_URL}/reviews/check?userId=${MOCK_USER_ID}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ '"question"': `"${question}"`, '"answer"': `"${answer}"` }),
+            body: JSON.stringify({ question, answer }),
         });
-        if (!repsonse.ok) throw new Error('Failed to post lesson review answer');
-        return repsonse.json();
+        if (!response.ok) throw new Error('Failed to post lesson review answer');
+        return response.json();
     }
   };
 

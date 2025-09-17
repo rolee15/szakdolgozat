@@ -9,8 +9,8 @@ public class UserTest
     [Fact]
     public void User_Constructor_ShouldInitializeProperties()
     {
-        var hashBytes = "passwordHash"u8.ToArray();
-        var saltBytes = "passwordSalt"u8.ToArray();
+        byte[] hashBytes = "passwordHash"u8.ToArray();
+        byte[] saltBytes = "passwordSalt"u8.ToArray();
         var user = new User
         {
             Id = 1,

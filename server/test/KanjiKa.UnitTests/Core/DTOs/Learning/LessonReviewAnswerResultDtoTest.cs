@@ -9,9 +9,11 @@ public class LessonReviewAnswerResultDtoTest
     {
         var lessonReviewAnswerResult = new LessonReviewAnswerResultDto
         {
-            IsCorrect = true
+            IsCorrect = true,
+            CorrectAnswer = "correct answer"
         };
 
         Assert.True(lessonReviewAnswerResult.IsCorrect);
+        Assert.Equal("correct answer", lessonReviewAnswerResult.CorrectAnswer);
     }
 }
