@@ -22,8 +22,7 @@ public sealed class CustomWebApplicationFactory : WebApplicationFactory<IApiMark
     // Do not change the order of initialization!
     public async Task InitializeAsync()
     {
-        _dbContainer = new PostgreSqlBuilder()
-            .WithImage("postgres:17.2")
+        _dbContainer = new PostgreSqlBuilder("postgres:17.2")
             .WithDatabase("test")
             .WithUsername("admin")
             .WithPassword("admin")

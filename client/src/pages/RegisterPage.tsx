@@ -30,8 +30,6 @@ const RegisterPage = () => {
     return "";
   }, [confirmPassword, password, touched.confirmPassword]);
 
-  const hasErrors = !!(emailError || passwordError || confirmPasswordError);
-
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     setTouched({ email: true, password: true, confirmPassword: true });
