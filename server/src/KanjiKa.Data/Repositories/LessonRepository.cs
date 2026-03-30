@@ -38,9 +38,9 @@ public class LessonRepository : ILessonRepository
         if (proficiencies.Count == 0)
             return await _db.Characters.ToListAsync();
 
-        List<Character> result =  await _db.Characters
-            .Where(ch =>
-                proficiencies.All(p => p.CharacterId != ch.Id))
+        List<int> learnedIds = proficiencies.Select(p => p.CharacterId).ToList();
+        List<Character> result = await _db.Characters
+            .Where(ch => !learnedIds.Contains(ch.Id))
             .ToListAsync();
 
         return result;
