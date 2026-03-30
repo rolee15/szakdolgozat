@@ -20,17 +20,10 @@ public class KanjiKaDataSeeder
         await _context.Database.EnsureCreatedAsync();
 
         await Initialize();
-        await _context.SaveChangesAsync();
     }
 
     private async Task Initialize()
     {
-        if (!_context.Users.Any())
-        {
-            var users = TestData.GetUsers();
-            await _context.Users.AddRangeAsync(users);
-        }
-
         if (!_context.Characters.Any())
         {
             var characters = TestData.GetKanaCharacters();
@@ -42,5 +35,16 @@ public class KanjiKaDataSeeder
             var kanjis = TestData.GetKanjiData();
             await _context.Kanjis.AddRangeAsync(kanjis);
         }
+
+        await _context.SaveChangesAsync();
+
+        if (!_context.Users.Any())
+        {
+            var savedCharacters = _context.Characters.ToList();
+            var users = TestData.GetUsers(savedCharacters);
+            await _context.Users.AddRangeAsync(users);
+        }
+
+        await _context.SaveChangesAsync();
     }
 }
