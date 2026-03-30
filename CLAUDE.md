@@ -119,6 +119,19 @@ The project has six specialized agents in `.claude/agents/`. **Always delegate t
 
 ---
 
+## Manual Test Checklist
+
+`MANUAL_TEST.md` contains the regression test checklist for all user-facing features. **After every code change** (new feature, bug fix, refactor, UI change, API change), update `MANUAL_TEST.md`:
+
+- **New feature**: Add test cases for the new functionality under the appropriate section, or create a new section.
+- **Bug fix**: Add a test case that verifies the fix (the scenario that was previously broken).
+- **Removed feature**: Remove the corresponding test cases.
+- **Changed behavior**: Update affected test cases to reflect the new expected behavior.
+
+Keep the checklist minimal — one checkbox per observable behavior, no redundant cases.
+
+---
+
 ## Thesis Attribution Rules
 
 These rules apply in **every session**. Whenever you write or adapt code from an external source (internet, documentation, tutorials, Stack Overflow, GitHub, etc.), you must:
