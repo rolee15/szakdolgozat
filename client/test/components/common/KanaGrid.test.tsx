@@ -22,12 +22,12 @@ vi.mock('@services/kanaService', () => ({
 import api from '@services/kanaService'
 
 const sampleChars: KanaCharacter[] = [
-  { character: 'あ', romanization: 'a', proficiency: 10 },
-  { character: 'い', romanization: 'i', proficiency: 20 },
-  { character: 'う', romanization: 'u', proficiency: 30 },
-  { character: 'え', romanization: 'e', proficiency: 40 },
-  { character: 'お', romanization: 'o', proficiency: 50 },
-  { character: 'か', romanization: 'ka', proficiency: 60 },
+  { character: 'あ', romanization: 'a', type: 'hiragana', proficiency: 10 },
+  { character: 'い', romanization: 'i', type: 'hiragana', proficiency: 20 },
+  { character: 'う', romanization: 'u', type: 'hiragana', proficiency: 30 },
+  { character: 'え', romanization: 'e', type: 'hiragana', proficiency: 40 },
+  { character: 'お', romanization: 'o', type: 'hiragana', proficiency: 50 },
+  { character: 'か', romanization: 'ka', type: 'hiragana', proficiency: 60 },
 ]
 
 describe('KanaGrid', () => {

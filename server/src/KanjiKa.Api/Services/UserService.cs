@@ -1,24 +1,26 @@
 ﻿using KanjiKa.Core.DTOs.User;
 using KanjiKa.Core.Entities.Users;
 using KanjiKa.Core.Interfaces;
+using Microsoft.Extensions.Configuration;
 
 namespace KanjiKa.Api.Services;
 
 // TODO: implement reset code
-// TODO: implement token generation for new and refresh tokens
 public class UserService : IUserService
 {
     private readonly IEmailService _emailService;
     private readonly IHashService _hashService;
     private readonly IUserRepository _repo;
     private readonly ITokenService _tokenService;
+    private readonly IConfiguration _config;
 
-    public UserService(IUserRepository repo, IHashService hashService, ITokenService tokenService, IEmailService emailService)
+    public UserService(IUserRepository repo, IHashService hashService, ITokenService tokenService, IEmailService emailService, IConfiguration config)
     {
         _repo = repo;
         _hashService = hashService;
         _tokenService = tokenService;
         _emailService = emailService;
+        _config = config;
     }
 
     public async Task<LoginDto> Login(string username, string password)
@@ -43,13 +45,16 @@ public class UserService : IUserService
             };
         }
 
-        var (token, refreshToken) = _tokenService.GenerateToken(user.Id);
+        var (token, refreshToken) = _tokenService.GenerateToken(user.Id, user.Username);
+        var expiryDays = int.Parse(_config["Jwt:RefreshTokenExpirationDays"] ?? "7");
+        await _repo.UpdateRefreshTokenAsync(user.Id, refreshToken, DateTimeOffset.UtcNow.AddDays(expiryDays));
 
         return new LoginDto
         {
             IsSuccess = true,
             Token = token,
-            RefreshToken = refreshToken
+            RefreshToken = refreshToken,
+            UserId = user.Id
         };
     }
 
@@ -76,13 +81,16 @@ public class UserService : IUserService
         await _repo.AddAsync(newUser);
         await _repo.SaveChangesAsync();
 
-        var (token, refreshToken) = _tokenService.GenerateToken(newUser.Id);
+        var (token, refreshToken) = _tokenService.GenerateToken(newUser.Id, newUser.Username);
+        var expiryDays = int.Parse(_config["Jwt:RefreshTokenExpirationDays"] ?? "7");
+        await _repo.UpdateRefreshTokenAsync(newUser.Id, refreshToken, DateTimeOffset.UtcNow.AddDays(expiryDays));
 
         return new RegisterDto
         {
             IsSuccess = true,
             Token = token,
-            RefreshToken = refreshToken
+            RefreshToken = refreshToken,
+            UserId = newUser.Id
         };
     }
 

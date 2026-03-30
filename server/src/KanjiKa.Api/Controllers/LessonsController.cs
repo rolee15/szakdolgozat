@@ -1,10 +1,13 @@
-﻿using KanjiKa.Core.DTOs.Learning;
+using System.Security.Claims;
+using KanjiKa.Core.DTOs.Learning;
 using KanjiKa.Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KanjiKa.Api.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/lessons")]
 public class LessonsController : ControllerBase
 {
@@ -15,45 +18,47 @@ public class LessonsController : ControllerBase
         _lessonService = lessonService;
     }
 
+    private int GetUserId() => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
     [HttpGet("count")]
-    public async Task<IActionResult> GetLessonsCount([FromQuery] int userId)
+    public async Task<IActionResult> GetLessonsCount()
     {
-        var count = await _lessonService.GetLessonsCountAsync(userId);
+        var count = await _lessonService.GetLessonsCountAsync(GetUserId());
         return Ok(count);
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetNewLessons([FromQuery] int userId, [FromQuery] int pageIndex = 0, [FromQuery] int pageSize = 5)
+    public async Task<IActionResult> GetNewLessons([FromQuery] int pageIndex = 0, [FromQuery] int pageSize = 5)
     {
-        var lessons = await _lessonService.GetLessonsAsync(userId, pageIndex, pageSize);
+        var lessons = await _lessonService.GetLessonsAsync(GetUserId(), pageIndex, pageSize);
         return Ok(lessons);
     }
 
     [HttpPost("learn/{characterId:int}")]
-    public async Task<IActionResult> LearnLesson(int characterId, [FromQuery] int userId)
+    public async Task<IActionResult> LearnLesson(int characterId)
     {
-        await _lessonService.LearnLessonAsync(userId, characterId);
+        await _lessonService.LearnLessonAsync(GetUserId(), characterId);
         return Ok();
     }
 
     [HttpGet("reviews/count")]
-    public async Task<IActionResult> GetReviewCount([FromQuery] int userId)
+    public async Task<IActionResult> GetReviewCount()
     {
-        var count = await _lessonService.GetLessonReviewsCountAsync(userId);
+        var count = await _lessonService.GetLessonReviewsCountAsync(GetUserId());
         return Ok(count);
     }
 
     [HttpGet("reviews")]
-    public async Task<IActionResult> GetLessonReviews([FromQuery] int userId)
+    public async Task<IActionResult> GetLessonReviews()
     {
-        var reviewItems = await _lessonService.GetLessonReviewsAsync(userId);
+        var reviewItems = await _lessonService.GetLessonReviewsAsync(GetUserId());
         return Ok(reviewItems);
     }
 
     [HttpPost("reviews/check")]
-    public async Task<IActionResult> CheckLessonReviewAnswer([FromQuery] int userId, [FromBody] LessonReviewAnswerDto answer)
+    public async Task<IActionResult> CheckLessonReviewAnswer([FromBody] LessonReviewAnswerDto answer)
     {
-        var result = await _lessonService.CheckLessonReviewAnswerAsync(userId, answer);
+        var result = await _lessonService.CheckLessonReviewAnswerAsync(GetUserId(), answer);
         return Ok(result);
     }
 }

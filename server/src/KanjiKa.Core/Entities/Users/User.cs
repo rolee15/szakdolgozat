@@ -13,6 +13,9 @@ public class User
     public required byte[] PasswordHash { get; set; }
     public required byte[] PasswordSalt { get; set; }
 
+    public string? RefreshToken { get; set; }
+    public DateTimeOffset? RefreshTokenExpiry { get; set; }
+
     public List<Proficiency> Proficiencies { get; set; } = new();
     public List<LessonCompletion> LessonCompletions { get; set; } = new();
 }

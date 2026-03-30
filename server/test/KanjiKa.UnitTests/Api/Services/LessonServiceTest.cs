@@ -1,4 +1,4 @@
-﻿using KanjiKa.Api.Services;
+using KanjiKa.Api.Services;
 using KanjiKa.Core.DTOs.Learning;
 using KanjiKa.Core.Entities.Kana;
 using KanjiKa.Core.Entities.Learning;
@@ -32,7 +32,8 @@ public class LessonServiceTest
         // Assert
         Assert.Equal(1, proficiency.UserId);
         Assert.Equal(10, proficiency.CharacterId);
-        Assert.Equal(0, proficiency.Level);
+        Assert.Equal(SrsStage.Apprentice1, proficiency.SrsStage);
+        Assert.NotNull(proficiency.NextReviewDate);
         repo.Verify();
     }
 
@@ -41,9 +42,14 @@ public class LessonServiceTest
     {
         // Arrange
         const int userId = 1;
-        var list = new List<LessonCompletion> { new(), new(), new() };
+        var dueReviews = new List<Proficiency>
+        {
+            new() { UserId = userId, CharacterId = 1 },
+            new() { UserId = userId, CharacterId = 2 },
+            new() { UserId = userId, CharacterId = 3 },
+        };
         var repo = new Mock<ILessonRepository>();
-        repo.Setup(r => r.GetLessonCompletionsByUserAsync(userId)).ReturnsAsync(list);
+        repo.Setup(r => r.GetDueReviewsAsync(userId)).ReturnsAsync(dueReviews);
         var service = new LessonService(repo.Object);
 
         // Act
@@ -54,20 +60,23 @@ public class LessonServiceTest
     }
 
     [Fact]
-    public async Task GetLessonReviewsAsync_ReturnsOrderedByCompletionDate_WithSymbolAsQuestion()
+    public async Task GetLessonReviewsAsync_ReturnsDueItemsOrderedByNextReviewDate()
     {
         // Arrange
         const int userId = 1;
         DateTimeOffset now = DateTimeOffset.UtcNow;
-        var list = new List<LessonCompletion>
+        var dueReviews = new List<Proficiency>
         {
-            new() { CompletionDate = now.AddMinutes(5), Character = new Character { Id = 1, Symbol = "び", Romanization = "bi" } },
-            new() { CompletionDate = now.AddMinutes(-2), Character = new Character { Id = 2, Symbol = "あ", Romanization = "a" } },
-            new() { CompletionDate = now.AddMinutes(1), Character = new Character { Id = 3, Symbol = "ち", Romanization = "chi" } },
+            new() { UserId = userId, CharacterId = 1, NextReviewDate = now.AddMinutes(5),
+                Character = new Character { Id = 1, Symbol = "び", Romanization = "bi" } },
+            new() { UserId = userId, CharacterId = 2, NextReviewDate = now.AddMinutes(-2),
+                Character = new Character { Id = 2, Symbol = "あ", Romanization = "a" } },
+            new() { UserId = userId, CharacterId = 3, NextReviewDate = now.AddMinutes(1),
+                Character = new Character { Id = 3, Symbol = "ち", Romanization = "chi" } },
         };
 
         var repo = new Mock<ILessonRepository>();
-        repo.Setup(r => r.GetLessonCompletionsByUserAsync(userId)).ReturnsAsync(list);
+        repo.Setup(r => r.GetDueReviewsAsync(userId)).ReturnsAsync(dueReviews);
         var service = new LessonService(repo.Object);
 
         // Act
@@ -78,11 +87,11 @@ public class LessonServiceTest
     }
 
     [Fact]
-    public async Task CheckLessonReviewAnswerAsync_Correct_IncreasesProficiencyAndSaves()
+    public async Task CheckLessonReviewAnswerAsync_Correct_AdvancesSrsStageAndSaves()
     {
         var user = new User { Id = 1, Username = "user", PasswordHash = [0], PasswordSalt = [0] };
         var character = new Character { Id = 2, Symbol = "ら", Romanization = "ra" };
-        var proficiency = new Proficiency { UserId = user.Id, CharacterId = 2, Level = 0, LearnedAt = DateTimeOffset.UtcNow };
+        var proficiency = new Proficiency { UserId = user.Id, CharacterId = 2, LearnedAt = DateTimeOffset.UtcNow };
 
         var repo = new Mock<ILessonRepository>();
         repo.Setup(r => r.GetCharacterBySymbolAsync("ら")).ReturnsAsync(character);
@@ -90,21 +99,21 @@ public class LessonServiceTest
         repo.Setup(r => r.SaveChangesAsync()).Returns(Task.CompletedTask).Verifiable();
         var service = new LessonService(repo.Object);
 
-
         LessonReviewAnswerResultDto result = await service.CheckLessonReviewAnswerAsync(1, new LessonReviewAnswerDto { Question = "ら", Answer = "ra" });
 
         Assert.True(result.IsCorrect);
         Assert.Equal("ra", result.CorrectAnswer);
-        Assert.True(proficiency.Level > 0);
+        Assert.True(proficiency.SrsStage > SrsStage.Apprentice1);
+        Assert.NotNull(result.NextReviewDate);
         repo.Verify();
     }
 
     [Fact]
-    public async Task CheckLessonReviewAnswerAsync_Incorrect_DecreasesProficiencyAndSaves()
+    public async Task CheckLessonReviewAnswerAsync_Incorrect_RegressesSrsStageAndSaves()
     {
         // Arrange
         var character = new Character { Id = 2, Symbol = "ら", Romanization = "ra" };
-        var proficiency = new Proficiency { UserId = 1, CharacterId = 2, Level = 50, LearnedAt = DateTimeOffset.UtcNow };
+        var proficiency = new Proficiency { UserId = 1, CharacterId = 2, SrsStage = SrsStage.Guru1, LearnedAt = DateTimeOffset.UtcNow };
 
         var repo = new Mock<ILessonRepository>();
         repo.Setup(r => r.GetCharacterBySymbolAsync("ら")).ReturnsAsync(character);
@@ -118,7 +127,7 @@ public class LessonServiceTest
         // Assert
         Assert.False(result.IsCorrect);
         Assert.Equal("ra", result.CorrectAnswer);
-        Assert.True(proficiency.Level < 50);
+        Assert.True(proficiency.SrsStage < SrsStage.Guru1);
         repo.Verify();
     }
 

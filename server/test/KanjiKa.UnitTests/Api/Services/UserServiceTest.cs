@@ -1,13 +1,25 @@
-﻿using KanjiKa.Api.Services;
+using KanjiKa.Api.Services;
 using KanjiKa.Core.DTOs.User;
 using KanjiKa.Core.Entities.Users;
 using KanjiKa.Core.Interfaces;
+using Microsoft.Extensions.Configuration;
 using Moq;
 
 namespace KanjiKa.UnitTests.Api.Services;
 
 public class UserServiceTest
 {
+    private static IConfiguration BuildConfig()
+    {
+        var settings = new Dictionary<string, string?>
+        {
+            ["Jwt:RefreshTokenExpirationDays"] = "7"
+        };
+        return new ConfigurationBuilder()
+            .AddInMemoryCollection(settings)
+            .Build();
+    }
+
     [Fact]
     public async Task Login_UserNotFound_ReturnsFailure()
     {
@@ -17,7 +29,7 @@ public class UserServiceTest
         var email = new Mock<IEmailService>();
         repo.Setup(r => r.GetByUsernameAsync("u")).ReturnsAsync((User?)null);
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object);
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
         LoginDto result = await service.Login("u", "p");
 
         Assert.False(result.IsSuccess);
@@ -35,7 +47,7 @@ public class UserServiceTest
         repo.Setup(r => r.GetByUsernameAsync("u")).ReturnsAsync(user);
         hash.Setup(h => h.Verify("p", user.PasswordHash, user.PasswordSalt)).Returns(false);
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object);
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
         LoginDto result = await service.Login("u", "p");
 
         Assert.False(result.IsSuccess);
@@ -43,7 +55,7 @@ public class UserServiceTest
     }
 
     [Fact]
-    public async Task Login_Success_ReturnsTokens()
+    public async Task Login_Success_ReturnsTokensAndUserId()
     {
         var user = new User { Id = 1, Username = "u", PasswordHash = [1], PasswordSalt = [2] };
         var repo = new Mock<IUserRepository>();
@@ -52,14 +64,16 @@ public class UserServiceTest
         var email = new Mock<IEmailService>();
         repo.Setup(r => r.GetByUsernameAsync("u")).ReturnsAsync(user);
         hash.Setup(h => h.Verify("p", user.PasswordHash, user.PasswordSalt)).Returns(true);
-        token.Setup(t => t.GenerateToken(1)).Returns(("tkn","rtkn"));
+        token.Setup(t => t.GenerateToken(1, "u")).Returns(("tkn", "rtkn"));
+        repo.Setup(r => r.UpdateRefreshTokenAsync(1, "rtkn", It.IsAny<DateTimeOffset>())).Returns(Task.CompletedTask);
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object);
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
         LoginDto result = await service.Login("u", "p");
 
         Assert.True(result.IsSuccess);
         Assert.Equal("tkn", result.Token);
         Assert.Equal("rtkn", result.RefreshToken);
+        Assert.Equal(1, result.UserId);
     }
 
     [Fact]
@@ -72,7 +86,7 @@ public class UserServiceTest
         var email = new Mock<IEmailService>();
         repo.Setup(r => r.GetByUsernameAsync("u")).ReturnsAsync(existing);
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object);
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
         RegisterDto result = await service.Register("u", "p");
 
         Assert.False(result.IsSuccess);
@@ -90,9 +104,10 @@ public class UserServiceTest
         hash.Setup(h => h.Hash("p")).Returns((new byte[] { 9 }, new byte[] { 8 }));
         repo.Setup(r => r.AddAsync(It.IsAny<User>())).Returns(Task.CompletedTask).Verifiable();
         repo.Setup(r => r.SaveChangesAsync()).Returns(Task.CompletedTask).Verifiable();
-        token.Setup(t => t.GenerateToken(It.IsAny<int>())).Returns(("t2","rt2"));
+        token.Setup(t => t.GenerateToken(It.IsAny<int>(), It.IsAny<string>())).Returns(("t2", "rt2"));
+        repo.Setup(r => r.UpdateRefreshTokenAsync(It.IsAny<int>(), "rt2", It.IsAny<DateTimeOffset>())).Returns(Task.CompletedTask);
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object);
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
         RegisterDto result = await service.Register("u", "p");
 
         Assert.True(result.IsSuccess);
@@ -110,7 +125,7 @@ public class UserServiceTest
         var email = new Mock<IEmailService>();
         email.Setup(e => e.SendEmail("e@x.com", It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask).Verifiable();
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object);
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
         ForgotPasswordDto result = await service.ForgotPassword("e@x.com");
 
         Assert.NotNull(result);
@@ -127,7 +142,7 @@ public class UserServiceTest
         var email = new Mock<IEmailService>();
         repo.Setup(r => r.GetByUsernameAsync("u")).ReturnsAsync((User?)null);
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object);
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
         ResetPasswordDto result = await service.ResetPassword("u", "12345", "new");
 
         Assert.False(result.IsSuccess);
@@ -143,7 +158,7 @@ public class UserServiceTest
         var email = new Mock<IEmailService>();
         repo.Setup(r => r.GetByUsernameAsync("u")).ReturnsAsync(user);
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object);
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
         ResetPasswordDto result = await service.ResetPassword("u", "99999", "new");
 
         Assert.False(result.IsSuccess);
@@ -162,7 +177,7 @@ public class UserServiceTest
         repo.Setup(r => r.UpdateAsync(user)).Returns(Task.CompletedTask).Verifiable();
         repo.Setup(r => r.SaveChangesAsync()).Returns(Task.CompletedTask).Verifiable();
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object);
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
         ResetPasswordDto result = await service.ResetPassword("u", "12345", "new");
 
         Assert.True(result.IsSuccess);
@@ -179,9 +194,61 @@ public class UserServiceTest
         var token = new Mock<ITokenService>();
         var email = new Mock<IEmailService>();
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object);
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
         RefreshTokenDto result = await service.RefreshToken("old", "refresh");
 
         Assert.Equal("test23456", result.Token);
+    }
+
+    [Fact]
+    public async Task Login_Success_StoresRefreshToken()
+    {
+        // Arrange
+        var user = new User { Id = 7, Username = "u", PasswordHash = [1], PasswordSalt = [2] };
+        var repo = new Mock<IUserRepository>();
+        var hash = new Mock<IHashService>();
+        var token = new Mock<ITokenService>();
+        var email = new Mock<IEmailService>();
+        repo.Setup(r => r.GetByUsernameAsync("u")).ReturnsAsync(user);
+        hash.Setup(h => h.Verify("p", user.PasswordHash, user.PasswordSalt)).Returns(true);
+        token.Setup(t => t.GenerateToken(7, "u")).Returns(("acc", "ref"));
+        repo.Setup(r => r.UpdateRefreshTokenAsync(7, "ref", It.IsAny<DateTimeOffset>()))
+            .Returns(Task.CompletedTask)
+            .Verifiable();
+
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
+
+        // Act
+        await service.Login("u", "p");
+
+        // Assert
+        repo.Verify(r => r.UpdateRefreshTokenAsync(7, "ref", It.IsAny<DateTimeOffset>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task Register_Success_ReturnsTokenInDto()
+    {
+        // Arrange
+        var repo = new Mock<IUserRepository>();
+        var hash = new Mock<IHashService>();
+        var token = new Mock<ITokenService>();
+        var email = new Mock<IEmailService>();
+        repo.Setup(r => r.GetByUsernameAsync("newuser")).ReturnsAsync((User?)null);
+        hash.Setup(h => h.Hash("pass")).Returns((new byte[] { 3 }, new byte[] { 4 }));
+        repo.Setup(r => r.AddAsync(It.IsAny<User>())).Returns(Task.CompletedTask);
+        repo.Setup(r => r.SaveChangesAsync()).Returns(Task.CompletedTask);
+        token.Setup(t => t.GenerateToken(It.IsAny<int>(), "newuser")).Returns(("newtkn", "newref"));
+        repo.Setup(r => r.UpdateRefreshTokenAsync(It.IsAny<int>(), "newref", It.IsAny<DateTimeOffset>()))
+            .Returns(Task.CompletedTask);
+
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
+
+        // Act
+        RegisterDto result = await service.Register("newuser", "pass");
+
+        // Assert
+        Assert.True(result.IsSuccess);
+        Assert.NotNull(result.Token);
+        Assert.NotEmpty(result.Token);
     }
 }

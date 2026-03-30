@@ -1,4 +1,5 @@
-﻿using KanjiKa.Core.Entities.Kana;
+using KanjiKa.Core.Entities.Kana;
+using KanjiKa.Core.Entities.Kanji;
 using KanjiKa.Core.Entities.Learning;
 using KanjiKa.Core.Entities.Users;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,8 @@ public class KanjiKaDbContext : DbContext
     public DbSet<LessonCompletion> LessonCompletions { get; set; }
     public DbSet<Character> Characters { get; set; }
     public DbSet<Example> Examples { get; set; }
+    public DbSet<Kanji> Kanjis { get; set; }
+    public DbSet<KanjiExample> KanjiExamples { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -35,6 +38,7 @@ public class KanjiKaDbContext : DbContext
 
         modelBuilder.Entity<Proficiency>(entity => {
             entity.HasKey(proficiency => new { proficiency.UserId, proficiency.CharacterId });
+            entity.Ignore(p => p.Level);
         });
 
         modelBuilder.Entity<LessonCompletion>(entity => {
@@ -50,6 +54,17 @@ public class KanjiKaDbContext : DbContext
 
         modelBuilder.Entity<Example>(entity => {
             entity.HasKey(example => example.Id);
+        });
+
+        modelBuilder.Entity<Kanji>(entity => {
+            entity.HasKey(k => k.Id);
+            entity.HasMany(k => k.Examples)
+                .WithOne(e => e.Kanji)
+                .HasForeignKey(e => e.KanjiId);
+        });
+
+        modelBuilder.Entity<KanjiExample>(entity => {
+            entity.HasKey(e => e.Id);
         });
     }
 }

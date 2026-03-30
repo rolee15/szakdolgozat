@@ -2,5 +2,5 @@
 
 public interface ITokenService
 {
-    public (string, string) GenerateToken(int userId);
+    (string accessToken, string refreshToken) GenerateToken(int userId, string username);
 }

@@ -78,6 +78,18 @@ public class LessonRepository : ILessonRepository
             .Where(lc => lc.UserId == userId).ToListAsync();
     }
 
+    public async Task<List<Proficiency>> GetDueReviewsAsync(int userId)
+    {
+        var now = DateTimeOffset.UtcNow;
+        return await _db.Proficiencies
+            .Include(p => p.Character)
+            .Where(p => p.UserId == userId
+                     && p.NextReviewDate != null
+                     && p.NextReviewDate <= now
+                     && p.SrsStage != SrsStage.Burned)
+            .ToListAsync();
+    }
+
     public Task SaveChangesAsync()
     {
         return _db.SaveChangesAsync();

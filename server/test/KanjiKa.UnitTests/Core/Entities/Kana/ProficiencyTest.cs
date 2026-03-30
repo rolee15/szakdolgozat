@@ -1,4 +1,4 @@
-﻿using KanjiKa.Core.Entities.Kana;
+using KanjiKa.Core.Entities.Kana;
 using KanjiKa.Core.Entities.Learning;
 using KanjiKa.Core.Entities.Users;
 
@@ -45,7 +45,7 @@ public class ProficiencyTest
             User = user,
             CharacterId = characterId,
             Character = character,
-            Level = 50,
+            SrsStage = SrsStage.Guru1,
             LearnedAt = now,
             LastPracticed = now
         };
@@ -57,59 +57,141 @@ public class ProficiencyTest
             () => Assert.Equal(user, proficiency.User),
             () => Assert.Equal(characterId, proficiency.CharacterId),
             () => Assert.Equal(character, proficiency.Character),
-            () => Assert.Equal(50, proficiency.Level),
+            () => Assert.Equal(SrsStage.Guru1, proficiency.SrsStage),
             () => Assert.Equal(now, proficiency.LearnedAt),
             () => Assert.Equal(now, proficiency.LastPracticed)
         );
     }
 
     [Fact]
-    public void Proficiency_Increase_ShouldIncreaseLevel()
+    public void AnswerCorrectly_AdvancesStage()
     {
         // Arrange
-        var proficiency = new Proficiency
-        {
-            Level = 50,
-            LastPracticed = DateTimeOffset.UtcNow
-        };
+        var proficiency = new Proficiency { SrsStage = SrsStage.Apprentice1 };
 
         // Act
-        proficiency.Increase(20);
+        proficiency.AnswerCorrectly();
 
         // Assert
-        Assert.Equal(70, proficiency.Level);
+        Assert.Equal(SrsStage.Apprentice2, proficiency.SrsStage);
     }
 
     [Fact]
-    public void Proficiency_Increase_ShouldNotExceedMaxLevel()
+    public void AnswerCorrectly_FromBurned_StaysAtBurned()
     {
         // Arrange
-        var proficiency = new Proficiency
-        {
-            Level = 90,
-            LastPracticed = DateTimeOffset.UtcNow
-        };
+        var proficiency = new Proficiency { SrsStage = SrsStage.Burned };
 
         // Act
-        proficiency.Increase(20);
+        proficiency.AnswerCorrectly();
 
         // Assert
-        Assert.Equal(Proficiency.MaxLevel, proficiency.Level);
+        Assert.Equal(SrsStage.Burned, proficiency.SrsStage);
     }
 
     [Fact]
-    public void Proficiency_Increase_ShouldUpdateLastPracticed()
+    public void AnswerCorrectly_SetsNextReviewDate()
+    {
+        // Arrange
+        var proficiency = new Proficiency { SrsStage = SrsStage.Apprentice1 };
+
+        // Act
+        proficiency.AnswerCorrectly();
+
+        // Assert
+        Assert.NotNull(proficiency.NextReviewDate);
+    }
+
+    [Fact]
+    public void AnswerIncorrectly_RegressesByTwo()
+    {
+        // Arrange
+        // Guru1 = 5, regress by 2 → stage 3 = Apprentice3
+        var proficiency = new Proficiency { SrsStage = SrsStage.Guru1 };
+
+        // Act
+        proficiency.AnswerIncorrectly();
+
+        // Assert
+        Assert.Equal(SrsStage.Apprentice3, proficiency.SrsStage);
+    }
+
+    [Fact]
+    public void AnswerIncorrectly_CannotGoBelowApprentice1()
+    {
+        // Arrange
+        var proficiency = new Proficiency { SrsStage = SrsStage.Apprentice1 };
+
+        // Act
+        proficiency.AnswerIncorrectly();
+
+        // Assert
+        Assert.Equal(SrsStage.Apprentice1, proficiency.SrsStage);
+    }
+
+    [Fact]
+    public void AnswerIncorrectly_SetsNextReviewDate()
+    {
+        // Arrange
+        var proficiency = new Proficiency { SrsStage = SrsStage.Guru2 };
+
+        // Act
+        proficiency.AnswerIncorrectly();
+
+        // Assert
+        Assert.NotNull(proficiency.NextReviewDate);
+    }
+
+    [Fact]
+    public void Level_MapsCorrectly_ForApprentice1()
+    {
+        // Arrange
+        var proficiency = new Proficiency { SrsStage = SrsStage.Apprentice1 };
+
+        // Act
+        int level = proficiency.Level;
+
+        // Assert
+        // SrsStage.Apprentice1 = 1, Level = 1 * 100 / 9 = 11
+        Assert.Equal(11, level);
+    }
+
+    [Fact]
+    public void Level_Is100_WhenBurned()
+    {
+        // Arrange
+        var proficiency = new Proficiency { SrsStage = SrsStage.Burned };
+
+        // Act
+        int level = proficiency.Level;
+
+        // Assert
+        Assert.Equal(100, level);
+    }
+
+    [Fact]
+    public void Proficiency_Level_ShouldLockedReturnZero()
+    {
+        // Arrange
+        var proficiency = new Proficiency { SrsStage = SrsStage.Locked };
+
+        // Act + Assert
+        Assert.Equal(0, proficiency.Level);
+    }
+
+    [Fact]
+    public void Proficiency_AnswerCorrectly_ShouldUpdateLastPracticed()
     {
         // Arrange
         DateTimeOffset now = DateTimeOffset.UtcNow;
         var proficiency = new Proficiency
         {
-            Level = 50,
+            SrsStage = SrsStage.Apprentice2,
             LastPracticed = now
         };
 
         // Act
-        proficiency.Increase(20);
+        proficiency.AnswerCorrectly();
 
         // Assert
         // TODO: Should inject a DateTimeOffsetProvider so the test can be controlled
@@ -117,52 +199,18 @@ public class ProficiencyTest
     }
 
     [Fact]
-    public void Proficiency_Decrease_ShouldDecreaseLevel()
-    {
-        // Arrange
-        var proficiency = new Proficiency
-        {
-            Level = 50,
-            LastPracticed = DateTimeOffset.UtcNow
-        };
-
-        // Act
-        proficiency.Decrease(20);
-
-        // Assert
-        Assert.Equal(30, proficiency.Level);
-    }
-
-    [Fact]
-    public void Proficiency_Decrease_ShouldNotGoBelowMinLevel()
-    {
-        // Arrange
-        var proficiency = new Proficiency
-        {
-            Level = 10,
-            LastPracticed = DateTimeOffset.UtcNow
-        };
-
-        // Act
-        proficiency.Decrease(20);
-
-        // Assert
-        Assert.Equal(Proficiency.MinLevel, proficiency.Level);
-    }
-
-    [Fact]
-    public void Proficiency_Decrease_ShouldUpdateLastPracticed()
+    public void Proficiency_AnswerIncorrectly_ShouldUpdateLastPracticed()
     {
         // Arrange
         DateTimeOffset now = DateTimeOffset.UtcNow;
         var proficiency = new Proficiency
         {
-            Level = 50,
+            SrsStage = SrsStage.Guru2,
             LastPracticed = now
         };
 
         // Act
-        proficiency.Decrease(20);
+        proficiency.AnswerIncorrectly();
 
         // Assert
         // TODO: Should inject a DateTimeOffsetProvider so the test can be controlled

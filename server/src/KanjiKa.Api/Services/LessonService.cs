@@ -1,4 +1,4 @@
-﻿using KanjiKa.Core.DTOs.Learning;
+using KanjiKa.Core.DTOs.Learning;
 using KanjiKa.Core.Entities.Kana;
 using KanjiKa.Core.Entities.Learning;
 using KanjiKa.Core.Entities.Users;
@@ -8,10 +8,6 @@ namespace KanjiKa.Api.Services;
 
 internal class LessonService : ILessonService
 {
-    // Move to SRS algorithm settings
-    private const int SkillUp = 10;
-    private const int SkillDown = 5;
-
     // Move to user settings when implemented
     private const int LessonsPerDayCount = 15;
 
@@ -83,7 +79,8 @@ internal class LessonService : ILessonService
         {
             UserId = user.Id,
             CharacterId = character.Id,
-            Level = 0,
+            SrsStage = SrsStage.Apprentice1,
+            NextReviewDate = SrsIntervals.GetNextReviewDate(SrsStage.Apprentice1),
             LearnedAt = DateTimeOffset.UtcNow
         };
         await _repo.AddProficiencyAsync(proficiency);
@@ -103,22 +100,22 @@ internal class LessonService : ILessonService
 
     public async Task<LessonReviewsCountDto> GetLessonReviewsCountAsync(int userId)
     {
-        List<LessonCompletion> completedLessons = await _repo.GetLessonCompletionsByUserAsync(userId);
+        var dueReviews = await _repo.GetDueReviewsAsync(userId);
 
         return new LessonReviewsCountDto
         {
-            Count = completedLessons.Count
+            Count = dueReviews.Count
         };
     }
 
     public async Task<IEnumerable<LessonReviewDto>> GetLessonReviewsAsync(int userId)
     {
-        List<LessonCompletion> completedLessons = await _repo.GetLessonCompletionsByUserAsync(userId);
-        List<LessonReviewDto> ordered = completedLessons
-            .OrderBy(lc => lc.CompletionDate)
-            .Select(lc => new LessonReviewDto
+        var dueReviews = await _repo.GetDueReviewsAsync(userId);
+        var ordered = dueReviews
+            .OrderBy(p => p.NextReviewDate)
+            .Select(p => new LessonReviewDto
             {
-                Question = lc.Character.Symbol
+                Question = p.Character!.Symbol
             })
             .ToList();
 
@@ -136,21 +133,27 @@ internal class LessonService : ILessonService
 
         if (answer.Answer == character.Romanization)
         {
-            proficiency.Increase(SkillUp);
+            proficiency.AnswerCorrectly();
             await _repo.SaveChangesAsync();
             return new LessonReviewAnswerResultDto
             {
                 IsCorrect = true,
-                CorrectAnswer = character.Romanization
+                CorrectAnswer = character.Romanization,
+                SrsStage = (int)proficiency.SrsStage,
+                SrsStageName = SrsIntervals.GetStageName(proficiency.SrsStage),
+                NextReviewDate = proficiency.NextReviewDate
             };
         }
 
-        proficiency.Decrease(SkillDown);
+        proficiency.AnswerIncorrectly();
         await _repo.SaveChangesAsync();
         return new LessonReviewAnswerResultDto
         {
             IsCorrect = false,
-            CorrectAnswer = character.Romanization
+            CorrectAnswer = character.Romanization,
+            SrsStage = (int)proficiency.SrsStage,
+            SrsStageName = SrsIntervals.GetStageName(proficiency.SrsStage),
+            NextReviewDate = proficiency.NextReviewDate
         };
     }
 

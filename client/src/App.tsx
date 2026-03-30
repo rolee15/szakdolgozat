@@ -1,5 +1,6 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactNode } from "react";
 import Layout from "@components/layout/Layout";
 import HomePage from "@pages/HomePage";
 import ErrorPage from "@pages/ErrorPage";
@@ -12,8 +13,19 @@ import LessonsPage from "./pages/LessonsPage";
 import NewLessonsPage from "./pages/NewLessonsPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ReviewLessonsPage from "./pages/ReviewLessonsPage";
+import FlashCardPage from "./pages/FlashCardPage";
+import KanjiListPage from "./pages/KanjiListPage";
+import KanjiDetailPage from "./pages/KanjiDetailPage";
+import { AuthProvider, useAuth } from "@/context/AuthContext";
 
 const queryClient = new QueryClient();
+
+function ProtectedRoute({ children }: { children: ReactNode }) {
+  const { isAuthenticated } = useAuth();
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  return <>{children}</>;
+}
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -26,7 +38,7 @@ const router = createBrowserRouter([
       },
       {
         path: "login",
-        element: <LoginPage setToken={setToken} />,
+        element: <LoginPage />,
       },
       {
         path: "register",
@@ -38,53 +50,87 @@ const router = createBrowserRouter([
       },
       {
         path: "hiragana",
-        element: <HiraganaPage />,
+        element: (
+          <ProtectedRoute>
+            <HiraganaPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "katakana",
-        element: <KatakanaPage />,
+        element: (
+          <ProtectedRoute>
+            <KatakanaPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/:type/:character",
-        element: <CharacterDetail />,
+        element: (
+          <ProtectedRoute>
+            <CharacterDetail />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "lessons",
-        element: <LessonsPage />,
+        element: (
+          <ProtectedRoute>
+            <LessonsPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "lessons/new",
-        element: <NewLessonsPage />,
+        element: (
+          <ProtectedRoute>
+            <NewLessonsPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "lessons/review",
-        element: <ReviewLessonsPage />,
-      }
+        element: (
+          <ProtectedRoute>
+            <ReviewLessonsPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "flashcards",
+        element: (
+          <ProtectedRoute>
+            <FlashCardPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "kanji",
+        element: (
+          <ProtectedRoute>
+            <KanjiListPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "kanji/:character",
+        element: (
+          <ProtectedRoute>
+            <KanjiDetailPage />
+          </ProtectedRoute>
+        ),
+      },
     ],
   },
 ]);
 
-function setToken(userToken: string) {
-  sessionStorage.setItem('token', JSON.stringify(userToken));
-}
-
-// function getToken() {
-//   const tokenString = sessionStorage.getItem('token');
-//   const userToken = JSON.parse(tokenString as string);
-//   return userToken?.token;
-// }
-
 function App() {
-  // const token = getToken();
-
-  // if(!token) {
-  //   return <LoginPage setToken={setToken} />
-  // }
-
   return (
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-    </QueryClientProvider>
+    <AuthProvider>
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
+    </AuthProvider>
   );
 }
 

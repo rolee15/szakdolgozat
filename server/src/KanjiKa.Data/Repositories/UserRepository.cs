@@ -29,6 +29,15 @@ public class UserRepository : IUserRepository
         return Task.CompletedTask;
     }
 
+    public async Task UpdateRefreshTokenAsync(int userId, string refreshToken, DateTimeOffset expiry)
+    {
+        var user = await _db.Users.FindAsync(userId);
+        if (user == null) return;
+        user.RefreshToken = refreshToken;
+        user.RefreshTokenExpiry = expiry;
+        await _db.SaveChangesAsync();
+    }
+
     public Task SaveChangesAsync()
     {
         return _db.SaveChangesAsync();

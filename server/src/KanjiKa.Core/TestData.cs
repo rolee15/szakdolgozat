@@ -1,5 +1,6 @@
 ﻿using KanjiKa.Core.Entities;
 using KanjiKa.Core.Entities.Kana;
+using KanjiKa.Core.Entities.Kanji;
 using KanjiKa.Core.Entities.Learning;
 using KanjiKa.Core.Entities.Users;
 using KanjiKa.Core.Services;
@@ -2233,7 +2234,7 @@ public static class TestData
 
     public static List<User> GetUsers()
     {
-        const string testPassword = "12345";
+        const string testPassword = "almafa123";
         var hashService = new HashService();
         var (hash, salt) = hashService.Hash(testPassword);
         return
@@ -2251,7 +2252,6 @@ public static class TestData
                         Id = 1,
                         UserId = 1,
                         CharacterId = 1,
-                        Level = 80,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-10),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2261,7 +2261,6 @@ public static class TestData
                         Id = 2,
                         UserId = 1,
                         CharacterId = 2,
-                        Level = 80,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-9),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-2)
                     },
@@ -2270,7 +2269,6 @@ public static class TestData
                         Id = 3,
                         UserId = 1,
                         CharacterId = 3,
-                        Level = 75,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-8),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2279,7 +2277,6 @@ public static class TestData
                         Id = 4,
                         UserId = 1,
                         CharacterId = 4,
-                        Level = 70,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-7),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2288,7 +2285,6 @@ public static class TestData
                         Id = 5,
                         UserId = 1,
                         CharacterId = 5,
-                        Level = 60,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-6),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2297,7 +2293,6 @@ public static class TestData
                         Id = 6,
                         UserId = 1,
                         CharacterId = 6,
-                        Level = 70,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-5),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2306,7 +2301,6 @@ public static class TestData
                         Id = 7,
                         UserId = 1,
                         CharacterId = 7,
-                        Level = 80,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-4),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2315,7 +2309,6 @@ public static class TestData
                         Id = 8,
                         UserId = 1,
                         CharacterId = 8,
-                        Level = 90,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-3),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2324,7 +2317,6 @@ public static class TestData
                         Id = 9,
                         UserId = 1,
                         CharacterId = 9,
-                        Level = 100,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-2),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2333,7 +2325,6 @@ public static class TestData
                         Id = 10,
                         UserId = 1,
                         CharacterId = 10,
-                        Level = 100,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2342,7 +2333,6 @@ public static class TestData
                         Id = 11,
                         UserId = 1,
                         CharacterId = 11,
-                        Level = 100,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2351,7 +2341,6 @@ public static class TestData
                         Id = 12,
                         UserId = 1,
                         CharacterId = 12,
-                        Level = 60,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2360,7 +2349,6 @@ public static class TestData
                         Id = 13,
                         UserId = 1,
                         CharacterId = 13,
-                        Level = 70,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2369,7 +2357,6 @@ public static class TestData
                         Id = 14,
                         UserId = 1,
                         CharacterId = 14,
-                        Level = 40,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2378,7 +2365,6 @@ public static class TestData
                         Id = 15,
                         UserId = 1,
                         CharacterId = 15,
-                        Level = 50,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2387,7 +2373,6 @@ public static class TestData
                         Id = 16,
                         UserId = 1,
                         CharacterId = 16,
-                        Level = 60,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2396,7 +2381,6 @@ public static class TestData
                         Id = 17,
                         UserId = 1,
                         CharacterId = 17,
-                        Level = 70,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-20),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-10)
                     },
@@ -2405,7 +2389,6 @@ public static class TestData
                         Id = 18,
                         UserId = 1,
                         CharacterId = 18,
-                        Level = 80,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-30),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-20)
                     },
@@ -2414,7 +2397,6 @@ public static class TestData
                         Id = 19,
                         UserId = 1,
                         CharacterId = 19,
-                        Level = 90,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-40),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-30)
                     },
@@ -2423,7 +2405,6 @@ public static class TestData
                         Id = 20,
                         UserId = 1,
                         CharacterId = 20,
-                        Level = 100,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-50),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-40)
                     },
@@ -2432,7 +2413,6 @@ public static class TestData
                         Id = 21,
                         UserId = 1,
                         CharacterId = 21,
-                        Level = 100,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-60),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-50)
                     },
@@ -2441,7 +2421,6 @@ public static class TestData
                         Id = 22,
                         UserId = 1,
                         CharacterId = 22,
-                        Level = 100,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-20),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-10)
                     },
@@ -2450,7 +2429,6 @@ public static class TestData
                         Id = 23,
                         UserId = 1,
                         CharacterId = 23,
-                        Level = 80,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-20),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-10)
                     },
@@ -2459,7 +2437,6 @@ public static class TestData
                         Id = 24,
                         UserId = 1,
                         CharacterId = 24,
-                        Level = 20,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-2),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2468,7 +2445,6 @@ public static class TestData
                         Id = 25,
                         UserId = 1,
                         CharacterId = 25,
-                        Level = 10,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-2),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2477,7 +2453,6 @@ public static class TestData
                         Id = 26,
                         UserId = 1,
                         CharacterId = 26,
-                        Level = 5,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2486,7 +2461,6 @@ public static class TestData
                         Id = 27,
                         UserId = 1,
                         CharacterId = 27,
-                        Level = 0,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2495,7 +2469,6 @@ public static class TestData
                         Id = 28,
                         UserId = 1,
                         CharacterId = 28,
-                        Level = 0,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2504,7 +2477,6 @@ public static class TestData
                         Id = 29,
                         UserId = 1,
                         CharacterId = 29,
-                        Level = 0,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2513,7 +2485,6 @@ public static class TestData
                         Id = 30,
                         UserId = 1,
                         CharacterId = 30,
-                        Level = 10,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2522,7 +2493,6 @@ public static class TestData
                         Id = 31,
                         UserId = 1,
                         CharacterId = 31,
-                        Level = 20,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-2),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2531,7 +2501,6 @@ public static class TestData
                         Id = 32,
                         UserId = 1,
                         CharacterId = 32,
-                        Level = 10,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2540,7 +2509,6 @@ public static class TestData
                         Id = 33,
                         UserId = 1,
                         CharacterId = 33,
-                        Level = 0,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2549,7 +2517,6 @@ public static class TestData
                         Id = 34,
                         UserId = 1,
                         CharacterId = 34,
-                        Level = 0,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2558,7 +2525,6 @@ public static class TestData
                         Id = 35,
                         UserId = 1,
                         CharacterId = 35,
-                        Level = 0,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2567,7 +2533,6 @@ public static class TestData
                         Id = 36,
                         UserId = 1,
                         CharacterId = 36,
-                        Level = 0,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2576,7 +2541,6 @@ public static class TestData
                         Id = 37,
                         UserId = 1,
                         CharacterId = 37,
-                        Level = 0,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2585,7 +2549,6 @@ public static class TestData
                         Id = 38,
                         UserId = 1,
                         CharacterId = 38,
-                        Level = 0,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2594,7 +2557,6 @@ public static class TestData
                         Id = 39,
                         UserId = 1,
                         CharacterId = 39,
-                        Level = 0,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2603,7 +2565,6 @@ public static class TestData
                         Id = 40,
                         UserId = 1,
                         CharacterId = 40,
-                        Level = 0,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2612,7 +2573,6 @@ public static class TestData
                         Id = 41,
                         UserId = 1,
                         CharacterId = 41,
-                        Level = 0,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2621,7 +2581,6 @@ public static class TestData
                         Id = 42,
                         UserId = 1,
                         CharacterId = 42,
-                        Level = 0,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2630,7 +2589,6 @@ public static class TestData
                         Id = 43,
                         UserId = 1,
                         CharacterId = 43,
-                        Level = 0,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2639,7 +2597,6 @@ public static class TestData
                         Id = 44,
                         UserId = 1,
                         CharacterId = 44,
-                        Level = 0,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2648,7 +2605,6 @@ public static class TestData
                         Id = 45,
                         UserId = 1,
                         CharacterId = 45,
-                        Level = 0,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2657,7 +2613,6 @@ public static class TestData
                         Id = 46,
                         UserId = 1,
                         CharacterId = 46,
-                        Level = 0,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2666,7 +2621,6 @@ public static class TestData
                         Id = 47,
                         UserId = 1,
                         CharacterId = 47,
-                        Level = 0,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2675,7 +2629,6 @@ public static class TestData
                         Id = 48,
                         UserId = 1,
                         CharacterId = 48,
-                        Level = 0,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2684,7 +2637,6 @@ public static class TestData
                         Id = 49,
                         UserId = 1,
                         CharacterId = 49,
-                        Level = 0,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2693,7 +2645,6 @@ public static class TestData
                         Id = 50,
                         UserId = 1,
                         CharacterId = 50,
-                        Level = 0,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2702,7 +2653,6 @@ public static class TestData
                         Id = 51,
                         UserId = 1,
                         CharacterId = 51,
-                        Level = 0,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2711,7 +2661,6 @@ public static class TestData
                         Id = 52,
                         UserId = 1,
                         CharacterId = 52,
-                        Level = 0,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2720,7 +2669,6 @@ public static class TestData
                         Id = 53,
                         UserId = 1,
                         CharacterId = 53,
-                        Level = 0,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2729,7 +2677,6 @@ public static class TestData
                         Id = 54,
                         UserId = 1,
                         CharacterId = 54,
-                        Level = 0,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2738,7 +2685,6 @@ public static class TestData
                         Id = 55,
                         UserId = 1,
                         CharacterId = 55,
-                        Level = 0,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2747,7 +2693,6 @@ public static class TestData
                         Id = 56,
                         UserId = 1,
                         CharacterId = 56,
-                        Level = 0,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2756,7 +2701,6 @@ public static class TestData
                         Id = 57,
                         UserId = 1,
                         CharacterId = 57,
-                        Level = 0,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2765,7 +2709,6 @@ public static class TestData
                         Id = 58,
                         UserId = 1,
                         CharacterId = 58,
-                        Level = 0,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2774,7 +2717,6 @@ public static class TestData
                         Id = 59,
                         UserId = 1,
                         CharacterId = 59,
-                        Level = 0,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2783,7 +2725,6 @@ public static class TestData
                         Id = 60,
                         UserId = 1,
                         CharacterId = 60,
-                        Level = 0,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     },
@@ -2792,7 +2733,6 @@ public static class TestData
                         Id = 61,
                         UserId = 1,
                         CharacterId = 61,
-                        Level = 0,
                         LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     }
@@ -3168,4 +3108,198 @@ public static class TestData
             }
         ];
     }
+
+    public static IEnumerable<Kanji> GetKanjiData() =>
+    [
+        new() { Character = "一", Meaning = "one", OnyomiReading = "イチ, イツ", KunyomiReading = "ひと-", StrokeCount = 1, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "一月", Reading = "いちがつ", Meaning = "January" }, new() { Word = "一日", Reading = "いちにち", Meaning = "one day" } ] },
+        new() { Character = "二", Meaning = "two", OnyomiReading = "ニ", KunyomiReading = "ふた-", StrokeCount = 2, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "二月", Reading = "にがつ", Meaning = "February" }, new() { Word = "二人", Reading = "ふたり", Meaning = "two people" } ] },
+        new() { Character = "三", Meaning = "three", OnyomiReading = "サン", KunyomiReading = "み-", StrokeCount = 3, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "三月", Reading = "さんがつ", Meaning = "March" } ] },
+        new() { Character = "四", Meaning = "four", OnyomiReading = "シ", KunyomiReading = "よ-, よっ-", StrokeCount = 5, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "四月", Reading = "しがつ", Meaning = "April" } ] },
+        new() { Character = "五", Meaning = "five", OnyomiReading = "ゴ", KunyomiReading = "いつ-", StrokeCount = 4, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "五月", Reading = "ごがつ", Meaning = "May" } ] },
+        new() { Character = "六", Meaning = "six", OnyomiReading = "ロク", KunyomiReading = "む-", StrokeCount = 4, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "六月", Reading = "ろくがつ", Meaning = "June" } ] },
+        new() { Character = "七", Meaning = "seven", OnyomiReading = "シチ", KunyomiReading = "なな-", StrokeCount = 2, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "七月", Reading = "しちがつ", Meaning = "July" } ] },
+        new() { Character = "八", Meaning = "eight", OnyomiReading = "ハチ", KunyomiReading = "や-", StrokeCount = 2, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "八月", Reading = "はちがつ", Meaning = "August" } ] },
+        new() { Character = "九", Meaning = "nine", OnyomiReading = "キュウ, ク", KunyomiReading = "ここの-", StrokeCount = 2, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "九月", Reading = "くがつ", Meaning = "September" } ] },
+        new() { Character = "十", Meaning = "ten", OnyomiReading = "ジュウ", KunyomiReading = "とお", StrokeCount = 2, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "十月", Reading = "じゅうがつ", Meaning = "October" } ] },
+        new() { Character = "百", Meaning = "hundred", OnyomiReading = "ヒャク", KunyomiReading = "", StrokeCount = 6, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "百円", Reading = "ひゃくえん", Meaning = "100 yen" } ] },
+        new() { Character = "千", Meaning = "thousand", OnyomiReading = "セン", KunyomiReading = "ち", StrokeCount = 3, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "千円", Reading = "せんえん", Meaning = "1000 yen" } ] },
+        new() { Character = "万", Meaning = "ten thousand", OnyomiReading = "マン, バン", KunyomiReading = "", StrokeCount = 3, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "一万円", Reading = "いちまんえん", Meaning = "10,000 yen" } ] },
+        new() { Character = "円", Meaning = "yen, circle", OnyomiReading = "エン", KunyomiReading = "まる", StrokeCount = 4, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "円", Reading = "えん", Meaning = "yen" } ] },
+        new() { Character = "年", Meaning = "year", OnyomiReading = "ネン", KunyomiReading = "とし", StrokeCount = 6, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "今年", Reading = "ことし", Meaning = "this year" } ] },
+        new() { Character = "月", Meaning = "moon, month", OnyomiReading = "ゲツ, ガツ", KunyomiReading = "つき", StrokeCount = 4, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "月曜日", Reading = "げつようび", Meaning = "Monday" } ] },
+        new() { Character = "日", Meaning = "sun, day", OnyomiReading = "ニチ, ジツ", KunyomiReading = "ひ, か", StrokeCount = 4, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "日曜日", Reading = "にちようび", Meaning = "Sunday" } ] },
+        new() { Character = "火", Meaning = "fire", OnyomiReading = "カ", KunyomiReading = "ひ", StrokeCount = 4, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "火曜日", Reading = "かようび", Meaning = "Tuesday" } ] },
+        new() { Character = "水", Meaning = "water", OnyomiReading = "スイ", KunyomiReading = "みず", StrokeCount = 4, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "水曜日", Reading = "すいようび", Meaning = "Wednesday" }, new() { Word = "水", Reading = "みず", Meaning = "water" } ] },
+        new() { Character = "木", Meaning = "tree, wood", OnyomiReading = "モク, ボク", KunyomiReading = "き", StrokeCount = 4, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "木曜日", Reading = "もくようび", Meaning = "Thursday" } ] },
+        new() { Character = "金", Meaning = "gold, money", OnyomiReading = "キン, コン", KunyomiReading = "かね", StrokeCount = 8, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "金曜日", Reading = "きんようび", Meaning = "Friday" }, new() { Word = "お金", Reading = "おかね", Meaning = "money" } ] },
+        new() { Character = "土", Meaning = "earth, soil", OnyomiReading = "ド, ト", KunyomiReading = "つち", StrokeCount = 3, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "土曜日", Reading = "どようび", Meaning = "Saturday" } ] },
+        new() { Character = "山", Meaning = "mountain", OnyomiReading = "サン", KunyomiReading = "やま", StrokeCount = 3, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "山", Reading = "やま", Meaning = "mountain" }, new() { Word = "富士山", Reading = "ふじさん", Meaning = "Mt. Fuji" } ] },
+        new() { Character = "川", Meaning = "river", OnyomiReading = "セン", KunyomiReading = "かわ", StrokeCount = 3, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "川", Reading = "かわ", Meaning = "river" } ] },
+        new() { Character = "田", Meaning = "rice field", OnyomiReading = "デン", KunyomiReading = "た", StrokeCount = 5, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "田んぼ", Reading = "たんぼ", Meaning = "rice paddy" } ] },
+        new() { Character = "天", Meaning = "heaven, sky", OnyomiReading = "テン", KunyomiReading = "あめ, あま", StrokeCount = 4, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "天気", Reading = "てんき", Meaning = "weather" } ] },
+        new() { Character = "人", Meaning = "person", OnyomiReading = "ジン, ニン", KunyomiReading = "ひと", StrokeCount = 2, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "人", Reading = "ひと", Meaning = "person" }, new() { Word = "日本人", Reading = "にほんじん", Meaning = "Japanese person" } ] },
+        new() { Character = "子", Meaning = "child", OnyomiReading = "シ, ス", KunyomiReading = "こ", StrokeCount = 3, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "子供", Reading = "こども", Meaning = "child" } ] },
+        new() { Character = "女", Meaning = "woman", OnyomiReading = "ジョ, ニョ", KunyomiReading = "おんな", StrokeCount = 3, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "女性", Reading = "じょせい", Meaning = "woman, female" } ] },
+        new() { Character = "男", Meaning = "man", OnyomiReading = "ダン, ナン", KunyomiReading = "おとこ", StrokeCount = 7, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "男性", Reading = "だんせい", Meaning = "man, male" } ] },
+        new() { Character = "大", Meaning = "big, great", OnyomiReading = "ダイ, タイ", KunyomiReading = "おお-", StrokeCount = 3, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "大学", Reading = "だいがく", Meaning = "university" }, new() { Word = "大きい", Reading = "おおきい", Meaning = "big" } ] },
+        new() { Character = "小", Meaning = "small", OnyomiReading = "ショウ", KunyomiReading = "ちい-, こ-", StrokeCount = 3, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "小学校", Reading = "しょうがっこう", Meaning = "elementary school" } ] },
+        new() { Character = "中", Meaning = "inside, middle", OnyomiReading = "チュウ", KunyomiReading = "なか", StrokeCount = 4, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "中学校", Reading = "ちゅうがっこう", Meaning = "middle school" }, new() { Word = "中国", Reading = "ちゅうごく", Meaning = "China" } ] },
+        new() { Character = "上", Meaning = "above, up", OnyomiReading = "ジョウ, ショウ", KunyomiReading = "うえ, うわ, かみ", StrokeCount = 3, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "上", Reading = "うえ", Meaning = "above" } ] },
+        new() { Character = "下", Meaning = "below, down", OnyomiReading = "カ, ゲ", KunyomiReading = "した, しも, くだ-", StrokeCount = 3, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "下", Reading = "した", Meaning = "below" } ] },
+        new() { Character = "左", Meaning = "left", OnyomiReading = "サ", KunyomiReading = "ひだり", StrokeCount = 5, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "左", Reading = "ひだり", Meaning = "left" } ] },
+        new() { Character = "右", Meaning = "right", OnyomiReading = "ウ, ユウ", KunyomiReading = "みぎ", StrokeCount = 5, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "右", Reading = "みぎ", Meaning = "right" } ] },
+        new() { Character = "東", Meaning = "east", OnyomiReading = "トウ", KunyomiReading = "ひがし", StrokeCount = 8, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "東京", Reading = "とうきょう", Meaning = "Tokyo" }, new() { Word = "東", Reading = "ひがし", Meaning = "east" } ] },
+        new() { Character = "西", Meaning = "west", OnyomiReading = "セイ, サイ", KunyomiReading = "にし", StrokeCount = 6, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "西", Reading = "にし", Meaning = "west" } ] },
+        new() { Character = "南", Meaning = "south", OnyomiReading = "ナン, ナ", KunyomiReading = "みなみ", StrokeCount = 9, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "南", Reading = "みなみ", Meaning = "south" } ] },
+        new() { Character = "北", Meaning = "north", OnyomiReading = "ホク", KunyomiReading = "きた", StrokeCount = 5, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "北", Reading = "きた", Meaning = "north" } ] },
+        new() { Character = "口", Meaning = "mouth", OnyomiReading = "コウ, ク", KunyomiReading = "くち", StrokeCount = 3, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "口", Reading = "くち", Meaning = "mouth" } ] },
+        new() { Character = "目", Meaning = "eye", OnyomiReading = "モク, ボク", KunyomiReading = "め", StrokeCount = 5, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "目", Reading = "め", Meaning = "eye" } ] },
+        new() { Character = "耳", Meaning = "ear", OnyomiReading = "ジ", KunyomiReading = "みみ", StrokeCount = 6, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "耳", Reading = "みみ", Meaning = "ear" } ] },
+        new() { Character = "手", Meaning = "hand", OnyomiReading = "シュ, ズ", KunyomiReading = "て, た-", StrokeCount = 4, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "手", Reading = "て", Meaning = "hand" } ] },
+        new() { Character = "足", Meaning = "foot, leg", OnyomiReading = "ソク", KunyomiReading = "あし", StrokeCount = 7, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "足", Reading = "あし", Meaning = "foot, leg" } ] },
+        new() { Character = "力", Meaning = "power, strength", OnyomiReading = "リョク, リキ", KunyomiReading = "ちから", StrokeCount = 2, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "力", Reading = "ちから", Meaning = "power, strength" } ] },
+        new() { Character = "気", Meaning = "spirit, energy", OnyomiReading = "キ, ケ", KunyomiReading = "", StrokeCount = 6, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "天気", Reading = "てんき", Meaning = "weather" }, new() { Word = "元気", Reading = "げんき", Meaning = "healthy, energetic" } ] },
+        new() { Character = "学", Meaning = "learn, study", OnyomiReading = "ガク", KunyomiReading = "まな-", StrokeCount = 8, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "学校", Reading = "がっこう", Meaning = "school" }, new() { Word = "大学", Reading = "だいがく", Meaning = "university" } ] },
+        new() { Character = "校", Meaning = "school", OnyomiReading = "コウ", KunyomiReading = "", StrokeCount = 10, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "学校", Reading = "がっこう", Meaning = "school" } ] },
+        new() { Character = "先", Meaning = "ahead, previous", OnyomiReading = "セン", KunyomiReading = "さき", StrokeCount = 6, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "先生", Reading = "せんせい", Meaning = "teacher" } ] },
+        new() { Character = "生", Meaning = "life, birth", OnyomiReading = "セイ, ショウ", KunyomiReading = "い-, う-, なま", StrokeCount = 5, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "先生", Reading = "せんせい", Meaning = "teacher" }, new() { Word = "学生", Reading = "がくせい", Meaning = "student" } ] },
+        new() { Character = "本", Meaning = "book, origin", OnyomiReading = "ホン", KunyomiReading = "もと", StrokeCount = 5, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "本", Reading = "ほん", Meaning = "book" }, new() { Word = "日本", Reading = "にほん", Meaning = "Japan" } ] },
+        new() { Character = "語", Meaning = "language, word", OnyomiReading = "ゴ", KunyomiReading = "かた-", StrokeCount = 14, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "日本語", Reading = "にほんご", Meaning = "Japanese language" }, new() { Word = "英語", Reading = "えいご", Meaning = "English language" } ] },
+        new() { Character = "国", Meaning = "country", OnyomiReading = "コク", KunyomiReading = "くに", StrokeCount = 8, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "国", Reading = "くに", Meaning = "country" }, new() { Word = "中国", Reading = "ちゅうごく", Meaning = "China" } ] },
+        new() { Character = "外", Meaning = "outside", OnyomiReading = "ガイ, ゲ", KunyomiReading = "そと, はず-", StrokeCount = 5, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "外国", Reading = "がいこく", Meaning = "foreign country" }, new() { Word = "外", Reading = "そと", Meaning = "outside" } ] },
+        new() { Character = "白", Meaning = "white", OnyomiReading = "ハク, ビャク", KunyomiReading = "しろ, しら-", StrokeCount = 5, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "白い", Reading = "しろい", Meaning = "white" } ] },
+        new() { Character = "赤", Meaning = "red", OnyomiReading = "セキ, シャク", KunyomiReading = "あか-", StrokeCount = 7, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "赤い", Reading = "あかい", Meaning = "red" } ] },
+        new() { Character = "青", Meaning = "blue, green", OnyomiReading = "セイ, ショウ", KunyomiReading = "あお-", StrokeCount = 8, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "青い", Reading = "あおい", Meaning = "blue" } ] },
+        new() { Character = "高", Meaning = "tall, expensive", OnyomiReading = "コウ", KunyomiReading = "たか-", StrokeCount = 10, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "高い", Reading = "たかい", Meaning = "tall, expensive" }, new() { Word = "高校", Reading = "こうこう", Meaning = "high school" } ] },
+        new() { Character = "長", Meaning = "long, chief", OnyomiReading = "チョウ", KunyomiReading = "なが-", StrokeCount = 8, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "長い", Reading = "ながい", Meaning = "long" } ] },
+        new() { Character = "時", Meaning = "time, hour", OnyomiReading = "ジ", KunyomiReading = "とき", StrokeCount = 10, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "時間", Reading = "じかん", Meaning = "time" }, new() { Word = "何時", Reading = "なんじ", Meaning = "what time" } ] },
+        new() { Character = "間", Meaning = "interval, between", OnyomiReading = "カン, ケン", KunyomiReading = "あいだ, ま", StrokeCount = 12, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "時間", Reading = "じかん", Meaning = "time" }, new() { Word = "人間", Reading = "にんげん", Meaning = "human being" } ] },
+        new() { Character = "分", Meaning = "minute, part", OnyomiReading = "ブン, フン", KunyomiReading = "わ-", StrokeCount = 4, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "五分", Reading = "ごふん", Meaning = "five minutes" } ] },
+        new() { Character = "毎", Meaning = "every", OnyomiReading = "マイ", KunyomiReading = "", StrokeCount = 6, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "毎日", Reading = "まいにち", Meaning = "every day" }, new() { Word = "毎朝", Reading = "まいあさ", Meaning = "every morning" } ] },
+        new() { Character = "何", Meaning = "what, how many", OnyomiReading = "カ", KunyomiReading = "なに, なん", StrokeCount = 7, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "何", Reading = "なに", Meaning = "what" }, new() { Word = "何時", Reading = "なんじ", Meaning = "what time" } ] },
+        new() { Character = "食", Meaning = "eat, food", OnyomiReading = "ショク, ジキ", KunyomiReading = "た-, く-", StrokeCount = 9, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "食べる", Reading = "たべる", Meaning = "to eat" }, new() { Word = "食事", Reading = "しょくじ", Meaning = "meal" } ] },
+        new() { Character = "飲", Meaning = "drink", OnyomiReading = "イン", KunyomiReading = "の-", StrokeCount = 12, JlptLevel = 5, Grade = 3,
+            Examples = [ new() { Word = "飲む", Reading = "のむ", Meaning = "to drink" }, new() { Word = "飲み物", Reading = "のみもの", Meaning = "beverage" } ] },
+        new() { Character = "見", Meaning = "see, look", OnyomiReading = "ケン", KunyomiReading = "み-", StrokeCount = 7, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "見る", Reading = "みる", Meaning = "to see, to watch" } ] },
+        new() { Character = "書", Meaning = "write", OnyomiReading = "ショ", KunyomiReading = "か-", StrokeCount = 10, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "書く", Reading = "かく", Meaning = "to write" }, new() { Word = "書道", Reading = "しょどう", Meaning = "calligraphy" } ] },
+        new() { Character = "読", Meaning = "read", OnyomiReading = "ドク, トク", KunyomiReading = "よ-", StrokeCount = 14, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "読む", Reading = "よむ", Meaning = "to read" } ] },
+        new() { Character = "聞", Meaning = "hear, ask", OnyomiReading = "ブン, モン", KunyomiReading = "き-, き-こえる", StrokeCount = 14, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "聞く", Reading = "きく", Meaning = "to hear, to ask" } ] },
+        new() { Character = "話", Meaning = "speak, story", OnyomiReading = "ワ", KunyomiReading = "はな-, はなし", StrokeCount = 13, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "話す", Reading = "はなす", Meaning = "to speak" }, new() { Word = "話", Reading = "はなし", Meaning = "story, talk" } ] },
+        new() { Character = "来", Meaning = "come", OnyomiReading = "ライ", KunyomiReading = "く-, き-, こ-", StrokeCount = 7, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "来る", Reading = "くる", Meaning = "to come" }, new() { Word = "来年", Reading = "らいねん", Meaning = "next year" } ] },
+        new() { Character = "行", Meaning = "go", OnyomiReading = "コウ, ギョウ", KunyomiReading = "い-, ゆ-, おこな-", StrokeCount = 6, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "行く", Reading = "いく", Meaning = "to go" }, new() { Word = "旅行", Reading = "りょこう", Meaning = "travel" } ] },
+        new() { Character = "出", Meaning = "exit, come out", OnyomiReading = "シュツ, スイ", KunyomiReading = "で-, だ-", StrokeCount = 5, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "出る", Reading = "でる", Meaning = "to come out, to exit" } ] },
+        new() { Character = "入", Meaning = "enter", OnyomiReading = "ニュウ", KunyomiReading = "い-, はい-", StrokeCount = 2, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "入る", Reading = "はいる", Meaning = "to enter" }, new() { Word = "入口", Reading = "いりぐち", Meaning = "entrance" } ] },
+        new() { Character = "車", Meaning = "car, vehicle", OnyomiReading = "シャ", KunyomiReading = "くるま", StrokeCount = 7, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "車", Reading = "くるま", Meaning = "car" }, new() { Word = "電車", Reading = "でんしゃ", Meaning = "electric train" } ] },
+        new() { Character = "電", Meaning = "electricity", OnyomiReading = "デン", KunyomiReading = "", StrokeCount = 13, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "電話", Reading = "でんわ", Meaning = "telephone" }, new() { Word = "電車", Reading = "でんしゃ", Meaning = "electric train" } ] },
+        new() { Character = "駅", Meaning = "station", OnyomiReading = "エキ", KunyomiReading = "", StrokeCount = 14, JlptLevel = 5, Grade = 3,
+            Examples = [ new() { Word = "駅", Reading = "えき", Meaning = "station" } ] },
+        new() { Character = "道", Meaning = "road, way", OnyomiReading = "ドウ, トウ", KunyomiReading = "みち", StrokeCount = 12, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "道", Reading = "みち", Meaning = "road, way" }, new() { Word = "北海道", Reading = "ほっかいどう", Meaning = "Hokkaido" } ] },
+        new() { Character = "会", Meaning = "meeting, society", OnyomiReading = "カイ, エ", KunyomiReading = "あ-", StrokeCount = 6, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "会社", Reading = "かいしゃ", Meaning = "company" }, new() { Word = "会う", Reading = "あう", Meaning = "to meet" } ] },
+        new() { Character = "社", Meaning = "company, society", OnyomiReading = "シャ, ジャ", KunyomiReading = "やしろ", StrokeCount = 7, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "会社", Reading = "かいしゃ", Meaning = "company" } ] },
+        new() { Character = "父", Meaning = "father", OnyomiReading = "フ", KunyomiReading = "ちち", StrokeCount = 4, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "父", Reading = "ちち", Meaning = "father (own)" }, new() { Word = "お父さん", Reading = "おとうさん", Meaning = "father (polite)" } ] },
+        new() { Character = "母", Meaning = "mother", OnyomiReading = "ボ", KunyomiReading = "はは", StrokeCount = 5, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "母", Reading = "はは", Meaning = "mother (own)" }, new() { Word = "お母さん", Reading = "おかあさん", Meaning = "mother (polite)" } ] },
+        new() { Character = "友", Meaning = "friend", OnyomiReading = "ユウ", KunyomiReading = "とも", StrokeCount = 4, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "友達", Reading = "ともだち", Meaning = "friend" } ] },
+        new() { Character = "半", Meaning = "half", OnyomiReading = "ハン", KunyomiReading = "なか-", StrokeCount = 5, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "一時半", Reading = "いちじはん", Meaning = "one-thirty" } ] },
+        new() { Character = "今", Meaning = "now", OnyomiReading = "コン, キン", KunyomiReading = "いま", StrokeCount = 4, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "今日", Reading = "きょう", Meaning = "today" }, new() { Word = "今", Reading = "いま", Meaning = "now" } ] },
+        new() { Character = "前", Meaning = "front, before", OnyomiReading = "ゼン", KunyomiReading = "まえ", StrokeCount = 9, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "前", Reading = "まえ", Meaning = "front, before" }, new() { Word = "午前", Reading = "ごぜん", Meaning = "AM, morning" } ] },
+        new() { Character = "後", Meaning = "after, behind", OnyomiReading = "ゴ, コウ", KunyomiReading = "のち, うし-, あと", StrokeCount = 9, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "後", Reading = "あと", Meaning = "after" }, new() { Word = "午後", Reading = "ごご", Meaning = "PM, afternoon" } ] },
+        new() { Character = "午", Meaning = "noon", OnyomiReading = "ゴ", KunyomiReading = "", StrokeCount = 4, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "午前", Reading = "ごぜん", Meaning = "AM" }, new() { Word = "午後", Reading = "ごご", Meaning = "PM" } ] },
+        new() { Character = "朝", Meaning = "morning", OnyomiReading = "チョウ", KunyomiReading = "あさ", StrokeCount = 12, JlptLevel = 5, Grade = 3,
+            Examples = [ new() { Word = "朝", Reading = "あさ", Meaning = "morning" }, new() { Word = "今朝", Reading = "けさ", Meaning = "this morning" } ] },
+        new() { Character = "晩", Meaning = "evening", OnyomiReading = "バン", KunyomiReading = "", StrokeCount = 12, JlptLevel = 5, Grade = 0,
+            Examples = [ new() { Word = "今晩", Reading = "こんばん", Meaning = "tonight" }, new() { Word = "晩ご飯", Reading = "ばんごはん", Meaning = "dinner" } ] },
+        new() { Character = "夜", Meaning = "night", OnyomiReading = "ヤ", KunyomiReading = "よる, よ", StrokeCount = 8, JlptLevel = 5, Grade = 2,
+            Examples = [ new() { Word = "夜", Reading = "よる", Meaning = "night" } ] },
+        new() { Character = "花", Meaning = "flower", OnyomiReading = "カ", KunyomiReading = "はな", StrokeCount = 7, JlptLevel = 5, Grade = 1,
+            Examples = [ new() { Word = "花", Reading = "はな", Meaning = "flower" }, new() { Word = "花火", Reading = "はなび", Meaning = "fireworks" } ] },
+    ];
 }

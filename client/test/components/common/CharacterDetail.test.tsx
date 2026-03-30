@@ -30,6 +30,7 @@ describe('CharacterDetail', () => {
     ;(api.getCharacterDetail as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
       character: 'あ',
       romanization: 'a',
+      type: 'hiragana',
       proficiency: 80,
     } satisfies KanaCharacter)
 

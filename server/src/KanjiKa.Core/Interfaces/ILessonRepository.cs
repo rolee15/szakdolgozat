@@ -26,5 +26,7 @@ public interface ILessonRepository
 
     Task<List<LessonCompletion>> GetLessonCompletionsByUserAsync(int userId);
 
+    Task<List<Proficiency>> GetDueReviewsAsync(int userId);
+
     Task SaveChangesAsync();
 }

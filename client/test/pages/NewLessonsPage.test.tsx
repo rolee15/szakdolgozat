@@ -3,8 +3,8 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import NewLessonsPage from '@/pages/NewLessonsPage'
 
 const navigateSpy = vi.fn()
-vi.mock('react-router-dom', async (orig) => {
-  const actual = await orig()
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual<typeof import('react-router-dom')>('react-router-dom')
   return {
     ...actual,
     useNavigate: () => navigateSpy,

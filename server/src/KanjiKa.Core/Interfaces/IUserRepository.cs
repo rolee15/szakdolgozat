@@ -10,5 +10,7 @@ public interface IUserRepository
 
     Task UpdateAsync(User user);
 
+    Task UpdateRefreshTokenAsync(int userId, string refreshToken, DateTimeOffset expiry);
+
     Task SaveChangesAsync();
 }

@@ -4,22 +4,26 @@ vi.mock('@/services/routes', () => ({
   API_KANA_URL: 'http://api.test/characters',
 }));
 
-import kanaService from '@/services/kanaService';
+vi.mock('@/services/apiClient', () => ({
+  apiFetch: vi.fn(),
+}));
 
-function mockFetchOk(data: unknown) {
-  const json = vi.fn().mockResolvedValue(data);
-  const okResponse = { ok: true, json } as unknown as Response;
-  (globalThis as { fetch: typeof fetch }).fetch = vi.fn().mockResolvedValue(okResponse) as unknown as typeof fetch;
+import kanaService from '@/services/kanaService';
+import { apiFetch } from '@/services/apiClient';
+
+const mockApiFetch = apiFetch as ReturnType<typeof vi.fn>;
+
+function mockOk(data: unknown) {
+  mockApiFetch.mockResolvedValue({ ok: true, json: vi.fn().mockResolvedValue(data) });
 }
 
-function mockFetchNotOk() {
-  const notOkResponse = { ok: false, json: vi.fn() } as unknown as Response;
-  (globalThis as { fetch: typeof fetch }).fetch = vi.fn().mockResolvedValue(notOkResponse) as unknown as typeof fetch;
+function mockNotOk() {
+  mockApiFetch.mockResolvedValue({ ok: false, json: vi.fn() });
 }
 
 describe('kanaService', () => {
   beforeEach(() => {
-    vi.restoreAllMocks();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
@@ -32,20 +36,16 @@ describe('kanaService', () => {
         { id: 1, symbol: 'あ', romanization: 'a', type: 0 },
         { id: 2, symbol: 'い', romanization: 'i', type: 0 },
       ];
-      mockFetchOk(payload);
+      mockOk(payload);
 
-      const type = 'hiragana';
-      const result = await kanaService.getCharacters(type);
+      const result = await kanaService.getCharacters('hiragana');
 
       expect(result).toEqual(payload);
-      expect(global.fetch).toHaveBeenCalledTimes(1);
-      const fetchMock = global.fetch as unknown as ReturnType<typeof vi.fn>;
-      const url = fetchMock.mock.calls[0][0] as string;
-      expect(url).toBe(`http://api.test/characters/${type}?userId=1`);
+      expect(mockApiFetch).toHaveBeenCalledWith('http://api.test/characters/hiragana');
     });
 
     it('throws on non-ok response', async () => {
-      mockFetchNotOk();
+      mockNotOk();
       await expect(kanaService.getCharacters('katakana')).rejects.toThrow('Failed to fetch characters');
     });
   });
@@ -53,45 +53,33 @@ describe('kanaService', () => {
   describe('getCharacterDetail', () => {
     it('fetches character detail and returns JSON', async () => {
       const payload = { id: 1, symbol: 'あ', romanization: 'a', type: 0 };
-      mockFetchOk(payload);
+      mockOk(payload);
 
-      const type = 'hiragana';
-      const char = 'a';
-      const result = await kanaService.getCharacterDetail(type, char);
+      const result = await kanaService.getCharacterDetail('hiragana', 'a');
 
       expect(result).toEqual(payload);
-      expect(global.fetch).toHaveBeenCalledTimes(1);
-      const fetchMock = global.fetch as unknown as ReturnType<typeof vi.fn>;
-      const url = fetchMock.mock.calls[0][0] as string;
-      expect(url).toBe(`http://api.test/characters/${type}/${char}?userId=1`);
+      expect(mockApiFetch).toHaveBeenCalledWith('http://api.test/characters/hiragana/a');
     });
 
     it('throws on non-ok response', async () => {
-      mockFetchNotOk();
+      mockNotOk();
       await expect(kanaService.getCharacterDetail('hiragana', 'a')).rejects.toThrow('Failed to fetch character details');
     });
   });
 
   describe('getExamples', () => {
     it('fetches examples and returns JSON', async () => {
-      const payload = [
-        { id: 1, text: 'ありがとう' },
-      ];
-      mockFetchOk(payload);
+      const payload = [{ id: 1, text: 'ありがとう' }];
+      mockOk(payload);
 
-      const type = 'hiragana';
-      const char = 'a';
-      const result = await kanaService.getExamples(type, char);
+      const result = await kanaService.getExamples('hiragana', 'a');
 
       expect(result).toEqual(payload);
-      expect(global.fetch).toHaveBeenCalledTimes(1);
-      const fetchMock = global.fetch as unknown as ReturnType<typeof vi.fn>;
-      const url = fetchMock.mock.calls[0][0] as string;
-      expect(url).toBe(`http://api.test/characters/${type}/${char}/examples?userId=1`);
+      expect(mockApiFetch).toHaveBeenCalledWith('http://api.test/characters/hiragana/a/examples');
     });
 
     it('throws on non-ok response', async () => {
-      mockFetchNotOk();
+      mockNotOk();
       await expect(kanaService.getExamples('hiragana', 'a')).rejects.toThrow('Failed to fetch character examples');
     });
   });

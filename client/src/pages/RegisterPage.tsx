@@ -1,12 +1,16 @@
 import { FormEvent, useMemo, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
 
 const RegisterPage = () => {
+  const { register } = useAuth();
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [touched, setTouched] = useState<{ email?: boolean; password?: boolean; confirmPassword?: boolean }>({});
-  const [submittedEmail, setSubmittedEmail] = useState<string | null>(null);
+  const [serverError, setServerError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const emailError = useMemo(() => {
     if (!touched.email) return "";
@@ -30,11 +34,11 @@ const RegisterPage = () => {
     return "";
   }, [confirmPassword, password, touched.confirmPassword]);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setTouched({ email: true, password: true, confirmPassword: true });
+    setServerError(null);
 
-    // Re-evaluate errors after marking all as touched
     const currentEmailError = (() => {
       if (!email) return "Email is required";
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -56,26 +60,16 @@ const RegisterPage = () => {
       return;
     }
 
-    // Do not actually send email yet; just show confirmation message
-    setSubmittedEmail(email);
+    setIsSubmitting(true);
+    try {
+      await register(email, password);
+      navigate("/lessons", { replace: true });
+    } catch (err) {
+      setServerError(err instanceof Error ? err.message : "Registration failed");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
-
-  if (submittedEmail) {
-    return (
-      <div className="mx-auto my-24 max-w-md p-4">
-        <h1 className="text-2xl font-semibold mb-4">Check your inbox</h1>
-        <p className="text-lg">
-          We have sent a confirmation email to <span className="font-medium">{submittedEmail}</span>. Please click the
-          link in the email to verify your account.
-        </p>
-        <div className="mt-6">
-          <NavLink to="/login" className="text-blue-500">
-            Back to login
-          </NavLink>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="mx-auto my-24 max-w-md p-4">
@@ -148,9 +142,21 @@ const RegisterPage = () => {
           )}
         </div>
 
-        <button type="submit" className="text-xl">
-          Register
+        {serverError && (
+          <p className="mb-4 text-red-600" role="alert">
+            {serverError}
+          </p>
+        )}
+
+        <button type="submit" className="text-xl" disabled={isSubmitting}>
+          {isSubmitting ? "Registering..." : "Register"}
         </button>
+
+        <div className="mt-4">
+          <NavLink to="/login" className="text-blue-500">
+            Already have an account? Log in
+          </NavLink>
+        </div>
       </form>
     </div>
   );
