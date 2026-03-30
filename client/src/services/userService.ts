@@ -18,7 +18,10 @@ const api = {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password }),
         });
-        if (!response.ok) throw new Error('Failed to register');
+        if (!response.ok) {
+            const body = await response.json().catch(() => ({}));
+            throw new Error(body.errorMessage ?? 'Failed to register');
+        }
         return response.json();
     },
 

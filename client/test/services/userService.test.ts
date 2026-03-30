@@ -68,9 +68,24 @@ describe('userService', () => {
       expect(init?.body).toBe(JSON.stringify({ email, password }));
     });
 
-    it('throws on non-ok response', async () => {
-      mockFetchNotOk();
+    it('throws on non-ok response when json body is unavailable', async () => {
+      const notOkResponse = {
+        ok: false,
+        json: vi.fn().mockRejectedValue(new Error('no json')),
+      } as unknown as Response;
+      (globalThis as { fetch: typeof fetch }).fetch = vi.fn().mockResolvedValue(notOkResponse) as unknown as typeof fetch;
+
       await expect(userService.register('x@y.z', 'p')).rejects.toThrow('Failed to register');
+    });
+
+    it('throws backend error message on non-ok response', async () => {
+      const notOkResponse = {
+        ok: false,
+        json: vi.fn().mockResolvedValue({ errorMessage: 'Username already exists' }),
+      } as unknown as Response;
+      (globalThis as { fetch: typeof fetch }).fetch = vi.fn().mockResolvedValue(notOkResponse) as unknown as typeof fetch;
+
+      await expect(userService.register('x@y.z', 'p')).rejects.toThrow('Username already exists');
     });
   });
 
