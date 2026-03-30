@@ -7,7 +7,7 @@ on:
     types: [opened, synchronize, reopened]
 
 jobs:
-  build-and-analyze:
+  build-test-analyze:
     name: Build, Test, and Analyze
     runs-on: windows-latest
     permissions:
@@ -21,7 +21,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      # ---------- Client (frontend) ----------
+      # ---------- Setup tools ----------
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -29,6 +34,11 @@ jobs:
           cache: 'npm'
           cache-dependency-path: client/package-lock.json
 
+      # ---------- Install SonarScanner for .NET ----------
+      - name: Install SonarScanner for .NET
+        run: dotnet tool install --global dotnet-sonarscanner
+
+      # ---------- Client (frontend) ----------
       - name: Install client dependencies
         working-directory: client
         run: npm ci
@@ -37,23 +47,46 @@ jobs:
         working-directory: client
         run: npm run test:coverage -- --run
 
-      # ---------- Server (backend) ----------
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.0.x'
+      # ---------- Begin SonarQube Analysis ----------
+      - name: Begin SonarQube analysis
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        run: |
+          dotnet sonarscanner begin `
+            /k:"rolee15_szakdolgozat" `
+            /o:"rolee15" `
+            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
+            /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}" `
+            /d:sonar.javascript.lcov.reportPaths="client/coverage/lcov.info" `
+            /d:sonar.cs.opencover.reportsPaths="server/TestResults/**/coverage.opencover.xml" `
+            /d:sonar.sources="client/src,server/src" `
+            /d:sonar.tests="client/test,server/test" `
+            /d:sonar.test.inclusions="client/test/**/*.*,server/test/**/*.*" `
+            /d:sonar.exclusions="**/node_modules/**,**/dist/**,**/build/**,client/coverage/**,client/public/**,server/TestResults/**,server/docs/**,docs/**"
 
+      # ---------- Build and test server ----------
       - name: Build server
         run: dotnet build .\server\KanjiKa.sln --configuration Release
 
       - name: Run server tests with coverage (OpenCover)
         run: |
           dotnet test .\server\KanjiKa.sln `
+            --configuration Release `
             --logger trx `
             --results-directory .\server\TestResults `
             --collect:"XPlat Code Coverage" `
             -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
 
+      # ---------- End SonarQube Analysis ----------
+      - name: End SonarQube analysis
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+
+      # ---------- Publish test results ----------
       - name: Publish .NET test results
         uses: dorny/test-reporter@dc3a92680fcc15842eef52e8c4606ea7ce6bd3f3 # v2.1.1
         if: success() || failure()
@@ -61,18 +94,3 @@ jobs:
           name: Unit Tests
           path: server/TestResults/*.trx
           reporter: dotnet-trx
-
-      # ---------- Upload coverage artifacts ----------
-      - name: Upload client coverage (lcov)
-        uses: actions/upload-artifact@v4
-        with:
-          name: client-coverage
-          path: client/coverage/lcov.info
-          if-no-files-found: error
-
-      - name: Upload server coverage (OpenCover)
-        uses: actions/upload-artifact@v4
-        with:
-          name: server-coverage
-          path: server/TestResults/**/coverage.opencover.xml
-          if-no-files-found: error

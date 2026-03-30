@@ -10,3 +10,6 @@ gen
 # env files
 .env
 .env.*
+
+# SonarQube
+.sonarqube/
