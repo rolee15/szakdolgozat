@@ -16,13 +16,32 @@ import ReviewLessonsPage from "./pages/ReviewLessonsPage";
 import FlashCardPage from "./pages/FlashCardPage";
 import KanjiListPage from "./pages/KanjiListPage";
 import KanjiDetailPage from "./pages/KanjiDetailPage";
+import ChangePasswordPage from "./pages/ChangePasswordPage";
+import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
+import AdminUsersPage from "./pages/admin/AdminUsersPage";
+import AdminUserDetailPage from "./pages/admin/AdminUserDetailPage";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 
 const queryClient = new QueryClient();
 
-function ProtectedRoute({ children }: { children: ReactNode }) {
+function AuthenticatedRoute({ children }: { children: ReactNode }) {
   const { isAuthenticated } = useAuth();
   if (!isAuthenticated) return <Navigate to="/login" replace />;
+  return <>{children}</>;
+}
+
+function ProtectedRoute({ children }: { children: ReactNode }) {
+  const { isAuthenticated, mustChangePassword } = useAuth();
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (mustChangePassword) return <Navigate to="/change-password" replace />;
+  return <>{children}</>;
+}
+
+function AdminRoute({ children }: { children: ReactNode }) {
+  const { isAuthenticated, mustChangePassword, isAdmin } = useAuth();
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (mustChangePassword) return <Navigate to="/change-password" replace />;
+  if (!isAdmin) return <Navigate to="/" replace />;
   return <>{children}</>;
 }
 
@@ -47,6 +66,14 @@ const router = createBrowserRouter([
       {
         path: "forgot-password",
         element: <ForgotPasswordPage />,
+      },
+      {
+        path: "change-password",
+        element: (
+          <AuthenticatedRoute>
+            <ChangePasswordPage />
+          </AuthenticatedRoute>
+        ),
       },
       {
         path: "hiragana",
@@ -118,6 +145,30 @@ const router = createBrowserRouter([
           <ProtectedRoute>
             <KanjiDetailPage />
           </ProtectedRoute>
+        ),
+      },
+      {
+        path: "admin",
+        element: (
+          <AdminRoute>
+            <AdminDashboardPage />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "admin/users",
+        element: (
+          <AdminRoute>
+            <AdminUsersPage />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "admin/users/:id",
+        element: (
+          <AdminRoute>
+            <AdminUserDetailPage />
+          </AdminRoute>
         ),
       },
     ],

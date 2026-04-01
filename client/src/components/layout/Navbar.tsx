@@ -4,7 +4,7 @@ import MenuItem from "./MenuItem";
 import { useAuth } from "@/context/AuthContext";
 
 const Navbar = () => {
-  const { isAuthenticated, username, logout } = useAuth();
+  const { isAuthenticated, username, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
   const menuItems = ["Hiragana", "Katakana", "Lessons"];
 
@@ -30,6 +30,11 @@ const Navbar = () => {
               <NavLink to="/flashcards" className="text-white hover:text-gray-300">
                 Flash Cards
               </NavLink>
+              {isAdmin && (
+                <NavLink to="/admin" className="text-white hover:text-gray-300">
+                  Admin
+                </NavLink>
+              )}
             </nav>
 
             <div className="flex items-center space-x-4">

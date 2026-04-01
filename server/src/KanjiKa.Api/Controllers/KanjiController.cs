@@ -37,4 +37,16 @@ public class KanjiController : ControllerBase
         if (result == null) return NotFound();
         return Ok(result);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetPaged(
+        [FromQuery] int? jlptLevel,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 50)
+    {
+        if (page < 1) page = 1;
+        if (pageSize < 1 || pageSize > 200) pageSize = 50;
+        var result = await _kanjiService.GetKanjiPagedAsync(jlptLevel, page, pageSize, GetUserId());
+        return Ok(result);
+    }
 }

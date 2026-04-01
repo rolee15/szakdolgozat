@@ -84,6 +84,91 @@ describe('Auth pages', () => {
 
       expect(await screen.findByText(/at least 8 characters/i)).toBeInTheDocument()
     })
+
+    it('shows email validation error when email is empty on blur', async () => {
+      render(
+        <MemoryRouter>
+          <RegisterPage />
+        </MemoryRouter>
+      )
+
+      fireEvent.blur(screen.getByLabelText(/^email/i))
+
+      expect(await screen.findByText(/email is required/i)).toBeInTheDocument()
+    })
+
+    it('shows invalid email error for bad email format', async () => {
+      render(
+        <MemoryRouter>
+          <RegisterPage />
+        </MemoryRouter>
+      )
+
+      fireEvent.change(screen.getByLabelText(/^email/i), { target: { value: 'notanemail' } })
+      fireEvent.blur(screen.getByLabelText(/^email/i))
+
+      expect(await screen.findByText(/valid email/i)).toBeInTheDocument()
+    })
+
+    it('shows confirm password mismatch error on blur', async () => {
+      render(
+        <MemoryRouter>
+          <RegisterPage />
+        </MemoryRouter>
+      )
+
+      fireEvent.change(screen.getByLabelText(/^password$/i), { target: { value: 'password123' } })
+      fireEvent.change(screen.getByLabelText(/confirm password/i), { target: { value: 'different' } })
+      fireEvent.blur(screen.getByLabelText(/confirm password/i))
+
+      expect(await screen.findByText(/passwords do not match/i)).toBeInTheDocument()
+    })
+
+    it('shows confirm password required error when empty on blur', async () => {
+      render(
+        <MemoryRouter>
+          <RegisterPage />
+        </MemoryRouter>
+      )
+
+      fireEvent.blur(screen.getByLabelText(/confirm password/i))
+
+      expect(await screen.findByText(/please confirm your password/i)).toBeInTheDocument()
+    })
+
+    it('shows server error on failed registration', async () => {
+      mockRegister.mockRejectedValue(new Error('Email already in use'))
+
+      render(
+        <MemoryRouter>
+          <RegisterPage />
+        </MemoryRouter>
+      )
+
+      fireEvent.change(screen.getByLabelText(/^email/i), { target: { value: 'a@b.c' } })
+      fireEvent.change(screen.getByLabelText(/^password$/i), { target: { value: 'password123' } })
+      fireEvent.change(screen.getByLabelText(/confirm password/i), { target: { value: 'password123' } })
+      fireEvent.submit(screen.getByRole('button', { name: /^register$/i }).closest('form') as HTMLFormElement)
+
+      expect(await screen.findByRole('alert')).toHaveTextContent('Email already in use')
+    })
+
+    it('shows generic error on non-Error registration failure', async () => {
+      mockRegister.mockRejectedValue('unexpected failure')
+
+      render(
+        <MemoryRouter>
+          <RegisterPage />
+        </MemoryRouter>
+      )
+
+      fireEvent.change(screen.getByLabelText(/^email/i), { target: { value: 'a@b.c' } })
+      fireEvent.change(screen.getByLabelText(/^password$/i), { target: { value: 'password123' } })
+      fireEvent.change(screen.getByLabelText(/confirm password/i), { target: { value: 'password123' } })
+      fireEvent.submit(screen.getByRole('button', { name: /^register$/i }).closest('form') as HTMLFormElement)
+
+      expect(await screen.findByRole('alert')).toHaveTextContent(/registration failed/i)
+    })
   })
 
   describe('ForgotPasswordPage', () => {

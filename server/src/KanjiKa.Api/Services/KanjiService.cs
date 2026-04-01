@@ -1,3 +1,4 @@
+using KanjiKa.Core.DTOs;
 using KanjiKa.Core.DTOs.Kanji;
 using KanjiKa.Core.Interfaces;
 
@@ -50,6 +51,28 @@ public class KanjiService : IKanjiService
                 Reading = e.Reading,
                 Meaning = e.Meaning
             }).ToList()
+        };
+    }
+
+    public async Task<PagedResult<KanjiDto>> GetKanjiPagedAsync(int? jlptLevel, int page, int pageSize, int userId)
+    {
+        var (items, totalCount) = await _kanjiRepository.GetPagedAsync(jlptLevel, page, pageSize);
+        return new PagedResult<KanjiDto>
+        {
+            Items = items.Select(k => new KanjiDto
+            {
+                Character = k.Character,
+                Meaning = k.Meaning,
+                OnyomiReading = k.OnyomiReading,
+                KunyomiReading = k.KunyomiReading,
+                JlptLevel = k.JlptLevel,
+                StrokeCount = k.StrokeCount,
+                Proficiency = 0,
+                SrsStage = "Locked"
+            }).ToList(),
+            TotalCount = totalCount,
+            Page = page,
+            PageSize = pageSize
         };
     }
 }

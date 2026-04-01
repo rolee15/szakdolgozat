@@ -13,4 +13,5 @@ public class LoginDto
     public string? Token { get; set; }
     public string? RefreshToken { get; set; }
     public int? UserId { get; set; }
+    public bool MustChangePassword { get; set; }
 }

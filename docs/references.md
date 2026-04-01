@@ -21,7 +21,7 @@ Every entry must also appear as an inline comment (`// [N] ...`) directly above 
 ## Data Sources
 
 [1] The Electronic Dictionary Research and Development Group (EDRDG), "KANJIDIC2 Project," *edrdg.org*, <http://www.edrdg.org/wiki/index.php/KANJIDIC_Project>. Accessed: 2025-01-01. License: CC BY-SA 4.0.
-Used in: *(not yet integrated into source files)*
+Used in: `server/src/KanjiKa.Data/Kanjidic2Parser.cs`
 
 [2] T. Breen and the EDRDG, "JMdict/EDICT Dictionary Project," *edrdg.org*, <http://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project>. Accessed: 2025-01-01. License: CC BY-SA 4.0.
 Used in: *(not yet integrated into source files)*
@@ -36,7 +36,8 @@ Used in: *(not yet integrated into source files)*
 
 ## Code References
 
-*(Add entries here as external code is incorporated. Start numbering from [5].)*
+[5] MDN Web Docs, "Intersection Observer API," *Mozilla Developer Network*, <https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API>. Accessed: 2026-03-30. License: CC BY-SA 2.5.
+Used in: `client/src/pages/KanjiListPage.tsx`
 
 ---
 

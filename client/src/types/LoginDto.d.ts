@@ -4,4 +4,5 @@ type LoginDto = {
   token?: string;
   refreshToken?: string;
   userId?: number;
+  mustChangePassword?: boolean;
 };

@@ -57,4 +57,42 @@ describe('ReviewLessonsPage', () => {
     // The next question should appear
     expect(await screen.findByText('Q2')).toBeInTheDocument()
   })
+
+  it('shows incorrect feedback with correct answer when answer is wrong', async () => {
+    const svc = lessonService as unknown as { getLessonReviews: ReturnType<typeof vi.fn>, postLessonReviewCheck: ReturnType<typeof vi.fn> }
+    svc.getLessonReviews.mockResolvedValue([{ question: 'Q1' }, { question: 'Q2' }])
+    svc.postLessonReviewCheck.mockResolvedValue({ isCorrect: false, correctAnswer: 'correct_ans' })
+
+    render(<ReviewLessonsPage />)
+
+    expect(await screen.findByText('Q1')).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: 'SubmitMock' }))
+
+    expect(await screen.findByText(/incorrect/i)).toBeInTheDocument()
+    expect(await screen.findByText('correct_ans')).toBeInTheDocument()
+  })
+
+  it('shows error when getLessonReviews fails', async () => {
+    const svc = lessonService as unknown as { getLessonReviews: ReturnType<typeof vi.fn> }
+    svc.getLessonReviews.mockRejectedValue(new Error('Network failure'))
+
+    render(<ReviewLessonsPage />)
+
+    expect(await screen.findByText(/error: network failure/i)).toBeInTheDocument()
+  })
+
+  it('shows error when postLessonReviewCheck fails', async () => {
+    const svc = lessonService as unknown as { getLessonReviews: ReturnType<typeof vi.fn>, postLessonReviewCheck: ReturnType<typeof vi.fn> }
+    svc.getLessonReviews.mockResolvedValue([{ question: 'Q1' }])
+    svc.postLessonReviewCheck.mockRejectedValue(new Error('Check failed'))
+
+    render(<ReviewLessonsPage />)
+
+    expect(await screen.findByText('Q1')).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: 'SubmitMock' }))
+
+    expect(await screen.findByText(/error: check failed/i)).toBeInTheDocument()
+  })
 })

@@ -2921,6 +2921,149 @@ public static class TestData
                         CompletionDate = DateTimeOffset.UtcNow.AddDays(-40),
                     }
                 ]
+            },
+
+            new User
+            {
+                Username = "testuser2@kanjika.com",
+                PasswordHash = hash,
+                PasswordSalt = salt,
+                Proficiencies =
+                [
+                    new Proficiency
+                    {
+                        Character = characters[0],
+                        SrsStage = SrsStage.Apprentice1,
+                        NextReviewDate = DateTimeOffset.UtcNow.AddHours(-1),
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-1),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Character = characters[1],
+                        SrsStage = SrsStage.Apprentice2,
+                        NextReviewDate = DateTimeOffset.UtcNow.AddHours(-2),
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-3),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Character = characters[2],
+                        SrsStage = SrsStage.Apprentice3,
+                        NextReviewDate = DateTimeOffset.UtcNow.AddHours(-5),
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-5),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-2)
+                    },
+                    new Proficiency
+                    {
+                        Character = characters[3],
+                        SrsStage = SrsStage.Apprentice4,
+                        NextReviewDate = DateTimeOffset.UtcNow.AddDays(-1),
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-7),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-2)
+                    },
+                    new Proficiency
+                    {
+                        Character = characters[4],
+                        SrsStage = SrsStage.Guru1,
+                        NextReviewDate = DateTimeOffset.UtcNow.AddDays(-3),
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-14),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-7)
+                    },
+                    new Proficiency
+                    {
+                        Character = characters[5],
+                        SrsStage = SrsStage.Guru2,
+                        NextReviewDate = DateTimeOffset.UtcNow.AddDays(-5),
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-28),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-14)
+                    },
+                    new Proficiency
+                    {
+                        Character = characters[6],
+                        SrsStage = SrsStage.Apprentice1,
+                        NextReviewDate = DateTimeOffset.UtcNow.AddHours(-3),
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-2),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Character = characters[7],
+                        SrsStage = SrsStage.Apprentice2,
+                        NextReviewDate = DateTimeOffset.UtcNow.AddHours(-6),
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-4),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
+                    },
+                    new Proficiency
+                    {
+                        Character = characters[8],
+                        SrsStage = SrsStage.Apprentice3,
+                        NextReviewDate = DateTimeOffset.UtcNow.AddDays(-2),
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-6),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-2)
+                    },
+                    new Proficiency
+                    {
+                        Character = characters[9],
+                        SrsStage = SrsStage.Guru1,
+                        NextReviewDate = DateTimeOffset.UtcNow.AddDays(-4),
+                        LearnedAt = DateTimeOffset.UtcNow.AddDays(-21),
+                        LastPracticed = DateTimeOffset.UtcNow.AddDays(-7)
+                    }
+                ],
+                LessonCompletions =
+                [
+                    new LessonCompletion
+                    {
+                        Character = characters[0],
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-1),
+                    },
+                    new LessonCompletion
+                    {
+                        Character = characters[1],
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-3),
+                    },
+                    new LessonCompletion
+                    {
+                        Character = characters[2],
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-5),
+                    },
+                    new LessonCompletion
+                    {
+                        Character = characters[3],
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-7),
+                    },
+                    new LessonCompletion
+                    {
+                        Character = characters[4],
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-14),
+                    },
+                    new LessonCompletion
+                    {
+                        Character = characters[5],
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-28),
+                    },
+                    new LessonCompletion
+                    {
+                        Character = characters[6],
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-2),
+                    },
+                    new LessonCompletion
+                    {
+                        Character = characters[7],
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-4),
+                    },
+                    new LessonCompletion
+                    {
+                        Character = characters[8],
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-6),
+                    },
+                    new LessonCompletion
+                    {
+                        Character = characters[9],
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-21),
+                    }
+                ]
             }
         ];
     }

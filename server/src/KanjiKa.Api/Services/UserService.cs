@@ -45,7 +45,7 @@ public class UserService : IUserService
             };
         }
 
-        var (token, refreshToken) = _tokenService.GenerateToken(user.Id, user.Username);
+        var (token, refreshToken) = _tokenService.GenerateToken(user.Id, user.Username, user.Role, user.MustChangePassword);
         var expiryDays = int.Parse(_config["Jwt:RefreshTokenExpirationDays"] ?? "7");
         await _repo.UpdateRefreshTokenAsync(user.Id, refreshToken, DateTimeOffset.UtcNow.AddDays(expiryDays));
 
@@ -54,7 +54,8 @@ public class UserService : IUserService
             IsSuccess = true,
             Token = token,
             RefreshToken = refreshToken,
-            UserId = user.Id
+            UserId = user.Id,
+            MustChangePassword = user.MustChangePassword
         };
     }
 
@@ -81,7 +82,7 @@ public class UserService : IUserService
         await _repo.AddAsync(newUser);
         await _repo.SaveChangesAsync();
 
-        var (token, refreshToken) = _tokenService.GenerateToken(newUser.Id, newUser.Username);
+        var (token, refreshToken) = _tokenService.GenerateToken(newUser.Id, newUser.Username, UserRole.User);
         var expiryDays = int.Parse(_config["Jwt:RefreshTokenExpirationDays"] ?? "7");
         await _repo.UpdateRefreshTokenAsync(newUser.Id, refreshToken, DateTimeOffset.UtcNow.AddDays(expiryDays));
 
@@ -142,5 +143,37 @@ public class UserService : IUserService
             Token = newToken
         };
         return await Task.FromResult(result);
+    }
+
+    public async Task<ChangePasswordDto> ChangePassword(int userId, string currentPassword, string newPassword)
+    {
+        var user = await _repo.GetByIdAsync(userId);
+        if (user == null)
+        {
+            return new ChangePasswordDto
+            {
+                IsSuccess = false,
+                ErrorMessage = "User not found"
+            };
+        }
+
+        var isVerified = _hashService.Verify(currentPassword, user.PasswordHash, user.PasswordSalt);
+        if (!isVerified)
+        {
+            return new ChangePasswordDto
+            {
+                IsSuccess = false,
+                ErrorMessage = "Current password is incorrect"
+            };
+        }
+
+        var (passwordHash, passwordSalt) = _hashService.Hash(newPassword);
+        user.PasswordHash = passwordHash;
+        user.PasswordSalt = passwordSalt;
+        user.MustChangePassword = false;
+        await _repo.UpdateAsync(user);
+        await _repo.SaveChangesAsync();
+
+        return new ChangePasswordDto { IsSuccess = true };
     }
 }

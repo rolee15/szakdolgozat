@@ -32,7 +32,7 @@ public class KanjiKaDataSeeder
 
         if (!_context.Kanjis.Any())
         {
-            var kanjis = TestData.GetKanjiData();
+            var kanjis = Kanjidic2Parser.Parse();
             await _context.Kanjis.AddRangeAsync(kanjis);
         }
 

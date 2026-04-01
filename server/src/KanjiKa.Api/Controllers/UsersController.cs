@@ -1,4 +1,7 @@
-﻿using KanjiKa.Core.Interfaces;
+﻿using System.Security.Claims;
+using KanjiKa.Core.DTOs.User;
+using KanjiKa.Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 
@@ -65,5 +68,19 @@ public class UsersController : ControllerBase
     {
         var refreshTokenDto = await _userService.RefreshToken(token, refreshToken);
         return Ok(refreshTokenDto);
+    }
+
+    [Authorize]
+    [HttpPost("changePassword")]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var result = await _userService.ChangePassword(userId, request.CurrentPassword, request.NewPassword);
+        if (!result.IsSuccess)
+        {
+            return BadRequest(result);
+        }
+
+        return Ok(result);
     }
 }

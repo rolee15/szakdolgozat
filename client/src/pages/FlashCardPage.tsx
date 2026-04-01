@@ -6,6 +6,9 @@ import styles from "./FlashCardPage.module.css";
 
 type KanaMode = "hiragana" | "katakana";
 
+// Must match the transition duration in FlashCardPage.module.css (.card { transition: transform 0.55s })
+const FLIP_DURATION_MS = 550;
+
 const FlashCardPage = () => {
   const [mode, setMode] = useState<KanaMode>("hiragana");
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -31,13 +34,18 @@ const FlashCardPage = () => {
   };
 
   const advance = () => {
-    const nextIndex = currentIndex + 1;
-    if (nextIndex >= total) {
-      setSessionDone(true);
-    } else {
-      setCurrentIndex(nextIndex);
-      setIsFlipped(false);
-    }
+    // Flip the card back to its front face first, then change the card data only
+    // after the CSS flip-back animation finishes. This prevents the next card's
+    // back-face content from briefly showing through while the card is mid-rotation.
+    setIsFlipped(false);
+    setTimeout(() => {
+      const nextIndex = currentIndex + 1;
+      if (nextIndex >= total) {
+        setSessionDone(true);
+      } else {
+        setCurrentIndex(nextIndex);
+      }
+    }, FLIP_DURATION_MS);
   };
 
   const handleKnowIt = () => {

@@ -28,6 +28,11 @@ public class KanjiKaDbContext : DbContext
     {
         modelBuilder.Entity<User>(entity => {
             entity.HasKey(user => user.Id);
+            entity.Property(u => u.Role)
+                .HasConversion<int>()
+                .HasDefaultValue(UserRole.User);
+            entity.Property(u => u.MustChangePassword)
+                .HasDefaultValue(false);
             entity.HasMany(x => x.Proficiencies)
                 .WithOne(proficiency => proficiency.User)
                 .HasForeignKey(proficiency => proficiency.UserId);

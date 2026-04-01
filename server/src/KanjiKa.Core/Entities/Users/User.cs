@@ -13,6 +13,9 @@ public class User
     public required byte[] PasswordHash { get; set; }
     public required byte[] PasswordSalt { get; set; }
 
+    public UserRole Role { get; set; } = UserRole.User;
+    public bool MustChangePassword { get; set; }
+
     public string? RefreshToken { get; set; }
     public DateTimeOffset? RefreshTokenExpiry { get; set; }
 

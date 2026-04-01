@@ -42,4 +42,30 @@ describe('Navbar', () => {
     expect(screen.getByText('testuser')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /logout/i })).toBeInTheDocument()
   })
+
+  it('shows Admin link when user is admin', () => {
+    mockUseAuth.mockReturnValue({ isAuthenticated: true, username: 'adminuser', isAdmin: true, logout: vi.fn() })
+
+    render(
+      <MemoryRouter>
+        <Navbar />
+      </MemoryRouter>
+    )
+
+    const adminLink = screen.getByRole('link', { name: /^admin$/i })
+    expect(adminLink).toBeInTheDocument()
+    expect(adminLink).toHaveAttribute('href', '/admin')
+  })
+
+  it('hides Admin link when user is not admin', () => {
+    mockUseAuth.mockReturnValue({ isAuthenticated: true, username: 'regularuser', isAdmin: false, logout: vi.fn() })
+
+    render(
+      <MemoryRouter>
+        <Navbar />
+      </MemoryRouter>
+    )
+
+    expect(screen.queryByRole('link', { name: /^admin$/i })).not.toBeInTheDocument()
+  })
 })

@@ -4,6 +4,7 @@ using KanjiKa.Core.Interfaces;
 using KanjiKa.Core.Services;
 using KanjiKa.Data;
 using KanjiKa.Data.Repositories;
+using KanjiKa.Data.Seeders;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -41,6 +42,7 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IEmailService, DummyEmailService>();
 builder.Services.AddScoped<IKanjiRepository, KanjiRepository>();
 builder.Services.AddScoped<IKanjiService, KanjiService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
 
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowReactApp",
@@ -53,7 +55,11 @@ builder.Services.AddCors(options => {
 var conn = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<KanjiKaDbContext>(options =>
     options.UseNpgsql(conn));
-builder.Services.AddScoped<KanjiKaDataSeeder>();
+
+if (builder.Environment.IsDevelopment())
+    builder.Services.AddScoped<IDataSeeder, DevelopmentDataSeeder>();
+else
+    builder.Services.AddScoped<IDataSeeder, ProductionDataSeeder>();
 
 var app = builder.Build();
 
@@ -71,11 +77,32 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
-// Seed test data.
-if (app.Environment.IsDevelopment())
+using (var scope = app.Services.CreateScope())
 {
-    using var scope = app.Services.CreateScope();
-    var seeder = scope.ServiceProvider.GetRequiredService<KanjiKaDataSeeder>();
+    var db = scope.ServiceProvider.GetRequiredService<KanjiKaDbContext>();
+
+    if (app.Environment.IsDevelopment())
+    {
+        // Terminate other connections to avoid EnsureDeletedAsync timeout
+        try
+        {
+            await db.Database.ExecuteSqlRawAsync(
+                "SELECT pg_terminate_backend(pg_stat_activity.pid) " +
+                "FROM pg_stat_activity " +
+                "WHERE pg_stat_activity.datname = current_database() " +
+                "AND pid <> pg_backend_pid();");
+        }
+        catch
+        {
+            // Database may not exist yet on first run
+        }
+
+        await db.Database.EnsureDeletedAsync();
+    }
+
+    await db.Database.MigrateAsync();
+
+    var seeder = scope.ServiceProvider.GetRequiredService<IDataSeeder>();
     await seeder.SeedAsync();
 }
 

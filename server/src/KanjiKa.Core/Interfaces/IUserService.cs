@@ -9,4 +9,5 @@ public interface IUserService
     Task<ForgotPasswordDto> ForgotPassword(string email);
     Task<ResetPasswordDto> ResetPassword(string username, string resetCode, string newPassword);
     Task<RefreshTokenDto> RefreshToken(string token, string refreshToken);
+    Task<ChangePasswordDto> ChangePassword(int userId, string currentPassword, string newPassword);
 }

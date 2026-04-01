@@ -43,6 +43,23 @@ const api = {
         });
         if (!response.ok) throw new Error('Failed to refresh token');
         return response.json();
+    },
+
+    async changePassword(currentPassword: string, newPassword: string): Promise<{ isSuccess: boolean; errorMessage?: string }> {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_USERS_URL}/changePassword`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            },
+            body: JSON.stringify({ currentPassword, newPassword }),
+        });
+        if (!response.ok) {
+            const body = await response.json().catch(() => ({}));
+            throw new Error(body.errorMessage ?? 'Failed to change password');
+        }
+        return response.json();
     }
 };
 

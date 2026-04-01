@@ -6,7 +6,7 @@ import KanjiListPage from '@/pages/KanjiListPage'
 
 vi.mock('@/services/kanjiService', () => ({
   default: {
-    getKanjiByLevel: vi.fn(),
+    getKanjiPaged: vi.fn(),
     getKanjiDetail: vi.fn(),
   },
 }))
@@ -54,6 +54,16 @@ const sampleKanji: KanjiCharacter[] = [
   },
 ]
 
+function makePagedResult(items: KanjiCharacter[], page = 1): PagedResult<KanjiCharacter> {
+  return {
+    items,
+    totalCount: items.length,
+    page,
+    pageSize: 50,
+    hasNextPage: false,
+  }
+}
+
 describe('KanjiListPage', () => {
   beforeEach(() => {
     vi.restoreAllMocks()
@@ -64,11 +74,12 @@ describe('KanjiListPage', () => {
   })
 
   it('renders_level_selector_buttons', async () => {
-    const svc = kanjiService as unknown as { getKanjiByLevel: ReturnType<typeof vi.fn> }
-    svc.getKanjiByLevel.mockResolvedValue([])
+    const svc = kanjiService as unknown as { getKanjiPaged: ReturnType<typeof vi.fn> }
+    svc.getKanjiPaged.mockResolvedValue(makePagedResult([]))
 
     renderPage()
 
+    expect(screen.getByRole('button', { name: 'All' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'N5' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'N4' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'N3' })).toBeInTheDocument()
@@ -77,8 +88,8 @@ describe('KanjiListPage', () => {
   })
 
   it('renders_kanji_cards_when_data_loaded', async () => {
-    const svc = kanjiService as unknown as { getKanjiByLevel: ReturnType<typeof vi.fn> }
-    svc.getKanjiByLevel.mockResolvedValue(sampleKanji)
+    const svc = kanjiService as unknown as { getKanjiPaged: ReturnType<typeof vi.fn> }
+    svc.getKanjiPaged.mockResolvedValue(makePagedResult(sampleKanji))
 
     renderPage()
 
@@ -89,22 +100,22 @@ describe('KanjiListPage', () => {
   })
 
   it('changes_level_on_button_click', async () => {
-    const svc = kanjiService as unknown as { getKanjiByLevel: ReturnType<typeof vi.fn> }
-    svc.getKanjiByLevel.mockResolvedValue([])
+    const svc = kanjiService as unknown as { getKanjiPaged: ReturnType<typeof vi.fn> }
+    svc.getKanjiPaged.mockResolvedValue(makePagedResult([]))
 
     renderPage()
 
     fireEvent.click(screen.getByRole('button', { name: 'N4' }))
 
     await vi.waitFor(() => {
-      expect(svc.getKanjiByLevel).toHaveBeenCalledWith(4)
+      expect(svc.getKanjiPaged).toHaveBeenCalledWith(1, 4)
     })
   })
 
   it('shows_loading_state', async () => {
-    const svc = kanjiService as unknown as { getKanjiByLevel: ReturnType<typeof vi.fn> }
+    const svc = kanjiService as unknown as { getKanjiPaged: ReturnType<typeof vi.fn> }
     // Never resolves during this test
-    svc.getKanjiByLevel.mockReturnValue(new Promise(() => {}))
+    svc.getKanjiPaged.mockReturnValue(new Promise(() => {}))
 
     renderPage()
 
@@ -112,8 +123,8 @@ describe('KanjiListPage', () => {
   })
 
   it('shows_error_state_when_query_fails', async () => {
-    const svc = kanjiService as unknown as { getKanjiByLevel: ReturnType<typeof vi.fn> }
-    svc.getKanjiByLevel.mockRejectedValue(new Error('Network error'))
+    const svc = kanjiService as unknown as { getKanjiPaged: ReturnType<typeof vi.fn> }
+    svc.getKanjiPaged.mockRejectedValue(new Error('Network error'))
 
     renderPage()
 
@@ -121,8 +132,8 @@ describe('KanjiListPage', () => {
   })
 
   it('renders_heading', async () => {
-    const svc = kanjiService as unknown as { getKanjiByLevel: ReturnType<typeof vi.fn> }
-    svc.getKanjiByLevel.mockResolvedValue([])
+    const svc = kanjiService as unknown as { getKanjiPaged: ReturnType<typeof vi.fn> }
+    svc.getKanjiPaged.mockResolvedValue(makePagedResult([]))
 
     renderPage()
 
@@ -130,8 +141,8 @@ describe('KanjiListPage', () => {
   })
 
   it('kanji_card_shows_srs_stage', async () => {
-    const svc = kanjiService as unknown as { getKanjiByLevel: ReturnType<typeof vi.fn> }
-    svc.getKanjiByLevel.mockResolvedValue(sampleKanji)
+    const svc = kanjiService as unknown as { getKanjiPaged: ReturnType<typeof vi.fn> }
+    svc.getKanjiPaged.mockResolvedValue(makePagedResult(sampleKanji))
 
     renderPage()
 
@@ -139,14 +150,23 @@ describe('KanjiListPage', () => {
     expect(await screen.findByText('Apprentice')).toBeInTheDocument()
   })
 
-  it('defaults_to_N5_level_on_initial_render', async () => {
-    const svc = kanjiService as unknown as { getKanjiByLevel: ReturnType<typeof vi.fn> }
-    svc.getKanjiByLevel.mockResolvedValue([])
+  it('defaults_to_All_level_on_initial_render', async () => {
+    const svc = kanjiService as unknown as { getKanjiPaged: ReturnType<typeof vi.fn> }
+    svc.getKanjiPaged.mockResolvedValue(makePagedResult([]))
 
     renderPage()
 
     await vi.waitFor(() => {
-      expect(svc.getKanjiByLevel).toHaveBeenCalledWith(5)
+      expect(svc.getKanjiPaged).toHaveBeenCalledWith(1, null)
     })
+  })
+
+  it('shows_total_count_after_data_loads', async () => {
+    const svc = kanjiService as unknown as { getKanjiPaged: ReturnType<typeof vi.fn> }
+    svc.getKanjiPaged.mockResolvedValue(makePagedResult(sampleKanji))
+
+    renderPage()
+
+    expect(await screen.findByText('Showing 2 of 2 kanji')).toBeInTheDocument()
   })
 })
