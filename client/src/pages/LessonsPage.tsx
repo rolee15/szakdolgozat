@@ -5,6 +5,7 @@ import { NavLink } from "react-router-dom";
 const LessonsPage = () => {
   const [lessonsCount, setLessonsCount] = useState<number>(0);
   const [reviewsCount, setReviewsCount] = useState<number>(0);
+  const [writingCount, setWritingCount] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -24,9 +25,18 @@ const LessonsPage = () => {
         setError(err instanceof Error ? err.message : "Failed to load review count");
       }
     };
+    const fetchWritingCount = async () => {
+      try {
+        const count = await api.getWritingReviewsCount();
+        setWritingCount(count.count);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed to load writing review count");
+      }
+    };
 
     fetchLessonsCount();
     fetchReviewsCount();
+    fetchWritingCount();
   }, []);
 
   if (error) {
@@ -53,6 +63,16 @@ const LessonsPage = () => {
             <div className="flex flex-col items-center justify-center">
               <span className="text-4xl font-bold text-black">{reviewsCount}</span>
               <span className="ml-2 text-black">{reviewsCount === 1 ? "item" : "items"} to review</span>
+            </div>
+          </div>
+        </NavLink>
+
+        <NavLink to="/lessons/writing" className="w-full md:w-1/2">
+          <div className="bg-blue-500 hover:bg-blue-600 transition-colors rounded-lg shadow-md p-6 flex flex-col items-center justify-center text-center hover:shadow-lg">
+            <h2 className="text-2xl font-bold text-black mb-2">Writing</h2>
+            <div className="flex flex-col items-center justify-center">
+              <span className="text-4xl font-bold text-black">{writingCount}</span>
+              <span className="ml-2 text-black">{writingCount === 1 ? "item" : "items"} to practice</span>
             </div>
           </div>
         </NavLink>

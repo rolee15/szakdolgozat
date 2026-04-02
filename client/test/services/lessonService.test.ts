@@ -144,4 +144,72 @@ describe('lessonService', () => {
       );
     });
   });
+
+  describe('getWritingReviewsCount', () => {
+    it('fetches writing review count and returns JSON', async () => {
+      const payload = { count: 4 };
+      mockOk(payload);
+
+      const result = await lessonService.getWritingReviewsCount();
+
+      expect(result).toEqual(payload);
+      expect(mockApiFetch).toHaveBeenCalledWith('http://api.test/lessons/writing-reviews/count');
+    });
+
+    it('throws when response is not ok', async () => {
+      mockNotOk();
+      await expect(lessonService.getWritingReviewsCount()).rejects.toThrow(
+        'Failed to fetch writing review count'
+      );
+    });
+  });
+
+  describe('getWritingReviews', () => {
+    it('fetches writing reviews and returns JSON', async () => {
+      const payload = [
+        { characterId: 1, romanization: 'a', characterType: 'hiragana' },
+        { characterId: 2, romanization: 'i', characterType: 'hiragana' },
+      ];
+      mockOk(payload);
+
+      const result = await lessonService.getWritingReviews();
+
+      expect(result).toEqual(payload);
+      expect(mockApiFetch).toHaveBeenCalledWith('http://api.test/lessons/writing-reviews');
+    });
+
+    it('throws when response is not ok', async () => {
+      mockNotOk();
+      await expect(lessonService.getWritingReviews()).rejects.toThrow(
+        'Failed to fetch writing reviews'
+      );
+    });
+  });
+
+  describe('postWritingReviewCheck', () => {
+    it('posts writing review check and returns JSON', async () => {
+      const payload = { isCorrect: true, correctAnswer: 'あ' };
+      mockOk(payload);
+
+      const characterId = 5;
+      const typedCharacter = 'あ';
+      const result = await lessonService.postWritingReviewCheck(characterId, typedCharacter);
+
+      expect(result).toEqual(payload);
+      expect(mockApiFetch).toHaveBeenCalledWith(
+        'http://api.test/lessons/writing-reviews/check',
+        expect.objectContaining({
+          method: 'POST',
+          body: JSON.stringify({ characterId, typedCharacter }),
+        })
+      );
+    });
+
+    it('throws when response is not ok', async () => {
+      mockNotOk();
+      await expect(lessonService.postWritingReviewCheck(1, 'あ')).rejects.toThrow(
+        'Failed to post writing review answer'
+      );
+    });
+  });
 });

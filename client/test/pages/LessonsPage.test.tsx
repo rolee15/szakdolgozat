@@ -7,6 +7,7 @@ vi.mock('@/services/lessonService', () => ({
   default: {
     getLessonsCount: vi.fn(),
     getLessonReviewsCount: vi.fn(),
+    getWritingReviewsCount: vi.fn(),
   }
 }))
 
@@ -21,9 +22,10 @@ describe('LessonsPage', () => {
   })
 
   it('renders counts and links to learn and review', async () => {
-    const svc = lessonService as unknown as { getLessonsCount: ReturnType<typeof vi.fn>, getLessonReviewsCount: ReturnType<typeof vi.fn> }
+    const svc = lessonService as unknown as { getLessonsCount: ReturnType<typeof vi.fn>, getLessonReviewsCount: ReturnType<typeof vi.fn>, getWritingReviewsCount: ReturnType<typeof vi.fn> }
     svc.getLessonsCount.mockResolvedValue({ count: 5 })
     svc.getLessonReviewsCount.mockResolvedValue({ count: 3 })
+    svc.getWritingReviewsCount.mockResolvedValue({ count: 2 })
 
     render(
       <MemoryRouter>
@@ -43,9 +45,10 @@ describe('LessonsPage', () => {
   })
 
   it('renders error when fetching fails', async () => {
-    const svc = lessonService as unknown as { getLessonsCount: ReturnType<typeof vi.fn>, getLessonReviewsCount: ReturnType<typeof vi.fn> }
+    const svc = lessonService as unknown as { getLessonsCount: ReturnType<typeof vi.fn>, getLessonReviewsCount: ReturnType<typeof vi.fn>, getWritingReviewsCount: ReturnType<typeof vi.fn> }
     svc.getLessonsCount.mockRejectedValue(new Error('boom'))
     svc.getLessonReviewsCount.mockResolvedValue({ count: 0 })
+    svc.getWritingReviewsCount.mockResolvedValue({ count: 0 })
 
     render(
       <MemoryRouter>

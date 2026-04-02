@@ -61,4 +61,25 @@ public class LessonsController : ControllerBase
         var result = await _lessonService.CheckLessonReviewAnswerAsync(GetUserId(), answer);
         return Ok(result);
     }
+
+    [HttpGet("writing-reviews/count")]
+    public async Task<IActionResult> GetWritingReviewsCount()
+    {
+        var count = await _lessonService.GetWritingReviewsCountAsync(GetUserId());
+        return Ok(count);
+    }
+
+    [HttpGet("writing-reviews")]
+    public async Task<IActionResult> GetWritingReviews()
+    {
+        var reviewItems = await _lessonService.GetWritingReviewsAsync(GetUserId());
+        return Ok(reviewItems);
+    }
+
+    [HttpPost("writing-reviews/check")]
+    public async Task<IActionResult> CheckWritingReviewAnswer([FromBody] WritingReviewAnswerDto answer)
+    {
+        var result = await _lessonService.CheckWritingReviewAnswerAsync(GetUserId(), answer);
+        return Ok(result);
+    }
 }

@@ -20,6 +20,7 @@ import ChangePasswordPage from "./pages/ChangePasswordPage";
 import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
 import AdminUsersPage from "./pages/admin/AdminUsersPage";
 import AdminUserDetailPage from "./pages/admin/AdminUserDetailPage";
+import WritingPracticePage from "./pages/WritingPracticePage";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 
 const queryClient = new QueryClient();
@@ -128,6 +129,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <FlashCardPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "lessons/writing",
+        element: (
+          <ProtectedRoute>
+            <WritingPracticePage />
           </ProtectedRoute>
         ),
       },

@@ -53,7 +53,7 @@ Precondition: dev DB running, backend started, frontend started (see CLAUDE.md f
 
 ## 2. Navigation
 
-- [ ] Navbar links work: Hiragana, Katakana, Lessons, Kanji, Flash Cards
+- [ ] Navbar links work: Hiragana, Katakana, Lessons, Kanji, Flash Cards, Writing
 - [ ] Admin link visible in navbar for admin users only
 - [ ] Admin link hidden for regular users
 - [ ] Logo/brand link navigates to home or lessons
@@ -111,7 +111,33 @@ Precondition: dev DB running, backend started, frontend started (see CLAUDE.md f
 
 ---
 
-## 5. Flashcards (`/flashcards`)
+## 5. Writing Practice (`/writing`)
+
+### 5.1 Lessons Hub writing card (`/lessons`)
+
+- [ ] "Writing" card shows count of items due for writing practice
+- [ ] Click the Writing card -> navigates to `/writing`
+
+### 5.2 Writing Practice page (`/writing`)
+
+- [ ] Page shows romanization prompt in large text
+- [ ] Character type label ("Hiragana" / "Katakana") shown above the romanization
+- [ ] Input accepts romaji and auto-converts to hiragana when character type is hiragana
+- [ ] Input accepts romaji and auto-converts to katakana when character type is katakana
+- [ ] Pressing Enter submits the answer
+- [ ] Clicking the submit button submits the answer
+- [ ] Correct answer -> green feedback banner, input is disabled
+- [ ] Incorrect answer -> red feedback banner with user's answer and correct kana shown, input is disabled
+- [ ] Click "Continue" (or press Enter on feedback banner) -> advances to next item
+- [ ] Correct items are removed from the queue; incorrect items re-appear later
+- [ ] After all items reviewed -> "Writing practice complete!" message shown
+- [ ] When no items are due -> "No items to review." message shown
+- [ ] "Writing" link in navbar navigates to `/writing`
+- [ ] API failure -> error state shown, page does not crash
+
+---
+
+## 6. Flashcards (`/flashcards`)
 
 - [ ] Mode selector visible (Hiragana, Katakana; Kanji disabled)
 - [ ] Select a mode -> cards load
@@ -185,7 +211,35 @@ Precondition: dev DB running, backend started, frontend started (see CLAUDE.md f
 
 ---
 
-## 9. Error Handling
+## 9. Writing Practice (API)
+
+### 9.1 `GET /api/lessons/writing-reviews/count`
+
+- [ ] Authenticated request returns `{ "count": N }` where N equals the number of SRS-due characters for the user
+- [ ] `testuser2@kanjika.com` (10 due reviews) returns `{ "count": 10 }`
+- [ ] `testuser1@kanjika.com` (no due reviews) returns `{ "count": 0 }`
+- [ ] Unauthenticated request returns 401
+
+### 9.2 `GET /api/lessons/writing-reviews`
+
+- [ ] Returns an array of `{ characterId, romanization, characterType }` objects for all due characters
+- [ ] `characterType` is `"hiragana"` or `"katakana"` (lowercase)
+- [ ] Items are ordered by `nextReviewDate` ascending
+- [ ] `testuser1@kanjika.com` returns an empty array
+- [ ] Unauthenticated request returns 401
+
+### 9.3 `POST /api/lessons/writing-reviews/check`
+
+- [ ] Body `{ "characterId": <id>, "typedCharacter": "<correct symbol>" }` returns `{ "isCorrect": true, "correctAnswer": "<symbol>", "srsStage": N, "srsStageName": "...", "nextReviewDate": "..." }`
+- [ ] Body with wrong `typedCharacter` returns `{ "isCorrect": false, "correctAnswer": "<symbol>", ... }` and SRS stage is regressed
+- [ ] Correct answer advances SRS stage by one
+- [ ] Wrong answer regresses SRS stage by two (floored at Apprentice 1)
+- [ ] Request with unknown `characterId` returns 400 or 500 (ArgumentException)
+- [ ] Unauthenticated request returns 401
+
+---
+
+## 10. Error Handling
 
 - [ ] API failure (stop backend) -> frontend shows error state, does not crash
 - [ ] Refresh any protected page while logged in -> page loads correctly

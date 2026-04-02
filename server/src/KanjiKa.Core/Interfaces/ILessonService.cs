@@ -12,4 +12,7 @@ public interface ILessonService
     Task<LessonReviewsCountDto> GetLessonReviewsCountAsync(int userId);
     Task<IEnumerable<LessonReviewDto>> GetLessonReviewsAsync(int userId);
     Task<LessonReviewAnswerResultDto> CheckLessonReviewAnswerAsync(int userId, LessonReviewAnswerDto answer);
+    Task<LessonReviewsCountDto> GetWritingReviewsCountAsync(int userId);
+    Task<IEnumerable<WritingReviewDto>> GetWritingReviewsAsync(int userId);
+    Task<LessonReviewAnswerResultDto> CheckWritingReviewAnswerAsync(int userId, WritingReviewAnswerDto answer);
 }

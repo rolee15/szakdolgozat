@@ -39,6 +39,9 @@ Used in: *(not yet integrated into source files)*
 [5] MDN Web Docs, "Intersection Observer API," *Mozilla Developer Network*, <https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API>. Accessed: 2026-03-30. License: CC BY-SA 2.5.
 Used in: `client/src/pages/KanjiListPage.tsx`
 
+[6] WanaKana Contributors, "WanaKana: JavaScript/TypeScript utility library for detecting and transliterating Hiragana, Katakana, and Romaji," *GitHub*, <https://github.com/WaniKani/WanaKana>. Accessed: 2026-04-02. License: MIT.
+Used in: `client/src/components/lessons/WritingInput.tsx`
+
 ---
 
 ## Notes

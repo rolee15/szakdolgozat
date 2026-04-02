@@ -39,6 +39,27 @@ const api = {
         });
         if (!response.ok) throw new Error('Failed to post lesson review answer');
         return response.json();
+    },
+
+    async getWritingReviewsCount(): Promise<LessonReviewCount> {
+        const response = await apiFetch(`${API_LESSONS_URL}/writing-reviews/count`);
+        if (!response.ok) throw new Error('Failed to fetch writing review count');
+        return response.json();
+    },
+
+    async getWritingReviews(): Promise<WritingReview[]> {
+        const response = await apiFetch(`${API_LESSONS_URL}/writing-reviews`);
+        if (!response.ok) throw new Error('Failed to fetch writing reviews');
+        return response.json();
+    },
+
+    async postWritingReviewCheck(characterId: number, typedCharacter: string): Promise<LessonReviewResult> {
+        const response = await apiFetch(`${API_LESSONS_URL}/writing-reviews/check`, {
+            method: 'POST',
+            body: JSON.stringify({ characterId, typedCharacter }),
+        });
+        if (!response.ok) throw new Error('Failed to post writing review answer');
+        return response.json();
     }
   };
 

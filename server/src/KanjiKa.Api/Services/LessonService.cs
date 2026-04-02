@@ -158,6 +158,68 @@ internal class LessonService : ILessonService
         };
     }
 
+    public async Task<LessonReviewsCountDto> GetWritingReviewsCountAsync(int userId)
+    {
+        var dueReviews = await _repo.GetDueReviewsAsync(userId);
+
+        return new LessonReviewsCountDto
+        {
+            Count = dueReviews.Count
+        };
+    }
+
+    public async Task<IEnumerable<WritingReviewDto>> GetWritingReviewsAsync(int userId)
+    {
+        var dueReviews = await _repo.GetDueReviewsAsync(userId);
+        var ordered = dueReviews
+            .OrderBy(p => p.NextReviewDate)
+            .Select(p => new WritingReviewDto
+            {
+                CharacterId = p.Character!.Id,
+                Romanization = p.Character.Romanization,
+                CharacterType = p.Character.Type.ToString().ToLower()
+            })
+            .ToList();
+
+        return ordered;
+    }
+
+    public async Task<LessonReviewAnswerResultDto> CheckWritingReviewAnswerAsync(int userId, WritingReviewAnswerDto answer)
+    {
+        Character? character = await _repo.GetCharacterByIdAsync(answer.CharacterId);
+        if (character == null)
+            throw new ArgumentException("Character not found", nameof(answer));
+
+        Proficiency? proficiency = await _repo.GetProficiencyAsync(userId, character.Id);
+        if (proficiency is null)
+            throw new ArgumentException("No proficiency record found for this character.", nameof(answer));
+
+        if (answer.TypedCharacter == character.Symbol)
+        {
+            proficiency.AnswerCorrectly();
+            await _repo.SaveChangesAsync();
+            return new LessonReviewAnswerResultDto
+            {
+                IsCorrect = true,
+                CorrectAnswer = character.Symbol,
+                SrsStage = (int)proficiency.SrsStage,
+                SrsStageName = SrsIntervals.GetStageName(proficiency.SrsStage),
+                NextReviewDate = proficiency.NextReviewDate
+            };
+        }
+
+        proficiency.AnswerIncorrectly();
+        await _repo.SaveChangesAsync();
+        return new LessonReviewAnswerResultDto
+        {
+            IsCorrect = false,
+            CorrectAnswer = character.Symbol,
+            SrsStage = (int)proficiency.SrsStage,
+            SrsStageName = SrsIntervals.GetStageName(proficiency.SrsStage),
+            NextReviewDate = proficiency.NextReviewDate
+        };
+    }
+
     private static LessonDto MapToLessonDto(Character character)
     {
         return new LessonDto
