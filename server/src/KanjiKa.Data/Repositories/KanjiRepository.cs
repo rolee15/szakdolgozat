@@ -45,4 +45,12 @@ public class KanjiRepository : IKanjiRepository
             .ToListAsync();
         return (items, totalCount);
     }
+
+    public async Task<Dictionary<int, KanjiProficiency>> GetProficienciesForUserAsync(int userId, List<int> kanjiIds)
+    {
+        return await _context.KanjiProficiencies
+            .Where(kp => kp.UserId == userId && kanjiIds.Contains(kp.KanjiId))
+            .AsNoTracking()
+            .ToDictionaryAsync(kp => kp.KanjiId);
+    }
 }

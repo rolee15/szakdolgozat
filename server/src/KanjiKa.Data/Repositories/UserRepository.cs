@@ -18,6 +18,11 @@ public class UserRepository : IUserRepository
         return _db.Users.FirstOrDefaultAsync(u => u.Username == username);
     }
 
+    public Task<User?> GetByRefreshTokenAsync(string refreshToken)
+    {
+        return _db.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
+    }
+
     public Task<User?> GetByIdAsync(int id)
     {
         return _db.Users.FindAsync(id).AsTask();

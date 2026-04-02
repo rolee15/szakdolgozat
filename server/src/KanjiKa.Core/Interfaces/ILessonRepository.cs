@@ -14,6 +14,8 @@ public interface ILessonRepository
 
     Task<List<Character>> GetNewCharactersAsync(List<Proficiency> proficiencies);
 
+    Task<int> CountNewCharactersAsync(List<int> learnedCharacterIds);
+
     Task<Character?> GetCharacterByIdAsync(int characterId);
 
     Task<Character?> GetCharacterBySymbolAsync(string symbol);

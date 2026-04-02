@@ -19,6 +19,9 @@ public class User
     public string? RefreshToken { get; set; }
     public DateTimeOffset? RefreshTokenExpiry { get; set; }
 
+    public string? PasswordResetCode { get; set; }
+    public DateTimeOffset? PasswordResetExpiry { get; set; }
+
     public List<Proficiency> Proficiencies { get; set; } = new();
     public List<LessonCompletion> LessonCompletions { get; set; } = new();
 }

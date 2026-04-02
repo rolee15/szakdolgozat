@@ -18,19 +18,20 @@ internal class LessonService : ILessonService
         _repo = repo;
     }
 
-    // BUG: Lessons count should be dependent on the number of new characters still not learned
     public async Task<LessonsCountDto> GetLessonsCountAsync(int userId)
     {
-        User? user = await _repo.GetUserAsync(userId);
+        User? user = await _repo.GetUserWithProficienciesAsync(userId);
         if (user == null) throw new ArgumentException("User not found", nameof(userId));
 
         int lessonsLearnedToday = await _repo.CountLessonsCompletedTodayAsync(userId);
         int count = LessonsPerDayCount - lessonsLearnedToday;
 
+        List<int> learnedCharacterIds = user.Proficiencies.Select(p => p.CharacterId).ToList();
+        int unlearnedCount = await _repo.CountNewCharactersAsync(learnedCharacterIds);
+
         return new LessonsCountDto
         {
-            // Maybe throw exception to be consistent with other methods?
-            Count = Math.Min(Math.Max(count, 0), 15)
+            Count = Math.Min(Math.Clamp(count, 0, LessonsPerDayCount), unlearnedCount)
         };
     }
 

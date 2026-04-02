@@ -18,6 +18,7 @@ public class KanjiKaDbContext : DbContext
     public DbSet<Example> Examples { get; set; }
     public DbSet<Kanji> Kanjis { get; set; }
     public DbSet<KanjiExample> KanjiExamples { get; set; }
+    public DbSet<KanjiProficiency> KanjiProficiencies { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -70,6 +71,12 @@ public class KanjiKaDbContext : DbContext
 
         modelBuilder.Entity<KanjiExample>(entity => {
             entity.HasKey(e => e.Id);
+        });
+
+        modelBuilder.Entity<KanjiProficiency>(entity => {
+            entity.HasKey(kp => kp.Id);
+            entity.HasIndex(kp => new { kp.UserId, kp.KanjiId }).IsUnique();
+            entity.Property(kp => kp.SrsStage).HasConversion<int>();
         });
     }
 }

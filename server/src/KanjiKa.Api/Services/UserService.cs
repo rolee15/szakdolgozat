@@ -1,11 +1,10 @@
-﻿using KanjiKa.Core.DTOs.User;
+using KanjiKa.Core.DTOs.User;
 using KanjiKa.Core.Entities.Users;
 using KanjiKa.Core.Interfaces;
 using Microsoft.Extensions.Configuration;
 
 namespace KanjiKa.Api.Services;
 
-// TODO: implement reset code
 public class UserService : IUserService
 {
     private readonly IEmailService _emailService;
@@ -97,7 +96,17 @@ public class UserService : IUserService
 
     public async Task<ForgotPasswordDto> ForgotPassword(string email)
     {
-        await _emailService.SendEmail(email, "Forgot Password", "Reset code: 12345");
+        var user = await _repo.GetByUsernameAsync(email);
+        if (user != null)
+        {
+            var code = Random.Shared.Next(100000, 1000000).ToString();
+            user.PasswordResetCode = code;
+            user.PasswordResetExpiry = DateTimeOffset.UtcNow.AddMinutes(15);
+            await _repo.UpdateAsync(user);
+            await _repo.SaveChangesAsync();
+            await _emailService.SendEmail(email, "Forgot Password", $"Reset code: {code}");
+        }
+
         return new ForgotPasswordDto();
     }
 
@@ -113,8 +122,10 @@ public class UserService : IUserService
             };
         }
 
-        // check reset code
-        if (resetCode != "12345")
+        if (user.PasswordResetCode == null
+            || !string.Equals(user.PasswordResetCode, resetCode, StringComparison.OrdinalIgnoreCase)
+            || user.PasswordResetExpiry == null
+            || user.PasswordResetExpiry < DateTimeOffset.UtcNow)
         {
             return new ResetPasswordDto
             {
@@ -126,6 +137,8 @@ public class UserService : IUserService
         var (passwordHash, passwordSalt) = _hashService.Hash(newPassword);
         user.PasswordHash = passwordHash;
         user.PasswordSalt = passwordSalt;
+        user.PasswordResetCode = null;
+        user.PasswordResetExpiry = null;
         await _repo.UpdateAsync(user);
         await _repo.SaveChangesAsync();
 
@@ -137,12 +150,17 @@ public class UserService : IUserService
 
     public async Task<RefreshTokenDto> RefreshToken(string token, string refreshToken)
     {
-        var newToken = "test23456";
-        var result = new RefreshTokenDto
+        var user = await _repo.GetByRefreshTokenAsync(refreshToken);
+        if (user == null || user.RefreshTokenExpiry <= DateTimeOffset.UtcNow)
         {
-            Token = newToken
-        };
-        return await Task.FromResult(result);
+            return new RefreshTokenDto { Token = string.Empty };
+        }
+
+        var (newToken, newRefreshToken) = _tokenService.GenerateToken(user.Id, user.Username, user.Role, user.MustChangePassword);
+        var expiryDays = int.Parse(_config["Jwt:RefreshTokenExpirationDays"] ?? "7");
+        await _repo.UpdateRefreshTokenAsync(user.Id, newRefreshToken, DateTimeOffset.UtcNow.AddDays(expiryDays));
+
+        return new RefreshTokenDto { Token = newToken };
     }
 
     public async Task<ChangePasswordDto> ChangePassword(int userId, string currentPassword, string newPassword)

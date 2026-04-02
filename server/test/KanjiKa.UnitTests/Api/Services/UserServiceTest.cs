@@ -118,20 +118,39 @@ public class UserServiceTest
     }
 
     [Fact]
-    public async Task ForgotPassword_SendsEmail_ReturnsDto()
+    public async Task ForgotPassword_UserFound_SendsEmailWithCode()
     {
+        var user = new User { Id = 1, Username = "e@x.com", PasswordHash = [1], PasswordSalt = [2] };
         var repo = new Mock<IUserRepository>();
         var hash = new Mock<IHashService>();
         var token = new Mock<ITokenService>();
         var email = new Mock<IEmailService>();
+        repo.Setup(r => r.GetByUsernameAsync("e@x.com")).ReturnsAsync(user);
+        repo.Setup(r => r.UpdateAsync(user)).Returns(Task.CompletedTask);
+        repo.Setup(r => r.SaveChangesAsync()).Returns(Task.CompletedTask);
         email.Setup(e => e.SendEmail("e@x.com", It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask).Verifiable();
 
         var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
         ForgotPasswordDto result = await service.ForgotPassword("e@x.com");
 
         Assert.NotNull(result);
-        repo.Verify();
-        email.Verify();
+        email.Verify(e => e.SendEmail("e@x.com", It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task ForgotPassword_UserNotFound_ReturnsWithoutSendingEmail()
+    {
+        var repo = new Mock<IUserRepository>();
+        var hash = new Mock<IHashService>();
+        var token = new Mock<ITokenService>();
+        var email = new Mock<IEmailService>();
+        repo.Setup(r => r.GetByUsernameAsync(It.IsAny<string>())).ReturnsAsync((User?)null);
+
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
+        ForgotPasswordDto result = await service.ForgotPassword("unknown@x.com");
+
+        Assert.NotNull(result);
+        email.Verify(e => e.SendEmail(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
     }
 
     [Fact]
@@ -168,7 +187,15 @@ public class UserServiceTest
     [Fact]
     public async Task ResetPassword_ValidCode_UpdatesPasswordAndSaves()
     {
-        var user = new User { Id = 1, Username = "u", PasswordHash = [1], PasswordSalt = [2] };
+        var user = new User
+        {
+            Id = 1,
+            Username = "u",
+            PasswordHash = [1],
+            PasswordSalt = [2],
+            PasswordResetCode = "12345",
+            PasswordResetExpiry = DateTimeOffset.UtcNow.AddMinutes(10)
+        };
         var repo = new Mock<IUserRepository>();
         var hash = new Mock<IHashService>();
         var token = new Mock<ITokenService>();
@@ -184,21 +211,73 @@ public class UserServiceTest
         Assert.True(result.IsSuccess);
         Assert.Equal(new byte[] { 7 }, user.PasswordHash);
         Assert.Equal(new byte[] { 6 }, user.PasswordSalt);
+        Assert.Null(user.PasswordResetCode);
         repo.Verify();
     }
 
     [Fact]
-    public async Task RefreshToken_ReturnsNewToken()
+    public async Task RefreshToken_ValidToken_ReturnsNewAccessToken()
+    {
+        var user = new User
+        {
+            Id = 1,
+            Username = "u",
+            PasswordHash = [1],
+            PasswordSalt = [2],
+            RefreshToken = "refresh",
+            RefreshTokenExpiry = DateTimeOffset.UtcNow.AddDays(7)
+        };
+        var repo = new Mock<IUserRepository>();
+        var hash = new Mock<IHashService>();
+        var token = new Mock<ITokenService>();
+        var email = new Mock<IEmailService>();
+        repo.Setup(r => r.GetByRefreshTokenAsync("refresh")).ReturnsAsync(user);
+        token.Setup(t => t.GenerateToken(1, "u", UserRole.User, false)).Returns(("newtoken", "newrefresh"));
+        repo.Setup(r => r.UpdateRefreshTokenAsync(1, "newrefresh", It.IsAny<DateTimeOffset>())).Returns(Task.CompletedTask);
+
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
+        RefreshTokenDto result = await service.RefreshToken("old", "refresh");
+
+        Assert.Equal("newtoken", result.Token);
+    }
+
+    [Fact]
+    public async Task RefreshToken_InvalidToken_ReturnsEmptyToken()
     {
         var repo = new Mock<IUserRepository>();
         var hash = new Mock<IHashService>();
         var token = new Mock<ITokenService>();
         var email = new Mock<IEmailService>();
+        repo.Setup(r => r.GetByRefreshTokenAsync(It.IsAny<string>())).ReturnsAsync((User?)null);
 
         var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
-        RefreshTokenDto result = await service.RefreshToken("old", "refresh");
+        RefreshTokenDto result = await service.RefreshToken("old", "invalid");
 
-        Assert.Equal("test23456", result.Token);
+        Assert.Equal(string.Empty, result.Token);
+    }
+
+    [Fact]
+    public async Task RefreshToken_ExpiredToken_ReturnsEmptyToken()
+    {
+        var user = new User
+        {
+            Id = 1,
+            Username = "u",
+            PasswordHash = [1],
+            PasswordSalt = [2],
+            RefreshToken = "expired",
+            RefreshTokenExpiry = DateTimeOffset.UtcNow.AddDays(-1)
+        };
+        var repo = new Mock<IUserRepository>();
+        var hash = new Mock<IHashService>();
+        var token = new Mock<ITokenService>();
+        var email = new Mock<IEmailService>();
+        repo.Setup(r => r.GetByRefreshTokenAsync("expired")).ReturnsAsync(user);
+
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
+        RefreshTokenDto result = await service.RefreshToken("old", "expired");
+
+        Assert.Equal(string.Empty, result.Token);
     }
 
     [Fact]

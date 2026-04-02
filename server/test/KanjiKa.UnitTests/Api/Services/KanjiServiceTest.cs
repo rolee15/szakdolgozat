@@ -19,6 +19,8 @@ public class KanjiServiceTest
             new() { Id = 2, Character = "月", Meaning = "moon", OnyomiReading = "ゲツ", KunyomiReading = "つき", JlptLevel = 5, StrokeCount = 4 }
         };
         repo.Setup(r => r.GetByJlptLevelAsync(5)).ReturnsAsync(kanjis);
+        repo.Setup(r => r.GetProficienciesForUserAsync(1, It.IsAny<List<int>>()))
+            .ReturnsAsync(new Dictionary<int, KanjiProficiency>());
 
         var service = new KanjiService(repo.Object);
 
@@ -35,6 +37,8 @@ public class KanjiServiceTest
         // Arrange
         var repo = new Mock<IKanjiRepository>();
         repo.Setup(r => r.GetByJlptLevelAsync(5)).ReturnsAsync(new List<Kanji>());
+        repo.Setup(r => r.GetProficienciesForUserAsync(1, It.IsAny<List<int>>()))
+            .ReturnsAsync(new Dictionary<int, KanjiProficiency>());
 
         var service = new KanjiService(repo.Object);
 
@@ -67,6 +71,8 @@ public class KanjiServiceTest
             ]
         };
         repo.Setup(r => r.GetByCharacterAsync("日")).ReturnsAsync(kanji);
+        repo.Setup(r => r.GetProficienciesForUserAsync(1, It.IsAny<List<int>>()))
+            .ReturnsAsync(new Dictionary<int, KanjiProficiency>());
 
         var service = new KanjiService(repo.Object);
 
@@ -111,6 +117,8 @@ public class KanjiServiceTest
             Grade = 1
         };
         repo.Setup(r => r.GetByCharacterAsync("水")).ReturnsAsync(kanji);
+        repo.Setup(r => r.GetProficienciesForUserAsync(1, It.IsAny<List<int>>()))
+            .ReturnsAsync(new Dictionary<int, KanjiProficiency>());
 
         var service = new KanjiService(repo.Object);
 

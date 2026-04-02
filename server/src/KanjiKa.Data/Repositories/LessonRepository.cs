@@ -46,6 +46,14 @@ public class LessonRepository : ILessonRepository
         return result;
     }
 
+    public async Task<int> CountNewCharactersAsync(List<int> learnedCharacterIds)
+    {
+        if (learnedCharacterIds.Count == 0)
+            return await _db.Characters.CountAsync();
+
+        return await _db.Characters.CountAsync(ch => !learnedCharacterIds.Contains(ch.Id));
+    }
+
     public async Task<Character?> GetCharacterByIdAsync(int characterId)
     {
         return await _db.Characters.FirstOrDefaultAsync(c => c.Id == characterId);
