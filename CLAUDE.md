@@ -117,6 +117,25 @@ The project has six specialized agents in `.claude/agents/`. **Always delegate t
 4. **Explicit override** — if the user says "do it yourself" or "don't use an agent", proceed without delegating.
 5. **Never split what belongs together** — don't use multiple agents for a single-file, single-concern change; only split when the task genuinely crosses concerns.
 
+### Token efficiency rules
+
+1. **Direct tools first** — for a single-file lookup (find a class, read a config), use `Glob`/`Grep`/`Read` directly. Spawn an agent only when the task needs multi-step reasoning or writes code.
+2. **Model tiers** — agents already have the right model set; when calling `general-purpose` via the Agent tool, override with `model: haiku` for pure exploration/lookup tasks and `model: sonnet` (default) for code generation.
+3. **Parallelize independent agents** — if frontend and backend work are both needed, spawn both agents in the same message, not sequentially.
+4. **No re-explanation** — when delegating to an agent, include only the facts it needs (file paths, error text, what to change). Don't paste large code blocks the agent can read itself with tools.
+5. **`/commit` skill** — use `/commit` for routine staging + push instead of a full agent call or manual multi-step git commands.
+
+### Agent model reference
+
+| Agent | Model | Why |
+| --- | --- | --- |
+| `architect` | `opus` | Complex multi-file planning, trade-off analysis |
+| `frontend-dev` | `sonnet` | Code generation needs full reasoning |
+| `backend-dev` | `sonnet` | Code generation needs full reasoning |
+| `test-writer` | `sonnet` | Code generation needs full reasoning |
+| `debugger` | `sonnet` | Root-cause analysis over unfamiliar code |
+| `code-reviewer` | `haiku` | Pattern matching + textual feedback |
+
 ---
 
 ## Manual Test Checklist
