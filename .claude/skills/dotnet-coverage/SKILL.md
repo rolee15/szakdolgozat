@@ -78,13 +78,42 @@ cd server && dotnet test --logger "console;verbosity=detailed"
 ## Interpreting Output
 
 - **Passed** — count must be 82+
-- **Failed** — read the stack trace; delegate to `debugger` agent
+- **Failed** — read the stack trace; use the `debugger` agent
 - **Skipped** — investigate why tests are being skipped
+
+## Branch coverage analysis
+
+The cobertura XML tracks branch hits. To get a readable summary:
+
+```bash
+reportgenerator \
+  -reports:"server/test/**/coverage.cobertura.xml" \
+  -targetdir:"server/coverage-tmp" \
+  -reporttypes:TextSummary
+cat server/coverage-tmp/Summary.txt
+```
+
+The `Summary.txt` shows `Branch coverage: X%`. Open `server/coverage-tmp/index.html` for the per-file breakdown — red lines are uncovered, yellow lines are partially covered branches.
+
+**Reading branch gaps without reportgenerator:**
+For each changed method, manually enumerate branches by reading the code:
+- Every `if / else` arm
+- Every `?? / ?.` null path
+- Every early `return` condition
+- Every `throw` path
+Then check whether a test exists that exercises that path.
 
 ## Common Actions
 
-### Find untested code paths
-After generating a coverage report, open `server/coverage/index.html` and look for red-highlighted lines. Delegate new tests to `test-writer` agent.
+### Find untested branches
+After generating the HTML report, look for **yellow-highlighted lines** (partial branch coverage) — these are more important than red lines (missed lines entirely). Yellow means the line runs but one branch in it does not.
+
+### Close the loop
+After identifying uncovered branches, write the missing unit tests in `server/test/KanjiKa.UnitTests/` following `kanjika-testing` conventions, then re-run:
+```bash
+cd server && dotnet test test/KanjiKa.UnitTests/ --logger "console;verbosity=normal"
+```
+Do not stop until all new tests pass and every branch in changed files is covered.
 
 ### Check test count quickly
 ```bash

@@ -42,3 +42,39 @@ above the borrowed block and update `docs/references.md` with an IEEE entry.
 - Show file paths for every new or modified file
 - If adding a new route, update `App.tsx` and `routes.ts`
 - If adding a new service call, add the type to `client/src/types/` if it doesn't exist
+
+## Mandatory coverage gate (always run after implementing)
+
+After writing any implementation code, you **must** complete all steps below before finishing:
+
+### 1. Run coverage scoped to changed files
+```bash
+cd client && npm run test:coverage -- --run
+```
+Read the output table carefully. The columns are:
+`% Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s`
+
+Focus on **% Branch** — this is the metric that most often falls short. A line can be covered while branches within it are not.
+
+### 2. Map every uncovered branch to a missing test
+
+For each file you created or modified, examine uncovered lines and check which **branch** is missing:
+- `if (x) { ... }` — is the `false` branch tested? Is the `true` branch tested?
+- `condition ? a : b` — is both `true` and `false` tested?
+- `x ?? fallback` — is the `null`/`undefined` path tested?
+- `x?.foo` — is the `undefined` path (short-circuit) tested?
+- Error / non-ok response paths from service calls
+- Loading state vs. loaded state vs. empty state (no results)
+- Early `return` before the main logic
+
+### 3. Write tests for every uncovered branch
+
+Create or update test files in `client/test/` mirroring `client/src/`. Follow the `kanjika-testing` skill exactly for imports, wrapping, and mocking. Write one focused `it(...)` per branch — don't bundle multiple branches into one test.
+
+### 4. Re-run coverage and verify
+
+```bash
+cd client && npm run test:coverage -- --run
+```
+
+All files you changed must show **100% branch coverage**. If any branch is still uncovered, go back to step 2. Do not finish until branch coverage is complete for your changed files.

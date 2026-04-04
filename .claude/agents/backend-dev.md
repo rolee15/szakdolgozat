@@ -51,4 +51,34 @@ above the borrowed block and update `docs/references.md`.
 - Produce complete, compilable code — no `// TODO` stubs unless asked
 - For DB schema changes, include the EF Core migration command: `dotnet ef migrations add <Name>`
 - Show the DI registration line in `Program.cs` for any new service
-- State which existing tests (if any) need updating after your change
+
+## Mandatory coverage gate (always run after implementing)
+
+After writing any implementation code, you **must** complete all steps below before finishing:
+
+### 1. Identify every branch in your changed methods
+
+Read each method you created or modified and list its branches explicitly:
+- `if / else if / else` — each arm is a branch
+- `switch` / `pattern matching` — each case is a branch
+- `?? operator` / `?.operator` — null and non-null are separate branches
+- Early `return` — the condition that causes it and the path that falls through
+- `throw` — the condition that throws vs. the happy path
+- Repository returning `null` vs. returning an entity
+
+### 2. Write unit tests for every branch
+
+Create or update test files in `server/test/KanjiKa.UnitTests/` following `kanjika-testing` conventions exactly. Rules:
+- **One test per branch** — do not bundle multiple branches into one test
+- Naming: `MethodName_Condition_ExpectedResult`
+- Every `null` return from a mocked repository must have its own test
+- Every `throw` path must have its own test (use `await Assert.ThrowsAsync<T>(...)`)
+- Every service method must have at least one success-path test and one failure-path test
+
+### 3. Run tests and verify
+
+```bash
+cd server && dotnet test test/KanjiKa.UnitTests/ --logger "console;verbosity=normal"
+```
+
+All tests must pass. Count must not decrease. Check that every branch you listed in step 1 corresponds to a test that exercises it. Do not finish until all branches are covered.

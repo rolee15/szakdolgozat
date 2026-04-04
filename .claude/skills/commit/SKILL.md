@@ -13,7 +13,6 @@ Run in parallel:
 ```bash
 git status
 git diff HEAD
-git log --oneline -6
 ```
 
 ## 2. Decide what to stage
@@ -24,7 +23,7 @@ git log --oneline -6
 
 ## 3. Write the commit message
 
-Match the project's existing commit style from `git log`:
+Use this project's commit style:
 
 ```
 <type>: <short imperative description>
