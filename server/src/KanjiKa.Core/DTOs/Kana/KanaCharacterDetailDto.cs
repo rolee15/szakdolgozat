@@ -1,4 +1,4 @@
-﻿using KanjiKa.Core.Entities.Kana;
+using KanjiKa.Core.Entities.Kana;
 
 namespace KanjiKa.Core.DTOs.Kana;
 
@@ -8,4 +8,6 @@ public class KanaCharacterDetailDto
     public required string Romanization { get; set; }
     public KanaType Type { get; set; }
     public int Proficiency { get; set; }
+    public int SrsStage { get; set; }
+    public required string SrsStageName { get; set; }
 }

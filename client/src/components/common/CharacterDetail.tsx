@@ -47,6 +47,11 @@ const CharacterDetail = () => {
           <div className="mt-4 rounded-full px-4 py-2 inline-block">
             Proficiency: {charData.proficiency}%
           </div>
+          {charData.srsStageName !== undefined && (
+            <div className="mt-2 rounded-full px-4 py-2 inline-block">
+              SRS Stage: {charData.srsStageName}
+            </div>
+          )}
         </div>
 
         <div className="flex justify-center space-y-6">

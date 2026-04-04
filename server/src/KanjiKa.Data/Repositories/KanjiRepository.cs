@@ -53,4 +53,29 @@ public class KanjiRepository : IKanjiRepository
             .AsNoTracking()
             .ToDictionaryAsync(kp => kp.KanjiId);
     }
+
+    public async Task<List<KanjiProficiency>> GetDueReviewsAsync(int userId)
+    {
+        return await _context.KanjiProficiencies
+            .Include(kp => kp.Kanji)
+            .Where(kp => kp.UserId == userId && kp.NextReviewDate <= DateTimeOffset.UtcNow)
+            .ToListAsync();
+    }
+
+    public async Task<KanjiProficiency?> GetProficiencyAsync(int userId, int kanjiId)
+    {
+        return await _context.KanjiProficiencies
+            .FirstOrDefaultAsync(kp => kp.UserId == userId && kp.KanjiId == kanjiId);
+    }
+
+    public async Task AddProficiencyAsync(KanjiProficiency proficiency)
+    {
+        _context.KanjiProficiencies.Add(proficiency);
+        await Task.CompletedTask;
+    }
+
+    public async Task SaveChangesAsync()
+    {
+        await _context.SaveChangesAsync();
+    }
 }

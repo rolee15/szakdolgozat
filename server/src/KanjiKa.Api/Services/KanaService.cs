@@ -53,13 +53,16 @@ public class KanaService : IKanaService
         var userProficiency = user.Proficiencies
             .FirstOrDefault(p => p.CharacterId == kanaCharacter.Id);
         var level = userProficiency?.Level ?? 0;
+        var srsStage = userProficiency?.SrsStage ?? SrsStage.Locked;
 
         return new KanaCharacterDetailDto
         {
             Character = kanaCharacter.Symbol,
             Romanization = kanaCharacter.Romanization,
             Type = kanaCharacter.Type,
-            Proficiency = level
+            Proficiency = level,
+            SrsStage = (int)srsStage,
+            SrsStageName = SrsIntervals.GetStageName(srsStage)
         };
     }
 

@@ -21,6 +21,22 @@ const kanjiService = {
     if (!res.ok) throw new Error('Failed to fetch kanji detail');
     return res.json();
   },
+
+  async getKanjiReviews(): Promise<KanjiReview[]> {
+    const res = await apiFetch(`${API_BASE}/kanji/reviews`);
+    if (!res.ok) throw new Error('Failed to fetch kanji reviews');
+    return res.json();
+  },
+
+  async checkKanjiReview(kanjiId: number, isCorrect: boolean): Promise<KanjiReviewResult> {
+    const res = await apiFetch(`${API_BASE}/kanji/reviews/check`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ kanjiId, isCorrect }),
+    });
+    if (!res.ok) throw new Error('Failed to submit kanji review');
+    return res.json();
+  },
 };
 
 export default kanjiService;

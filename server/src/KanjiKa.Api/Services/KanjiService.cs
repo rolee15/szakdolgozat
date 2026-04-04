@@ -69,6 +69,67 @@ public class KanjiService : IKanjiService
         };
     }
 
+    public async Task<int> GetDueReviewsCountAsync(int userId)
+    {
+        var reviews = await _kanjiRepository.GetDueReviewsAsync(userId);
+        return reviews.Count;
+    }
+
+    public async Task<List<KanjiReviewDto>> GetDueReviewsAsync(int userId)
+    {
+        var reviews = await _kanjiRepository.GetDueReviewsAsync(userId);
+        return reviews.Select(kp => new KanjiReviewDto
+        {
+            KanjiId = kp.KanjiId,
+            Character = kp.Kanji!.Character,
+            Meaning = kp.Kanji.Meaning,
+            OnyomiReading = kp.Kanji.OnyomiReading,
+            KunyomiReading = kp.Kanji.KunyomiReading
+        }).ToList();
+    }
+
+    public async Task<KanjiReviewResultDto> CheckReviewAsync(int userId, KanjiReviewAnswerDto answer)
+    {
+        var proficiency = await _kanjiRepository.GetProficiencyAsync(userId, answer.KanjiId);
+        if (proficiency == null)
+            throw new KeyNotFoundException($"Proficiency for kanji {answer.KanjiId} not found for user {userId}.");
+
+        if (answer.IsCorrect)
+            proficiency.AnswerCorrectly();
+        else
+            proficiency.AnswerIncorrectly();
+
+        await _kanjiRepository.SaveChangesAsync();
+
+        return new KanjiReviewResultDto
+        {
+            IsCorrect = answer.IsCorrect,
+            SrsStage = (int)proficiency.SrsStage,
+            SrsStageName = SrsIntervals.GetStageName(proficiency.SrsStage),
+            NextReviewDate = proficiency.NextReviewDate
+        };
+    }
+
+    public async Task<KanjiProficiency> LearnKanjiAsync(int userId, int kanjiId)
+    {
+        var existing = await _kanjiRepository.GetProficiencyAsync(userId, kanjiId);
+        if (existing != null)
+            throw new InvalidOperationException($"User {userId} has already learned kanji {kanjiId}.");
+
+        var proficiency = new KanjiProficiency
+        {
+            UserId = userId,
+            KanjiId = kanjiId,
+            SrsStage = SrsStage.Apprentice1,
+            NextReviewDate = SrsIntervals.GetNextReviewDate(SrsStage.Apprentice1)
+        };
+
+        await _kanjiRepository.AddProficiencyAsync(proficiency);
+        await _kanjiRepository.SaveChangesAsync();
+
+        return proficiency;
+    }
+
     private static KanjiDto MapToDto(Kanji kanji, Dictionary<int, KanjiProficiency> proficiencies)
     {
         proficiencies.TryGetValue(kanji.Id, out var prof);

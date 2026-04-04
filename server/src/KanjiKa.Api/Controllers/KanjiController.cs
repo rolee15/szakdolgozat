@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using KanjiKa.Core.DTOs.Kanji;
 using KanjiKa.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -48,5 +49,47 @@ public class KanjiController : ControllerBase
         if (pageSize < 1 || pageSize > 200) pageSize = 50;
         var result = await _kanjiService.GetKanjiPagedAsync(jlptLevel, page, pageSize, GetUserId());
         return Ok(result);
+    }
+
+    [HttpGet("reviews/count")]
+    public async Task<IActionResult> GetDueReviewsCount()
+    {
+        var count = await _kanjiService.GetDueReviewsCountAsync(GetUserId());
+        return Ok(new { count });
+    }
+
+    [HttpGet("reviews")]
+    public async Task<IActionResult> GetDueReviews()
+    {
+        var reviews = await _kanjiService.GetDueReviewsAsync(GetUserId());
+        return Ok(reviews);
+    }
+
+    [HttpPost("reviews/check")]
+    public async Task<IActionResult> CheckReview([FromBody] KanjiReviewAnswerDto answer)
+    {
+        try
+        {
+            var result = await _kanjiService.CheckReviewAsync(GetUserId(), answer);
+            return Ok(result);
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
+    }
+
+    [HttpPost("learn/{kanjiId:int}")]
+    public async Task<IActionResult> LearnKanji(int kanjiId)
+    {
+        try
+        {
+            await _kanjiService.LearnKanjiAsync(GetUserId(), kanjiId);
+            return Ok();
+        }
+        catch (InvalidOperationException)
+        {
+            return BadRequest("Kanji has already been learned.");
+        }
     }
 }

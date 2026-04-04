@@ -5,9 +5,13 @@ Precondition: dev DB running, backend started, frontend started (see CLAUDE.md f
 
 **Test accounts** (seeded on every dev startup):
 
-- `admin@kanjika.com` / `Admin123!` — admin account, forced password change on first login
-- `testuser1@kanjika.com` / `almafa123` — 61 learned characters, no reviews due
-- `testuser2@kanjika.com` / `almafa123` — 10 learned characters (あ–こ), all 10 due for review
+| Account | Email | Password | Profile |
+| --- | --- | --- | --- |
+| Admin | `admin@kanjika.com` | `Admin123!` | Admin role, forced password change on first login |
+| Beginner | `beginner@test.com` | `almafa123` | No proficiencies, no progress — fresh user |
+| Mid-learner | `midlearner@test.com` | `almafa123` | ~30 kana at mixed SRS stages (Apprentice1–Guru1) |
+| Advanced | `advanced@test.com` | `almafa123` | All kana at Guru1, no items currently due |
+| Reviewer | `reviewer@test.com` | `almafa123` | 40 kana + 10 kanji all overdue for review |
 
 ---
 
@@ -80,6 +84,7 @@ Precondition: dev DB running, backend started, frontend started (see CLAUDE.md f
 - [ ] Character symbol and romanization displayed
 - [ ] Example words listed (word, reading, meaning)
 - [ ] Proficiency percentage shown
+- [ ] SRS stage name shown (e.g. "Locked", "Apprentice 1")
 - [ ] Back navigation works
 
 ---
@@ -139,14 +144,17 @@ Precondition: dev DB running, backend started, frontend started (see CLAUDE.md f
 
 ## 6. Flashcards (`/flashcards`)
 
-- [ ] Mode selector visible (Hiragana, Katakana; Kanji disabled)
-- [ ] Select a mode -> cards load
-- [ ] Click card -> flips with animation, shows romanization on back
+- [ ] Mode selector visible (Hiragana, Katakana, Kanji)
+- [ ] Select Hiragana or Katakana -> cards load, romanization shown on back
+- [ ] Click card -> flips with animation
 - [ ] "Know it" button -> advances to next card
 - [ ] "Don't know it" button -> advances to next card
 - [ ] Progress indicator updates (X / total)
 - [ ] After all cards -> session complete summary shown
 - [ ] Can restart session
+- [ ] Select Kanji mode with no due reviews (e.g. `beginner@test.com`) -> empty state "No kanji due for review" shown
+- [ ] Select Kanji mode as `reviewer@test.com` -> kanji cards load (character on front, meaning on back)
+- [ ] "Know it" / "Don't know it" on kanji cards submits kanji review and advances
 
 ---
 
@@ -205,9 +213,13 @@ Precondition: dev DB running, backend started, frontend started (see CLAUDE.md f
 
 ## 8. Data Seeding
 
-- [ ] Dev startup: DB is dropped and recreated with kana, kanji, admin user, and test users
+- [ ] Dev startup: DB is dropped and recreated with kana, kanji, admin user, and 4 test users
 - [ ] Production startup: DB is migrated incrementally, reference data and admin user seeded idempotently
 - [ ] Admin user `admin@kanjika.com` exists with `MustChangePassword = true`
+- [ ] `beginner@test.com` has no proficiencies
+- [ ] `midlearner@test.com` has ~30 kana proficiencies at mixed SRS stages
+- [ ] `advanced@test.com` has all kana at Guru1
+- [ ] `reviewer@test.com` has 40 kana + 10 kanji all overdue (NextReviewDate in the past)
 
 ---
 

@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import kanaService from "@/services/kanaService";
+import kanjiService from "@/services/kanjiService";
 import lessonService from "@/services/lessonService";
 import styles from "./FlashCardPage.module.css";
 
-type KanaMode = "hiragana" | "katakana";
+type KanaMode = "hiragana" | "katakana" | "kanji";
 
 // Must match the transition duration in FlashCardPage.module.css (.card { transition: transform 0.55s })
 const FLIP_DURATION_MS = 550;
@@ -15,9 +16,16 @@ const FlashCardPage = () => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [sessionDone, setSessionDone] = useState(false);
 
-  const { data: characters, isLoading, isError } = useQuery<KanaCharacter[]>({
+  const { data: kanaCharacters, isLoading: isKanaLoading, isError: isKanaError } = useQuery<KanaCharacter[]>({
     queryKey: ["flashcards", mode],
-    queryFn: () => kanaService.getCharacters(mode),
+    queryFn: () => kanaService.getCharacters(mode as "hiragana" | "katakana"),
+    enabled: mode !== "kanji",
+  });
+
+  const { data: kanjiReviews, isLoading: isKanjiLoading, isError: isKanjiError } = useQuery<KanjiReview[]>({
+    queryKey: ["flashcards", "kanji"],
+    queryFn: () => kanjiService.getKanjiReviews(),
+    enabled: mode === "kanji",
   });
 
   const reviewMutation = useMutation<LessonReviewResult, Error, { question: string; answer: string }>({
@@ -25,7 +33,18 @@ const FlashCardPage = () => {
       lessonService.postLessonReviewCheck(question, answer),
   });
 
-  const cards = characters ?? [];
+  const kanjiReviewMutation = useMutation<KanjiReviewResult, Error, { kanjiId: number; isCorrect: boolean }>({
+    mutationFn: ({ kanjiId, isCorrect }) =>
+      kanjiService.checkKanjiReview(kanjiId, isCorrect),
+  });
+
+  const isLoading = mode === "kanji" ? isKanjiLoading : isKanaLoading;
+  const isError = mode === "kanji" ? isKanjiError : isKanaError;
+
+  const cards: (KanaCharacter | KanjiReview)[] = mode === "kanji"
+    ? (kanjiReviews ?? [])
+    : (kanaCharacters ?? []);
+
   const currentCard = cards[currentIndex];
   const total = cards.length;
 
@@ -50,18 +69,36 @@ const FlashCardPage = () => {
 
   const handleKnowIt = () => {
     if (!currentCard) return;
-    reviewMutation.mutate(
-      { question: currentCard.character, answer: currentCard.romanization },
-      { onSettled: () => advance() }
-    );
+    if (mode === "kanji") {
+      const kanjiCard = currentCard as KanjiReview;
+      kanjiReviewMutation.mutate(
+        { kanjiId: kanjiCard.kanjiId, isCorrect: true },
+        { onSettled: () => advance() }
+      );
+    } else {
+      const kanaCard = currentCard as KanaCharacter;
+      reviewMutation.mutate(
+        { question: kanaCard.character, answer: kanaCard.romanization },
+        { onSettled: () => advance() }
+      );
+    }
   };
 
   const handleDontKnowIt = () => {
     if (!currentCard) return;
-    reviewMutation.mutate(
-      { question: currentCard.character, answer: "" },
-      { onSettled: () => advance() }
-    );
+    if (mode === "kanji") {
+      const kanjiCard = currentCard as KanjiReview;
+      kanjiReviewMutation.mutate(
+        { kanjiId: kanjiCard.kanjiId, isCorrect: false },
+        { onSettled: () => advance() }
+      );
+    } else {
+      const kanaCard = currentCard as KanaCharacter;
+      reviewMutation.mutate(
+        { question: kanaCard.character, answer: "" },
+        { onSettled: () => advance() }
+      );
+    }
   };
 
   const handleRestart = () => {
@@ -93,6 +130,39 @@ const FlashCardPage = () => {
     );
   }
 
+  if (mode === "kanji" && total === 0) {
+    return (
+      <div className="flex flex-col items-center gap-8 p-8">
+        <h1 className="text-2xl font-bold text-white">Flash Cards</h1>
+
+        {/* Mode selector */}
+        <div className="flex gap-2">
+          {(["hiragana", "katakana"] as KanaMode[]).map((m) => (
+            <button
+              key={m}
+              onClick={() => handleModeChange(m)}
+              className={`px-5 py-2 rounded-lg font-medium capitalize transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 ${
+                mode === m
+                  ? "bg-indigo-500 text-white"
+                  : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+              }`}
+            >
+              {m.charAt(0).toUpperCase() + m.slice(1)}
+            </button>
+          ))}
+          <button
+            onClick={() => handleModeChange("kanji")}
+            className="px-5 py-2 rounded-lg font-medium capitalize transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 bg-indigo-500 text-white"
+          >
+            Kanji
+          </button>
+        </div>
+
+        <p className="text-gray-400 text-lg">No kanji due for review. Study some kanji first!</p>
+      </div>
+    );
+  }
+
   if (sessionDone) {
     return (
       <div className="flex flex-col items-center justify-center gap-6 p-12">
@@ -107,6 +177,16 @@ const FlashCardPage = () => {
       </div>
     );
   }
+
+  const isMutationPending = reviewMutation.isPending || kanjiReviewMutation.isPending;
+
+  const cardFront = currentCard ? currentCard.character : undefined;
+  const cardBack = mode === "kanji"
+    ? (currentCard as KanjiReview | undefined)?.meaning
+    : (currentCard as KanaCharacter | undefined)?.romanization;
+  const cardLabel = mode === "kanji"
+    ? "kanji"
+    : (currentCard as KanaCharacter | undefined)?.type;
 
   return (
     <div className="flex flex-col items-center gap-8 p-8">
@@ -128,9 +208,12 @@ const FlashCardPage = () => {
           </button>
         ))}
         <button
-          disabled
-          title="Kanji not available yet"
-          className="px-5 py-2 rounded-lg font-medium capitalize bg-gray-800 text-gray-600 cursor-not-allowed"
+          onClick={() => handleModeChange("kanji")}
+          className={`px-5 py-2 rounded-lg font-medium capitalize transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 ${
+            mode === "kanji"
+              ? "bg-indigo-500 text-white"
+              : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+          }`}
         >
           Kanji
         </button>
@@ -146,16 +229,16 @@ const FlashCardPage = () => {
         <div className={`${styles.card} ${isFlipped ? styles.flipped : ""}`}>
           <div className={`${styles.cardFace} ${styles.cardFront}`}>
             <span className="text-8xl font-bold text-indigo-300 select-none">
-              {currentCard?.character}
+              {cardFront}
             </span>
             <span className="mt-4 text-sm text-indigo-400 select-none">Click to reveal</span>
           </div>
           <div className={`${styles.cardFace} ${styles.cardBack}`}>
             <span className="text-4xl font-bold text-white select-none">
-              {currentCard?.romanization}
+              {cardBack}
             </span>
             <span className="mt-3 text-sm uppercase tracking-widest text-blue-400 select-none">
-              {currentCard?.type}
+              {cardLabel}
             </span>
           </div>
         </div>
@@ -165,14 +248,14 @@ const FlashCardPage = () => {
       <div className="flex gap-4">
         <button
           onClick={handleDontKnowIt}
-          disabled={reviewMutation.isPending}
+          disabled={isMutationPending}
           className="px-6 py-3 bg-red-700 text-white font-medium rounded-lg hover:bg-red-800 transition-colors focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 disabled:opacity-50"
         >
           Don't know it
         </button>
         <button
           onClick={handleKnowIt}
-          disabled={reviewMutation.isPending}
+          disabled={isMutationPending}
           className="px-6 py-3 bg-green-700 text-white font-medium rounded-lg hover:bg-green-800 transition-colors focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 disabled:opacity-50"
         >
           Know it

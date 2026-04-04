@@ -137,4 +137,158 @@ public class KanjiServiceTest
             () => Assert.Equal(1, result.Grade)
         );
     }
+
+    [Fact]
+    public async Task GetDueReviewsCountAsync_ReturnsDueCount()
+    {
+        // Arrange
+        var repo = new Mock<IKanjiRepository>();
+        repo.Setup(r => r.GetDueReviewsAsync(1)).ReturnsAsync(
+        [
+            new KanjiProficiency { UserId = 1, KanjiId = 1, SrsStage = KanjiKa.Core.Entities.Kana.SrsStage.Apprentice1 },
+            new KanjiProficiency { UserId = 1, KanjiId = 2, SrsStage = KanjiKa.Core.Entities.Kana.SrsStage.Apprentice2 },
+            new KanjiProficiency { UserId = 1, KanjiId = 3, SrsStage = KanjiKa.Core.Entities.Kana.SrsStage.Guru1 }
+        ]);
+        var service = new KanjiService(repo.Object);
+
+        // Act
+        int count = await service.GetDueReviewsCountAsync(1);
+
+        // Assert
+        Assert.Equal(3, count);
+    }
+
+    [Fact]
+    public async Task GetDueReviewsCountAsync_NoDueReviews_ReturnsZero()
+    {
+        // Arrange
+        var repo = new Mock<IKanjiRepository>();
+        repo.Setup(r => r.GetDueReviewsAsync(1)).ReturnsAsync([]);
+        var service = new KanjiService(repo.Object);
+
+        // Act
+        int count = await service.GetDueReviewsCountAsync(1);
+
+        // Assert
+        Assert.Equal(0, count);
+    }
+
+    [Fact]
+    public async Task GetDueReviewsAsync_ReturnsMappedDtos()
+    {
+        // Arrange
+        var repo = new Mock<IKanjiRepository>();
+        repo.Setup(r => r.GetDueReviewsAsync(1)).ReturnsAsync(
+        [
+            new KanjiProficiency { UserId = 1, KanjiId = 10, SrsStage = KanjiKa.Core.Entities.Kana.SrsStage.Apprentice1,
+                Kanji = new Kanji { Id = 10, Character = "日", Meaning = "sun", OnyomiReading = "ニチ", KunyomiReading = "ひ", JlptLevel = 5, StrokeCount = 4 } },
+            new KanjiProficiency { UserId = 1, KanjiId = 20, SrsStage = KanjiKa.Core.Entities.Kana.SrsStage.Apprentice2,
+                Kanji = new Kanji { Id = 20, Character = "月", Meaning = "moon", OnyomiReading = "ゲツ", KunyomiReading = "つき", JlptLevel = 5, StrokeCount = 4 } }
+        ]);
+        var service = new KanjiService(repo.Object);
+
+        // Act
+        List<KanjiReviewDto> result = await service.GetDueReviewsAsync(1);
+
+        // Assert
+        Assert.Equal(2, result.Count);
+        Assert.Multiple(
+            () => Assert.Equal(10, result[0].KanjiId),
+            () => Assert.Equal("日", result[0].Character),
+            () => Assert.Equal("sun", result[0].Meaning),
+            () => Assert.Equal(20, result[1].KanjiId),
+            () => Assert.Equal("月", result[1].Character),
+            () => Assert.Equal("moon", result[1].Meaning)
+        );
+    }
+
+    [Fact]
+    public async Task LearnKanjiAsync_NewKanji_CreatesProficiency()
+    {
+        // Arrange
+        var repo = new Mock<IKanjiRepository>();
+        repo.Setup(r => r.GetProficiencyAsync(1, 5)).ReturnsAsync((KanjiProficiency?)null);
+        repo.Setup(r => r.AddProficiencyAsync(It.IsAny<KanjiProficiency>())).Returns(Task.CompletedTask);
+        repo.Setup(r => r.SaveChangesAsync()).Returns(Task.CompletedTask);
+        var service = new KanjiService(repo.Object);
+
+        // Act
+        KanjiProficiency result = await service.LearnKanjiAsync(1, 5);
+
+        // Assert
+        Assert.Multiple(
+            () => Assert.Equal(KanjiKa.Core.Entities.Kana.SrsStage.Apprentice1, result.SrsStage),
+            () => Assert.NotNull(result.NextReviewDate)
+        );
+        repo.Verify(r => r.AddProficiencyAsync(It.IsAny<KanjiProficiency>()), Times.Once);
+        repo.Verify(r => r.SaveChangesAsync(), Times.Once);
+    }
+
+    [Fact]
+    public async Task LearnKanjiAsync_AlreadyLearned_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        var repo = new Mock<IKanjiRepository>();
+        repo.Setup(r => r.GetProficiencyAsync(1, 5))
+            .ReturnsAsync(new KanjiProficiency { UserId = 1, KanjiId = 5, SrsStage = KanjiKa.Core.Entities.Kana.SrsStage.Apprentice1 });
+        var service = new KanjiService(repo.Object);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<InvalidOperationException>(() => service.LearnKanjiAsync(1, 5));
+    }
+
+    [Fact]
+    public async Task CheckReviewAsync_CorrectAnswer_AdvancesSrsStage()
+    {
+        // Arrange
+        var repo = new Mock<IKanjiRepository>();
+        var proficiency = new KanjiProficiency { UserId = 1, KanjiId = 7, SrsStage = KanjiKa.Core.Entities.Kana.SrsStage.Apprentice1 };
+        repo.Setup(r => r.GetProficiencyAsync(1, 7)).ReturnsAsync(proficiency);
+        repo.Setup(r => r.SaveChangesAsync()).Returns(Task.CompletedTask);
+        var service = new KanjiService(repo.Object);
+        var answer = new KanjiReviewAnswerDto { KanjiId = 7, IsCorrect = true };
+
+        // Act
+        KanjiReviewResultDto result = await service.CheckReviewAsync(1, answer);
+
+        // Assert
+        Assert.Multiple(
+            () => Assert.True(result.IsCorrect),
+            () => Assert.Equal((int)KanjiKa.Core.Entities.Kana.SrsStage.Apprentice2, result.SrsStage)
+        );
+    }
+
+    [Fact]
+    public async Task CheckReviewAsync_IncorrectAnswer_RegressesSrsStage()
+    {
+        // Arrange
+        var repo = new Mock<IKanjiRepository>();
+        var proficiency = new KanjiProficiency { UserId = 1, KanjiId = 7, SrsStage = KanjiKa.Core.Entities.Kana.SrsStage.Apprentice3 };
+        repo.Setup(r => r.GetProficiencyAsync(1, 7)).ReturnsAsync(proficiency);
+        repo.Setup(r => r.SaveChangesAsync()).Returns(Task.CompletedTask);
+        var service = new KanjiService(repo.Object);
+        var answer = new KanjiReviewAnswerDto { KanjiId = 7, IsCorrect = false };
+
+        // Act
+        KanjiReviewResultDto result = await service.CheckReviewAsync(1, answer);
+
+        // Assert
+        Assert.Multiple(
+            () => Assert.False(result.IsCorrect),
+            () => Assert.Equal((int)KanjiKa.Core.Entities.Kana.SrsStage.Apprentice1, result.SrsStage)
+        );
+    }
+
+    [Fact]
+    public async Task CheckReviewAsync_ProficiencyNotFound_ThrowsKeyNotFoundException()
+    {
+        // Arrange
+        var repo = new Mock<IKanjiRepository>();
+        repo.Setup(r => r.GetProficiencyAsync(1, 99)).ReturnsAsync((KanjiProficiency?)null);
+        var service = new KanjiService(repo.Object);
+        var answer = new KanjiReviewAnswerDto { KanjiId = 99, IsCorrect = true };
+
+        // Act & Assert
+        await Assert.ThrowsAsync<KeyNotFoundException>(() => service.CheckReviewAsync(1, answer));
+    }
 }

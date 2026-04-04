@@ -20,8 +20,19 @@ vi.mock('@/services/lessonService', () => ({
   },
 }))
 
+vi.mock('@/services/kanjiService', () => ({
+  default: {
+    getKanjiReviews: vi.fn(),
+    checkKanjiReview: vi.fn(),
+    getKanjiByLevel: vi.fn(),
+    getKanjiPaged: vi.fn(),
+    getKanjiDetail: vi.fn(),
+  },
+}))
+
 import kanaService from '@/services/kanaService'
 import lessonService from '@/services/lessonService'
+import kanjiService from '@/services/kanjiService'
 
 function makeQueryClient() {
   return new QueryClient({
@@ -66,7 +77,7 @@ describe('FlashCardPage', () => {
     expect(await screen.findByRole('button', { name: 'Katakana' })).toBeInTheDocument()
   })
 
-  it('renders_kanji_button_as_disabled', async () => {
+  it('renders_kanji_button_as_enabled', async () => {
     const svc = kanaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
     svc.getCharacters.mockResolvedValue(hiraganaCards)
 
@@ -76,7 +87,7 @@ describe('FlashCardPage', () => {
     await screen.findByRole('button', { name: 'Hiragana' })
 
     const kanjiButton = screen.getByRole('button', { name: /kanji/i })
-    expect(kanjiButton).toBeDisabled()
+    expect(kanjiButton).not.toBeDisabled()
   })
 
   it('renders_progress_indicator', async () => {
@@ -201,6 +212,89 @@ describe('FlashCardPage', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Katakana' }))
 
     expect(await screen.findByText('1 / 1')).toBeInTheDocument()
+  })
+
+  it('kanji_mode_shows_empty_state_when_no_reviews_due', async () => {
+    const svc = kanaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
+    const kanjiSvc = kanjiService as unknown as { getKanjiReviews: ReturnType<typeof vi.fn> }
+    svc.getCharacters.mockResolvedValue(hiraganaCards)
+    kanjiSvc.getKanjiReviews.mockResolvedValue([])
+
+    renderPage()
+
+    await screen.findByRole('button', { name: 'Hiragana' })
+    fireEvent.click(screen.getByRole('button', { name: /kanji/i }))
+
+    expect(await screen.findByText(/no kanji due for review/i)).toBeInTheDocument()
+  })
+
+  it('kanji_mode_shows_character_and_meaning', async () => {
+    const svc = kanaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
+    const kanjiSvc = kanjiService as unknown as { getKanjiReviews: ReturnType<typeof vi.fn> }
+    svc.getCharacters.mockResolvedValue(hiraganaCards)
+    const kanjiCards: KanjiReview[] = [
+      { kanjiId: 1, character: '日', meaning: 'sun' },
+      { kanjiId: 2, character: '月', meaning: 'moon' },
+    ]
+    kanjiSvc.getKanjiReviews.mockResolvedValue(kanjiCards)
+
+    renderPage()
+
+    await screen.findByRole('button', { name: 'Hiragana' })
+    fireEvent.click(screen.getByRole('button', { name: /kanji/i }))
+
+    expect(await screen.findByText('日')).toBeInTheDocument()
+    expect(screen.getByText('sun')).toBeInTheDocument()
+  })
+
+  it('kanji_know_it_advances_to_next_card', async () => {
+    const svc = kanaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
+    const kanjiSvc = kanjiService as unknown as {
+      getKanjiReviews: ReturnType<typeof vi.fn>
+      checkKanjiReview: ReturnType<typeof vi.fn>
+    }
+    svc.getCharacters.mockResolvedValue(hiraganaCards)
+    const kanjiCards: KanjiReview[] = [
+      { kanjiId: 1, character: '日', meaning: 'sun' },
+      { kanjiId: 2, character: '月', meaning: 'moon' },
+    ]
+    kanjiSvc.getKanjiReviews.mockResolvedValue(kanjiCards)
+    kanjiSvc.checkKanjiReview.mockResolvedValue({ isCorrect: true, srsStage: 2, srsStageName: 'Apprentice 2' })
+
+    renderPage()
+
+    await screen.findByRole('button', { name: 'Hiragana' })
+    fireEvent.click(screen.getByRole('button', { name: /kanji/i }))
+
+    await screen.findByText('1 / 2')
+    fireEvent.click(screen.getByRole('button', { name: 'Know it' }))
+
+    expect(await screen.findByText('2 / 2')).toBeInTheDocument()
+  })
+
+  it('kanji_dont_know_it_advances_to_next_card', async () => {
+    const svc = kanaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
+    const kanjiSvc = kanjiService as unknown as {
+      getKanjiReviews: ReturnType<typeof vi.fn>
+      checkKanjiReview: ReturnType<typeof vi.fn>
+    }
+    svc.getCharacters.mockResolvedValue(hiraganaCards)
+    const kanjiCards: KanjiReview[] = [
+      { kanjiId: 1, character: '日', meaning: 'sun' },
+      { kanjiId: 2, character: '月', meaning: 'moon' },
+    ]
+    kanjiSvc.getKanjiReviews.mockResolvedValue(kanjiCards)
+    kanjiSvc.checkKanjiReview.mockResolvedValue({ isCorrect: false, srsStage: 1, srsStageName: 'Apprentice 1' })
+
+    renderPage()
+
+    await screen.findByRole('button', { name: 'Hiragana' })
+    fireEvent.click(screen.getByRole('button', { name: /kanji/i }))
+
+    await screen.findByText('1 / 2')
+    fireEvent.click(screen.getByRole('button', { name: /don't know it/i }))
+
+    expect(await screen.findByText('2 / 2')).toBeInTheDocument()
   })
 
   it('restart_button_resets_session', async () => {
