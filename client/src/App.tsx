@@ -21,6 +21,8 @@ import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
 import AdminUsersPage from "./pages/admin/AdminUsersPage";
 import AdminUserDetailPage from "./pages/admin/AdminUserDetailPage";
 import WritingPracticePage from "./pages/WritingPracticePage";
+import GrammarListPage from "./pages/GrammarListPage";
+import GrammarDetailPage from "./pages/GrammarDetailPage";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 
 const queryClient = new QueryClient();
@@ -153,6 +155,22 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <KanjiDetailPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "grammar",
+        element: (
+          <ProtectedRoute>
+            <GrammarListPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "grammar/:id",
+        element: (
+          <ProtectedRoute>
+            <GrammarDetailPage />
           </ProtectedRoute>
         ),
       },

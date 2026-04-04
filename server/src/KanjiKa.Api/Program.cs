@@ -42,6 +42,8 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IEmailService, DummyEmailService>();
 builder.Services.AddScoped<IKanjiRepository, KanjiRepository>();
 builder.Services.AddScoped<IKanjiService, KanjiService>();
+builder.Services.AddScoped<IGrammarRepository, GrammarRepository>();
+builder.Services.AddScoped<IGrammarService, GrammarService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 
 builder.Services.AddCors(options => {

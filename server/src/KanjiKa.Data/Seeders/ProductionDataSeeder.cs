@@ -1,4 +1,5 @@
 using KanjiKa.Core;
+using KanjiKa.Core.Entities.Grammar;
 using KanjiKa.Core.Entities.Users;
 using KanjiKa.Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,7 @@ public class ProductionDataSeeder : IDataSeeder
     {
         await SeedCharacters();
         await SeedKanjis();
+        await SeedGrammar();
         await SeedAdminUser();
     }
 
@@ -40,6 +42,16 @@ public class ProductionDataSeeder : IDataSeeder
 
         var kanjis = Kanjidic2Parser.Parse();
         await Context.Kanjis.AddRangeAsync(kanjis);
+        await Context.SaveChangesAsync();
+    }
+
+    private async Task SeedGrammar()
+    {
+        if (await Context.GrammarPoints.AnyAsync())
+            return;
+
+        var grammarPoints = GrammarDataParser.Parse();
+        await Context.GrammarPoints.AddRangeAsync(grammarPoints);
         await Context.SaveChangesAsync();
     }
 

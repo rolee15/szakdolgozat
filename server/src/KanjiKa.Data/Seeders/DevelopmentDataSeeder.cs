@@ -1,3 +1,4 @@
+using KanjiKa.Core.Entities.Grammar;
 using KanjiKa.Core.Entities.Kana;
 using KanjiKa.Core.Entities.Kanji;
 using KanjiKa.Core.Entities.Learning;
@@ -21,6 +22,7 @@ public class DevelopmentDataSeeder : ProductionDataSeeder
     {
         await base.SeedAsync();
         await SeedTestUsers();
+        await SeedGrammarProficiencies();
     }
 
     private async Task SeedTestUsers()
@@ -127,6 +129,48 @@ public class DevelopmentDataSeeder : ProductionDataSeeder
         await Context.Proficiencies.AddRangeAsync(reviewerProficiencies);
         await Context.LessonCompletions.AddRangeAsync(reviewerLessons);
         await Context.KanjiProficiencies.AddRangeAsync(reviewerKanjiProficiencies);
+        await Context.SaveChangesAsync();
+    }
+
+    private async Task SeedGrammarProficiencies()
+    {
+        if (await Context.GrammarProficiencies.AnyAsync())
+            return;
+
+        var grammarPointIds = await Context.GrammarPoints.Select(g => g.Id).ToListAsync();
+        if (grammarPointIds.Count == 0)
+            return;
+
+        var advanced = await Context.Users.FirstOrDefaultAsync(u => u.Username == "advanced@test.com");
+        var midLearner = await Context.Users.FirstOrDefaultAsync(u => u.Username == "midlearner@test.com");
+
+        if (advanced != null)
+        {
+            var advancedProficiencies = grammarPointIds.Select(id => new GrammarProficiency
+            {
+                UserId = advanced.Id,
+                GrammarPointId = id,
+                CorrectCount = 3,
+                AttemptCount = 3,
+                LastPracticedAt = DateTimeOffset.UtcNow
+            }).ToList();
+            await Context.GrammarProficiencies.AddRangeAsync(advancedProficiencies);
+        }
+
+        if (midLearner != null)
+        {
+            var first5Ids = grammarPointIds.Take(5).ToList();
+            var midProficiencies = first5Ids.Select((id, i) => new GrammarProficiency
+            {
+                UserId = midLearner.Id,
+                GrammarPointId = id,
+                CorrectCount = i % 2 == 0 ? 1 : 2,
+                AttemptCount = i % 2 == 0 ? 2 : 3,
+                LastPracticedAt = DateTimeOffset.UtcNow
+            }).ToList();
+            await Context.GrammarProficiencies.AddRangeAsync(midProficiencies);
+        }
+
         await Context.SaveChangesAsync();
     }
 

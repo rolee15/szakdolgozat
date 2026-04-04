@@ -251,7 +251,34 @@ Precondition: dev DB running, backend started, frontend started (see CLAUDE.md f
 
 ---
 
-## 10. Error Handling
+## 10. Grammar (`/grammar`)
+
+### 10.1 Grammar List (`/grammar`)
+
+- [ ] "Grammar" link in navbar navigates to `/grammar`
+- [ ] Grid of N5 grammar point cards loads
+- [ ] Each card shows title, pattern, and completion badge
+- [ ] Completed points show green checkmark and "Completed"
+- [ ] Incomplete points show "X/3 correct" in yellow
+- [ ] Click a card → navigates to `/grammar/:id`
+
+### 10.2 Grammar Detail (`/grammar/:id`)
+
+- [ ] Title, pattern, and explanation text displayed
+- [ ] Example sentences shown (Japanese, reading, English)
+- [ ] Exercise fill-in-the-blank sentence displayed
+- [ ] Four option buttons rendered
+- [ ] Click correct answer → green "Correct!" banner, buttons disabled
+- [ ] Click wrong answer → red "Incorrect. Correct answer: X" banner, buttons disabled
+- [ ] "Next" button advances to next exercise
+- [ ] After all exercises → score summary displayed (e.g. "Score: 2/3")
+- [ ] When all 3 correct over time → "Grammar point completed!" shown
+- [ ] Back button returns to `/grammar`
+- [ ] API failure → error state shown, page does not crash
+
+---
+
+## 11. Error Handling
 
 - [ ] API failure (stop backend) -> frontend shows error state, does not crash
 - [ ] Refresh any protected page while logged in -> page loads correctly

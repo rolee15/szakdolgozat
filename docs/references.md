@@ -44,6 +44,11 @@ Used in: `client/src/components/lessons/WritingInput.tsx`
 
 ---
 
+[7] T. Coil, "Hanabira.org: Japanese Grammar and Vocabulary Learning Resource," *GitHub*, <https://github.com/tristcoil/hanabira.org>. Accessed: 2026-04-04. License: CC BY-SA 4.0.
+Used in: `server/src/KanjiKa.Data/Data/grammar-n5.json`, `server/src/KanjiKa.Data/GrammarDataParser.cs`
+
+---
+
 ## Notes
 
 - All EDRDG resources require the attribution statement: *"This application uses data from the Electronic Dictionary Research and Development Group (<http://www.edrdg.org>)."*

@@ -23,6 +23,7 @@
 
     <ItemGroup>
         <EmbeddedResource Include="Data/kanjidic2.xml.gz" />
+        <EmbeddedResource Include="Data/grammar-n5.json" />
     </ItemGroup>
 
 </Project>

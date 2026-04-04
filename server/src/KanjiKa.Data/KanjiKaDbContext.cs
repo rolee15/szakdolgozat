@@ -1,3 +1,4 @@
+using KanjiKa.Core.Entities.Grammar;
 using KanjiKa.Core.Entities.Kana;
 using KanjiKa.Core.Entities.Kanji;
 using KanjiKa.Core.Entities.Learning;
@@ -19,6 +20,10 @@ public class KanjiKaDbContext : DbContext
     public DbSet<Kanji> Kanjis { get; set; }
     public DbSet<KanjiExample> KanjiExamples { get; set; }
     public DbSet<KanjiProficiency> KanjiProficiencies { get; set; }
+    public DbSet<GrammarPoint> GrammarPoints { get; set; }
+    public DbSet<GrammarExample> GrammarExamples { get; set; }
+    public DbSet<GrammarExercise> GrammarExercises { get; set; }
+    public DbSet<GrammarProficiency> GrammarProficiencies { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -77,6 +82,29 @@ public class KanjiKaDbContext : DbContext
             entity.HasKey(kp => kp.Id);
             entity.HasIndex(kp => new { kp.UserId, kp.KanjiId }).IsUnique();
             entity.Property(kp => kp.SrsStage).HasConversion<int>();
+        });
+
+        modelBuilder.Entity<GrammarPoint>(entity => {
+            entity.HasKey(g => g.Id);
+            entity.HasMany(g => g.Examples)
+                .WithOne(e => e.GrammarPoint)
+                .HasForeignKey(e => e.GrammarPointId);
+            entity.HasMany(g => g.Exercises)
+                .WithOne(ex => ex.GrammarPoint)
+                .HasForeignKey(ex => ex.GrammarPointId);
+        });
+
+        modelBuilder.Entity<GrammarExample>(entity => {
+            entity.HasKey(e => e.Id);
+        });
+
+        modelBuilder.Entity<GrammarExercise>(entity => {
+            entity.HasKey(ex => ex.Id);
+        });
+
+        modelBuilder.Entity<GrammarProficiency>(entity => {
+            entity.HasKey(gp => gp.Id);
+            entity.HasIndex(gp => new { gp.UserId, gp.GrammarPointId }).IsUnique();
         });
     }
 }
