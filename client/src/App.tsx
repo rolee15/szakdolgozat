@@ -23,6 +23,11 @@ import AdminUserDetailPage from "./pages/admin/AdminUserDetailPage";
 import WritingPracticePage from "./pages/WritingPracticePage";
 import GrammarListPage from "./pages/GrammarListPage";
 import GrammarDetailPage from "./pages/GrammarDetailPage";
+import ReadingListPage from "./pages/ReadingListPage";
+import ReadingDetailPage from "./pages/ReadingDetailPage";
+import LearningPathPage from "./pages/LearningPathPage";
+import UnitDetailPage from "./pages/UnitDetailPage";
+import UnitTestPage from "./pages/UnitTestPage";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 
 const queryClient = new QueryClient();
@@ -171,6 +176,46 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <GrammarDetailPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "reading",
+        element: (
+          <ProtectedRoute>
+            <ReadingListPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "reading/:id",
+        element: (
+          <ProtectedRoute>
+            <ReadingDetailPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "path",
+        element: (
+          <ProtectedRoute>
+            <LearningPathPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "path/:unitId",
+        element: (
+          <ProtectedRoute>
+            <UnitDetailPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "path/:unitId/test",
+        element: (
+          <ProtectedRoute>
+            <UnitTestPage />
           </ProtectedRoute>
         ),
       },

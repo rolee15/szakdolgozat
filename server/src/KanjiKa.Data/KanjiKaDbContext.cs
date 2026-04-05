@@ -2,6 +2,8 @@ using KanjiKa.Core.Entities.Grammar;
 using KanjiKa.Core.Entities.Kana;
 using KanjiKa.Core.Entities.Kanji;
 using KanjiKa.Core.Entities.Learning;
+using KanjiKa.Core.Entities.Path;
+using KanjiKa.Core.Entities.Reading;
 using KanjiKa.Core.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,6 +26,13 @@ public class KanjiKaDbContext : DbContext
     public DbSet<GrammarExample> GrammarExamples { get; set; }
     public DbSet<GrammarExercise> GrammarExercises { get; set; }
     public DbSet<GrammarProficiency> GrammarProficiencies { get; set; }
+    public DbSet<ReadingPassage> ReadingPassages { get; set; }
+    public DbSet<ComprehensionQuestion> ComprehensionQuestions { get; set; }
+    public DbSet<ReadingProficiency> ReadingProficiencies { get; set; }
+    public DbSet<LearningUnit> LearningUnits { get; set; }
+    public DbSet<UnitContent> UnitContents { get; set; }
+    public DbSet<UnitTest> UnitTests { get; set; }
+    public DbSet<UnitProgress> UnitProgresses { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -105,6 +114,47 @@ public class KanjiKaDbContext : DbContext
         modelBuilder.Entity<GrammarProficiency>(entity => {
             entity.HasKey(gp => gp.Id);
             entity.HasIndex(gp => new { gp.UserId, gp.GrammarPointId }).IsUnique();
+        });
+
+        modelBuilder.Entity<ReadingPassage>(entity => {
+            entity.HasKey(p => p.Id);
+            entity.HasMany(p => p.Questions)
+                .WithOne(q => q.ReadingPassage)
+                .HasForeignKey(q => q.ReadingPassageId);
+        });
+
+        modelBuilder.Entity<ComprehensionQuestion>(entity => {
+            entity.HasKey(q => q.Id);
+        });
+
+        modelBuilder.Entity<ReadingProficiency>(entity => {
+            entity.HasKey(rp => rp.Id);
+            entity.HasIndex(rp => new { rp.UserId, rp.ReadingPassageId }).IsUnique();
+        });
+
+        modelBuilder.Entity<LearningUnit>(entity => {
+            entity.HasKey(u => u.Id);
+            entity.HasMany(u => u.Contents)
+                .WithOne(c => c.LearningUnit)
+                .HasForeignKey(c => c.LearningUnitId);
+            entity.HasMany(u => u.Tests)
+                .WithOne(t => t.LearningUnit)
+                .HasForeignKey(t => t.LearningUnitId);
+        });
+
+        modelBuilder.Entity<UnitContent>(entity => {
+            entity.HasKey(c => c.Id);
+            entity.Property(c => c.ContentType).HasConversion<int>();
+        });
+
+        modelBuilder.Entity<UnitTest>(entity => {
+            entity.HasKey(t => t.Id);
+            entity.Property(t => t.ContentType).HasConversion<int>();
+        });
+
+        modelBuilder.Entity<UnitProgress>(entity => {
+            entity.HasKey(up => up.Id);
+            entity.HasIndex(up => new { up.UserId, up.LearningUnitId }).IsUnique();
         });
     }
 }

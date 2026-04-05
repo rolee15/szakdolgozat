@@ -1,7 +1,7 @@
 # KanjiKa — Implementation Plan
 
 **Date**: 2026-03-29
-**Last updated**: 2026-03-31
+**Last updated**: 2026-04-04
 **Next consultation**: 2026-04-15 (most implementation done + documentation started)
 **Final thesis deadline**: 2026-05-01
 
@@ -12,9 +12,9 @@
 | # | Promise (THESIS.md paragraph 2) | Status | Plan |
 | --- | --- | --- | --- |
 | 1 | Practicing **reading** Japanese characters | Done | Kana grids, flashcards, lesson reviews |
-| 2 | Practicing **writing** Japanese characters | Missing | Day 2: reverse exercises with wanakana |
+| 2 | Practicing **writing** Japanese characters | Done | `WritingPracticePage` with wanakana romaji→kana input |
 | 3 | **Understanding texts** | Missing | Day 4: reading passages + comprehension questions |
-| 4 | Acquiring Japanese **grammar rules** | Missing | Day 3: grammar points + exercises |
+| 4 | Acquiring Japanese **grammar rules** | Done | 12 N5 grammar points with fill-in-the-blank exercises |
 | 5 | **Various difficulty levels** | Partial | Day 8: user JLPT level setting, all content tagged |
 | 6 | **Various practice exercises** | Partial | Days 2-4 add writing, grammar, reading exercises |
 | 7 | **Structured learning path** | Missing | Day 5: units with prerequisites |
@@ -122,7 +122,7 @@ Multiple seeded test users with varied proficiency data so every feature is manu
 - [x] Hiragana/Katakana modes
 - [x] Know/Don't know buttons
 - [x] Route and nav link
-- [ ] Kanji mode (button disabled — needs kanji proficiency fix on Day 1)
+- [x] Kanji mode (enabled — kanji review DTOs + endpoints added, know/don't know buttons)
 
 ---
 
@@ -130,70 +130,73 @@ Multiple seeded test users with varied proficiency data so every feature is manu
 
 ### WEEK 1: Core Features
 
-#### Day 1 (Apr 1) — Bug Fixes + Kanji Proficiency + Test Users + Seeder Refactor (~7h)
+#### Day 1 (Apr 1) — Bug Fixes + Kanji Proficiency + Test Users + Seeder Refactor (~7h) ✅
 
 **Bugs:**
 
-- [ ] `KanjiService.cs`: hardcoded `Proficiency=0, SrsStage="Locked"` → create `KanjiProficiency` entity, query real data
-- [ ] `LessonService.cs` BUG comment: lesson count ignores unlearned characters → cap at `min(dailyRemaining, unlearnedCount)`
-- [ ] `UserService.cs`: hardcoded refresh token `"test23456"` → real token rotation
-- [ ] `UserService.cs`: hardcoded reset code `"12345"` → random code with expiry
-- [ ] Kana detail page missing SRS stage → add to `KanaCharacterDetailDto` + `CharacterDetail.tsx`
+- [x] `KanjiService.cs`: hardcoded `Proficiency=0, SrsStage="Locked"` → create `KanjiProficiency` entity, query real data
+- [x] `LessonService.cs` BUG comment: lesson count ignores unlearned characters → cap at `min(dailyRemaining, unlearnedCount)`
+- [x] `UserService.cs`: hardcoded refresh token `"test23456"` → real token rotation
+- [x] `UserService.cs`: hardcoded reset code `"12345"` → random code with expiry
+- [x] Kana detail page missing SRS stage → add to `KanaCharacterDetailDto` + `CharacterDetail.tsx`
 
 **Kanji proficiency:**
 
-- [ ] New `KanjiProficiency` entity (mirrors kana `Proficiency`)
-- [ ] `DbSet<KanjiProficiency>` in `KanjiKaDbContext`
-- [ ] `KanjiService` queries real proficiency
-- [ ] Kanji learn/review endpoints in `KanjiController`
-- [ ] Enable Kanji mode in `FlashCardPage.tsx`
+- [x] New `KanjiProficiency` entity (mirrors kana `Proficiency`)
+- [x] `DbSet<KanjiProficiency>` in `KanjiKaDbContext`
+- [x] `KanjiService` queries real proficiency
+- [x] Kanji learn/review endpoints in `KanjiController`
+- [x] Enable Kanji mode in `FlashCardPage.tsx`
 
 **Seeder refactor (dev + production):**
 
-- [ ] Split `KanjiKaDataSeeder` into `ContentSeeder` (static data, dev+prod) + `TestDataSeeder` (test users, dev only)
-- [ ] `ContentSeeder` checks `if (!context.Characters.Any())` before seeding (idempotent for production)
-- [ ] `Program.cs`: run both seeders in dev, only `ContentSeeder` in production
-- [ ] Prepares clean slots for grammar, reading, learning path seeding on Days 3-5
+- [x] Split `KanjiKaDataSeeder` into `ProductionDataSeeder` (static data, dev+prod) + `DevelopmentDataSeeder` (test users, dev only)
+- [x] `ProductionDataSeeder` checks `if (!context.Characters.Any())` before seeding (idempotent for production)
+- [x] `Program.cs`: run both seeders in dev, only `ProductionDataSeeder` in production
+- [x] Prepares clean slots for grammar, reading, learning path seeding on Days 3-5
 
 **Test user seeding:**
 
-- [ ] Seed 4 test users (Beginner, Mid-learner, Advanced, Reviewer) with varied proficiency data
-- [ ] Each user has different SRS stages and staggered `NextReviewDate` values
-- [ ] Update `MANUAL_TEST.md` with credentials table
+- [x] Seed 4 test users (Beginner, Mid-learner, Advanced, Reviewer) with varied proficiency data
+- [x] Each user has different SRS stages and staggered `NextReviewDate` values
+- [x] Update `MANUAL_TEST.md` with credentials table
 
-#### Day 2 (Apr 2) — Writing Practice (~5h)
+#### Day 2 (Apr 2) — Writing Practice (~5h) ✅
 
 > Thesis: "practicing writing Japanese characters" — reverse-direction exercises using `wanakana` for romaji→kana conversion.
 
-- [ ] `GET /api/lessons/writing-reviews` — SRS-due items in reverse (prompt=romanization, expected=character)
-- [ ] `POST /api/lessons/writing-reviews/check` — validates typed character
-- [ ] `WritingPracticePage.tsx` — romanization prompt, wanakana-bound input, feedback
-- [ ] `WritingInput.tsx` component with wanakana `bind()`
-- [ ] Route `/writing`, nav link, button on `LessonsPage.tsx`
+- [x] `GET /api/lessons/writing-reviews` — SRS-due items in reverse (prompt=romanization, expected=character)
+- [x] `POST /api/lessons/writing-reviews/check` — validates typed character
+- [x] `WritingPracticePage.tsx` — romanization prompt, wanakana-bound input, feedback
+- [x] `WritingInput.tsx` component with wanakana `bind()`
+- [x] Route `/writing`, nav link, button on `LessonsPage.tsx`
 
-#### Day 3 (Apr 3) — Grammar System + Content Import (~8h)
+#### Day 3 (Apr 3) — Grammar System + Content Import (~8h) ✅
 
-> Thesis: "acquiring Japanese grammar rules" — content sourced from Hanabira.org (CC) and Tae Kim's Guide (CC BY-NC-SA).
+> Thesis: "acquiring Japanese grammar rules" — content sourced from Hanabira.org (CC BY-SA 4.0).
 
 **Content sourcing (first 2h):**
 
-- [ ] Download Hanabira N5 grammar JSON from GitHub
-- [ ] Write parser/seeder to extract grammar points into entity format
-- [ ] Generate exercises (fill-blank, multiple-choice) from examples
-- [ ] Target: ~12-15 N5 grammar points with examples and exercises
-- [ ] Cite Hanabira + Tae Kim in `docs/references.md`
+- [x] Download Hanabira N5 grammar JSON from GitHub (embedded as resource `grammar-n5.json`)
+- [x] Write parser/seeder to extract grammar points into entity format (`GrammarDataParser.cs`)
+- [x] Generate exercises (fill-in-the-blank) from examples — note: multiple-choice not implemented, fill-blank only
+- [x] Target: 12 N5 grammar points with examples and exercises
+- [x] Cite Hanabira in `docs/references.md`
 
 **Backend:**
 
-- [ ] Entities: `GrammarPoint`, `GrammarExample`, `GrammarExercise`, `GrammarProficiency`
-- [ ] `IGrammarRepository`/`GrammarRepository`, `IGrammarService`/`GrammarService`
-- [ ] `GrammarController`: list, detail, check endpoints
+- [x] Entities: `GrammarPoint`, `GrammarExample`, `GrammarExercise`, `GrammarProficiency`
+- [x] `IGrammarRepository`/`GrammarRepository`, `IGrammarService`/`GrammarService`
+- [x] `GrammarController`: list, detail, check endpoints (`GET /api/grammar`, `GET /api/grammar/:id`, `POST` check)
+- [x] Per-user proficiency tracking (completion at 3 correct answers)
+- [x] 13 backend unit tests
 
 **Frontend:**
 
-- [ ] `GrammarListPage.tsx` — list by JLPT level with proficiency indicators
-- [ ] `GrammarDetailPage.tsx` — explanation, examples, interactive exercises
-- [ ] `grammarService.ts`, types, routes `/grammar`, `/grammar/:id`
+- [x] `GrammarListPage.tsx` — list by JLPT level with proficiency indicators
+- [x] `GrammarDetailPage.tsx` — explanation, examples, interactive exercises
+- [x] `grammarService.ts`, types, routes `/grammar`, `/grammar/:id`
+- [x] 204 frontend tests at 96% coverage
 
 #### Day 4 (Apr 4) — Text Comprehension + Content Import (~7h)
 

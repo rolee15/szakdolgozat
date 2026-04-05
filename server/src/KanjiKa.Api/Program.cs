@@ -44,6 +44,10 @@ builder.Services.AddScoped<IKanjiRepository, KanjiRepository>();
 builder.Services.AddScoped<IKanjiService, KanjiService>();
 builder.Services.AddScoped<IGrammarRepository, GrammarRepository>();
 builder.Services.AddScoped<IGrammarService, GrammarService>();
+builder.Services.AddScoped<IReadingRepository, ReadingRepository>();
+builder.Services.AddScoped<IReadingService, ReadingService>();
+builder.Services.AddScoped<IPathRepository, PathRepository>();
+builder.Services.AddScoped<IPathService, PathService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 
 builder.Services.AddCors(options => {

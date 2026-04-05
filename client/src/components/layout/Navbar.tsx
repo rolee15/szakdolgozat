@@ -36,6 +36,12 @@ const Navbar = () => {
               <NavLink to="/grammar" className="text-white hover:text-gray-300">
                 Grammar
               </NavLink>
+              <NavLink to="/reading" className="text-white hover:text-gray-300">
+                Reading
+              </NavLink>
+              <NavLink to="/path" className="text-white hover:text-gray-300">
+                Path
+              </NavLink>
               {isAdmin && (
                 <NavLink to="/admin" className="text-white hover:text-gray-300">
                   Admin
