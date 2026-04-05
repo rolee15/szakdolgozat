@@ -1,7 +1,7 @@
 # KanjiKa — Implementation Plan
 
 **Date**: 2026-03-29
-**Last updated**: 2026-04-04
+**Last updated**: 2026-04-05
 **Next consultation**: 2026-04-15 (most implementation done + documentation started)
 **Final thesis deadline**: 2026-05-01
 
@@ -13,12 +13,12 @@
 | --- | --- | --- | --- |
 | 1 | Practicing **reading** Japanese characters | Done | Kana grids, flashcards, lesson reviews |
 | 2 | Practicing **writing** Japanese characters | Done | `WritingPracticePage` with wanakana romaji→kana input |
-| 3 | **Understanding texts** | Missing | Day 4: reading passages + comprehension questions |
+| 3 | **Understanding texts** | Done | `ReadingListPage`, `ReadingDetailPage`, passages + comprehension questions |
 | 4 | Acquiring Japanese **grammar rules** | Done | 12 N5 grammar points with fill-in-the-blank exercises |
 | 5 | **Various difficulty levels** | Partial | Day 8: user JLPT level setting, all content tagged |
 | 6 | **Various practice exercises** | Partial | Days 2-4 add writing, grammar, reading exercises |
-| 7 | **Structured learning path** | Missing | Day 5: units with prerequisites |
-| 8 | **Verification tests** at end of lessons/modules | Missing | Day 5: unit quizzes (70% to pass) |
+| 7 | **Structured learning path** | Done | `LearningPathPage`, `UnitDetailPage`, 6 seeded units with unlock logic |
+| 8 | **Verification tests** at end of lessons/modules | Done | `UnitTestPage`, 70% pass threshold, `UnitTest` entity |
 | 9 | **Customizable** lessons/learning path | Partial | Day 8: settings page + data-driven architecture |
 | 10 | **Interesting and challenging** (motivation) | Partial | SRS + varied exercises |
 
@@ -198,37 +198,37 @@ Multiple seeded test users with varied proficiency data so every feature is manu
 - [x] `grammarService.ts`, types, routes `/grammar`, `/grammar/:id`
 - [x] 204 frontend tests at 96% coverage
 
-#### Day 4 (Apr 4) — Text Comprehension + Content Import (~7h)
+#### Day 4 (Apr 4) — Text Comprehension + Content Import (~7h) ✅
 
 > Thesis: "understanding texts" — passages sourced from JLPT samples and NHK Easy Japanese.
 
 **Content sourcing (first 2h):**
 
-- [ ] Collect/adapt 6 N5-level passages from JLPT samples, NHK Easy, or original compositions
-- [ ] Write 3-4 comprehension questions per passage (multiple-choice)
-- [ ] Cite sources in `docs/references.md`
+- [x] Collect/adapt 6 N5-level passages from JLPT samples, NHK Easy, or original compositions
+- [x] Write 3-4 comprehension questions per passage (multiple-choice)
+- [x] Cite sources in `docs/references.md`
 
 **Backend:**
 
-- [ ] Entities: `ReadingPassage`, `ComprehensionQuestion`, `ReadingProficiency`
-- [ ] `IReadingRepository`/`ReadingRepository`, `IReadingService`/`ReadingService`
-- [ ] `ReadingController`: list, detail, submit endpoints
+- [x] Entities: `ReadingPassage`, `ComprehensionQuestion`, `ReadingProficiency`
+- [x] `IReadingRepository`/`ReadingRepository`, `IReadingService`/`ReadingService`
+- [x] `ReadingController`: list, detail, submit endpoints
 
 **Frontend:**
 
-- [ ] `ReadingListPage.tsx` — passage list with completion status
-- [ ] `ReadingDetailPage.tsx` — passage text + furigana toggle + questions + score
-- [ ] `readingService.ts`, types, routes `/reading`, `/reading/:id`
+- [x] `ReadingListPage.tsx` — passage list with completion status
+- [x] `ReadingDetailPage.tsx` — passage text + furigana toggle + questions + score
+- [x] `readingService.ts`, types, routes `/reading`, `/reading/:id`
 
-#### Day 5 (Apr 5) — Learning Path + Verification Tests (~7h)
+#### Day 5 (Apr 5) — Learning Path + Verification Tests (~7h) ✅
 
 > Thesis: "structured learning path" + "verification tests at the end of lessons and modules."
 
 **Backend:**
 
-- [ ] Entities: `LearningUnit`, `UnitContent`, `UnitProgress`
-- [ ] `IPathService`/`PathService` — path retrieval, test generation, scoring (70% pass), unlock logic
-- [ ] `PathController`: `GET /api/path`, unit detail, test, submit endpoints
+- [x] Entities: `LearningUnit`, `UnitContent`, `UnitProgress`, `UnitTest`
+- [x] `IPathService`/`PathService` — path retrieval, test generation, scoring (70% pass), unlock logic
+- [x] `PathController`: `GET /api/path`, unit detail, test, submit endpoints
 
 **Seed 6 N5 units:**
 
@@ -241,10 +241,10 @@ Multiple seeded test users with varied proficiency data so every feature is manu
 
 **Frontend:**
 
-- [ ] `LearningPathPage.tsx` — vertical timeline (locked/in-progress/completed)
-- [ ] `UnitDetailPage.tsx` — contents + "Take Test" button
-- [ ] `UnitTestPage.tsx` — quiz, score, pass/fail
-- [ ] `pathService.ts`, types, routes `/path`, `/path/:unitId`, `/path/:unitId/test`
+- [x] `LearningPathPage.tsx` — vertical timeline (locked/in-progress/completed)
+- [x] `UnitDetailPage.tsx` — contents + "Take Test" button
+- [x] `UnitTestPage.tsx` — quiz, score, pass/fail
+- [x] `pathService.ts`, types, routes `/path`, `/path/:unitId`, `/path/:unitId/test`
 
 #### Day 6 (Apr 6) — Testing Catchup (~6h)
 
