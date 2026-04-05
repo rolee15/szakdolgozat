@@ -1,8 +1,8 @@
-using KanjiKa.Core.DTOs.Path;
-using KanjiKa.Core.Entities.Path;
-using KanjiKa.Core.Interfaces;
+using KanjiKa.Application.DTOs.Path;
+using KanjiKa.Application.Interfaces;
+using KanjiKa.Domain.Entities.Path;
 
-namespace KanjiKa.Api.Services;
+namespace KanjiKa.Application.Services;
 
 public class PathService : IPathService
 {

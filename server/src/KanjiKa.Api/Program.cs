@@ -1,10 +1,12 @@
 using System.Text;
 using KanjiKa.Api.Services;
-using KanjiKa.Core.Interfaces;
-using KanjiKa.Core.Services;
+using KanjiKa.Application.Interfaces;
+using KanjiKa.Application.Services;
 using KanjiKa.Data;
 using KanjiKa.Data.Repositories;
 using KanjiKa.Data.Seeders;
+using KanjiKa.Domain.Interfaces;
+using KanjiKa.Domain.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -33,6 +35,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddScoped<IKanaService, KanaService>();
+builder.Services.AddScoped<IKanaRepository, KanaRepository>();
 builder.Services.AddScoped<ILessonService, LessonService>();
 builder.Services.AddScoped<ILessonRepository, LessonRepository>();
 builder.Services.AddScoped<IUserService, UserService>();

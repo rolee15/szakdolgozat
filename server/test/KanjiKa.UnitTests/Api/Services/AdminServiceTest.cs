@@ -1,10 +1,10 @@
-using KanjiKa.Api.Services;
-using KanjiKa.Core.DTOs;
-using KanjiKa.Core.DTOs.Admin;
-using KanjiKa.Core.Entities.Kana;
-using KanjiKa.Core.Entities.Learning;
-using KanjiKa.Core.Entities.Users;
-using KanjiKa.Core.Interfaces;
+using KanjiKa.Application.Services;
+using KanjiKa.Application.DTOs;
+using KanjiKa.Application.DTOs.Admin;
+using KanjiKa.Domain.Entities.Kana;
+using KanjiKa.Domain.Entities.Learning;
+using KanjiKa.Domain.Entities.Users;
+using KanjiKa.Application.Interfaces;
 using Moq;
 
 namespace KanjiKa.UnitTests.Api.Services;

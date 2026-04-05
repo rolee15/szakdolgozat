@@ -1,7 +1,7 @@
 using System.Security.Claims;
-using KanjiKa.Core.DTOs.Kana;
-using KanjiKa.Core.Entities.Kana;
-using KanjiKa.Core.Interfaces;
+using KanjiKa.Application.DTOs.Kana;
+using KanjiKa.Domain.Entities.Kana;
+using KanjiKa.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

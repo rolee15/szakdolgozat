@@ -1,12 +1,12 @@
-using KanjiKa.Core.DTOs.Learning;
-using KanjiKa.Core.Entities.Kana;
-using KanjiKa.Core.Entities.Learning;
-using KanjiKa.Core.Entities.Users;
-using KanjiKa.Core.Interfaces;
+using KanjiKa.Application.DTOs.Learning;
+using KanjiKa.Application.Interfaces;
+using KanjiKa.Domain.Entities.Kana;
+using KanjiKa.Domain.Entities.Learning;
+using KanjiKa.Domain.Entities.Users;
 
-namespace KanjiKa.Api.Services;
+namespace KanjiKa.Application.Services;
 
-internal class LessonService : ILessonService
+public class LessonService : ILessonService
 {
     // Move to user settings when implemented
     private const int LessonsPerDayCount = 15;

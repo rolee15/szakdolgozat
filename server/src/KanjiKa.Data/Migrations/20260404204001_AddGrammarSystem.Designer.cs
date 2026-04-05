@@ -25,7 +25,7 @@ namespace KanjiKa.Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("KanjiKa.Core.Entities.Grammar.GrammarExample", b =>
+            modelBuilder.Entity("KanjiKa.Domain.Entities.Grammar.GrammarExample", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -62,7 +62,7 @@ namespace KanjiKa.Data.Migrations
                     b.ToTable("grammar_examples", (string)null);
                 });
 
-            modelBuilder.Entity("KanjiKa.Core.Entities.Grammar.GrammarExercise", b =>
+            modelBuilder.Entity("KanjiKa.Domain.Entities.Grammar.GrammarExercise", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -109,7 +109,7 @@ namespace KanjiKa.Data.Migrations
                     b.ToTable("grammar_exercises", (string)null);
                 });
 
-            modelBuilder.Entity("KanjiKa.Core.Entities.Grammar.GrammarPoint", b =>
+            modelBuilder.Entity("KanjiKa.Domain.Entities.Grammar.GrammarPoint", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -147,7 +147,7 @@ namespace KanjiKa.Data.Migrations
                     b.ToTable("grammar_points", (string)null);
                 });
 
-            modelBuilder.Entity("KanjiKa.Core.Entities.Grammar.GrammarProficiency", b =>
+            modelBuilder.Entity("KanjiKa.Domain.Entities.Grammar.GrammarProficiency", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -189,7 +189,7 @@ namespace KanjiKa.Data.Migrations
                     b.ToTable("grammar_proficiencies", (string)null);
                 });
 
-            modelBuilder.Entity("KanjiKa.Core.Entities.Kana.Character", b =>
+            modelBuilder.Entity("KanjiKa.Domain.Entities.Kana.Character", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -218,7 +218,7 @@ namespace KanjiKa.Data.Migrations
                     b.ToTable("characters", (string)null);
                 });
 
-            modelBuilder.Entity("KanjiKa.Core.Entities.Kana.Example", b =>
+            modelBuilder.Entity("KanjiKa.Domain.Entities.Kana.Example", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -255,7 +255,7 @@ namespace KanjiKa.Data.Migrations
                     b.ToTable("examples", (string)null);
                 });
 
-            modelBuilder.Entity("KanjiKa.Core.Entities.Kana.Proficiency", b =>
+            modelBuilder.Entity("KanjiKa.Domain.Entities.Kana.Proficiency", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("integer")
@@ -294,7 +294,7 @@ namespace KanjiKa.Data.Migrations
                     b.ToTable("proficiencies", (string)null);
                 });
 
-            modelBuilder.Entity("KanjiKa.Core.Entities.Kanji.Kanji", b =>
+            modelBuilder.Entity("KanjiKa.Domain.Entities.Kanji.Kanji", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -341,7 +341,7 @@ namespace KanjiKa.Data.Migrations
                     b.ToTable("kanjis", (string)null);
                 });
 
-            modelBuilder.Entity("KanjiKa.Core.Entities.Kanji.KanjiExample", b =>
+            modelBuilder.Entity("KanjiKa.Domain.Entities.Kanji.KanjiExample", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -378,7 +378,7 @@ namespace KanjiKa.Data.Migrations
                     b.ToTable("kanji_examples", (string)null);
                 });
 
-            modelBuilder.Entity("KanjiKa.Core.Entities.Kanji.KanjiProficiency", b =>
+            modelBuilder.Entity("KanjiKa.Domain.Entities.Kanji.KanjiProficiency", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -420,7 +420,7 @@ namespace KanjiKa.Data.Migrations
                     b.ToTable("kanji_proficiencies", (string)null);
                 });
 
-            modelBuilder.Entity("KanjiKa.Core.Entities.Learning.LessonCompletion", b =>
+            modelBuilder.Entity("KanjiKa.Domain.Entities.Learning.LessonCompletion", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("integer")
@@ -443,7 +443,7 @@ namespace KanjiKa.Data.Migrations
                     b.ToTable("lesson_completions", (string)null);
                 });
 
-            modelBuilder.Entity("KanjiKa.Core.Entities.Users.User", b =>
+            modelBuilder.Entity("KanjiKa.Domain.Entities.Users.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -501,9 +501,9 @@ namespace KanjiKa.Data.Migrations
                     b.ToTable("users", (string)null);
                 });
 
-            modelBuilder.Entity("KanjiKa.Core.Entities.Grammar.GrammarExample", b =>
+            modelBuilder.Entity("KanjiKa.Domain.Entities.Grammar.GrammarExample", b =>
                 {
-                    b.HasOne("KanjiKa.Core.Entities.Grammar.GrammarPoint", "GrammarPoint")
+                    b.HasOne("KanjiKa.Domain.Entities.Grammar.GrammarPoint", "GrammarPoint")
                         .WithMany("Examples")
                         .HasForeignKey("GrammarPointId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -513,9 +513,9 @@ namespace KanjiKa.Data.Migrations
                     b.Navigation("GrammarPoint");
                 });
 
-            modelBuilder.Entity("KanjiKa.Core.Entities.Grammar.GrammarExercise", b =>
+            modelBuilder.Entity("KanjiKa.Domain.Entities.Grammar.GrammarExercise", b =>
                 {
-                    b.HasOne("KanjiKa.Core.Entities.Grammar.GrammarPoint", "GrammarPoint")
+                    b.HasOne("KanjiKa.Domain.Entities.Grammar.GrammarPoint", "GrammarPoint")
                         .WithMany("Exercises")
                         .HasForeignKey("GrammarPointId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -525,16 +525,16 @@ namespace KanjiKa.Data.Migrations
                     b.Navigation("GrammarPoint");
                 });
 
-            modelBuilder.Entity("KanjiKa.Core.Entities.Grammar.GrammarProficiency", b =>
+            modelBuilder.Entity("KanjiKa.Domain.Entities.Grammar.GrammarProficiency", b =>
                 {
-                    b.HasOne("KanjiKa.Core.Entities.Grammar.GrammarPoint", "GrammarPoint")
+                    b.HasOne("KanjiKa.Domain.Entities.Grammar.GrammarPoint", "GrammarPoint")
                         .WithMany()
                         .HasForeignKey("GrammarPointId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_grammar_proficiencies_grammar_points_grammar_point_id");
 
-                    b.HasOne("KanjiKa.Core.Entities.Users.User", "User")
+                    b.HasOne("KanjiKa.Domain.Entities.Users.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -546,9 +546,9 @@ namespace KanjiKa.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("KanjiKa.Core.Entities.Kana.Example", b =>
+            modelBuilder.Entity("KanjiKa.Domain.Entities.Kana.Example", b =>
                 {
-                    b.HasOne("KanjiKa.Core.Entities.Kana.Character", "Character")
+                    b.HasOne("KanjiKa.Domain.Entities.Kana.Character", "Character")
                         .WithMany("Examples")
                         .HasForeignKey("CharacterId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -558,16 +558,16 @@ namespace KanjiKa.Data.Migrations
                     b.Navigation("Character");
                 });
 
-            modelBuilder.Entity("KanjiKa.Core.Entities.Kana.Proficiency", b =>
+            modelBuilder.Entity("KanjiKa.Domain.Entities.Kana.Proficiency", b =>
                 {
-                    b.HasOne("KanjiKa.Core.Entities.Kana.Character", "Character")
+                    b.HasOne("KanjiKa.Domain.Entities.Kana.Character", "Character")
                         .WithMany()
                         .HasForeignKey("CharacterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_proficiencies_characters_character_id");
 
-                    b.HasOne("KanjiKa.Core.Entities.Users.User", "User")
+                    b.HasOne("KanjiKa.Domain.Entities.Users.User", "User")
                         .WithMany("Proficiencies")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -579,9 +579,9 @@ namespace KanjiKa.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("KanjiKa.Core.Entities.Kanji.KanjiExample", b =>
+            modelBuilder.Entity("KanjiKa.Domain.Entities.Kanji.KanjiExample", b =>
                 {
-                    b.HasOne("KanjiKa.Core.Entities.Kanji.Kanji", "Kanji")
+                    b.HasOne("KanjiKa.Domain.Entities.Kanji.Kanji", "Kanji")
                         .WithMany("Examples")
                         .HasForeignKey("KanjiId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -591,16 +591,16 @@ namespace KanjiKa.Data.Migrations
                     b.Navigation("Kanji");
                 });
 
-            modelBuilder.Entity("KanjiKa.Core.Entities.Kanji.KanjiProficiency", b =>
+            modelBuilder.Entity("KanjiKa.Domain.Entities.Kanji.KanjiProficiency", b =>
                 {
-                    b.HasOne("KanjiKa.Core.Entities.Kanji.Kanji", "Kanji")
+                    b.HasOne("KanjiKa.Domain.Entities.Kanji.Kanji", "Kanji")
                         .WithMany()
                         .HasForeignKey("KanjiId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_kanji_proficiencies_kanjis_kanji_id");
 
-                    b.HasOne("KanjiKa.Core.Entities.Users.User", "User")
+                    b.HasOne("KanjiKa.Domain.Entities.Users.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -612,16 +612,16 @@ namespace KanjiKa.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("KanjiKa.Core.Entities.Learning.LessonCompletion", b =>
+            modelBuilder.Entity("KanjiKa.Domain.Entities.Learning.LessonCompletion", b =>
                 {
-                    b.HasOne("KanjiKa.Core.Entities.Kana.Character", "Character")
+                    b.HasOne("KanjiKa.Domain.Entities.Kana.Character", "Character")
                         .WithMany()
                         .HasForeignKey("CharacterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_lesson_completions_characters_character_id");
 
-                    b.HasOne("KanjiKa.Core.Entities.Users.User", "User")
+                    b.HasOne("KanjiKa.Domain.Entities.Users.User", "User")
                         .WithMany("LessonCompletions")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -633,24 +633,24 @@ namespace KanjiKa.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("KanjiKa.Core.Entities.Grammar.GrammarPoint", b =>
+            modelBuilder.Entity("KanjiKa.Domain.Entities.Grammar.GrammarPoint", b =>
                 {
                     b.Navigation("Examples");
 
                     b.Navigation("Exercises");
                 });
 
-            modelBuilder.Entity("KanjiKa.Core.Entities.Kana.Character", b =>
+            modelBuilder.Entity("KanjiKa.Domain.Entities.Kana.Character", b =>
                 {
                     b.Navigation("Examples");
                 });
 
-            modelBuilder.Entity("KanjiKa.Core.Entities.Kanji.Kanji", b =>
+            modelBuilder.Entity("KanjiKa.Domain.Entities.Kanji.Kanji", b =>
                 {
                     b.Navigation("Examples");
                 });
 
-            modelBuilder.Entity("KanjiKa.Core.Entities.Users.User", b =>
+            modelBuilder.Entity("KanjiKa.Domain.Entities.Users.User", b =>
                 {
                     b.Navigation("LessonCompletions");
 

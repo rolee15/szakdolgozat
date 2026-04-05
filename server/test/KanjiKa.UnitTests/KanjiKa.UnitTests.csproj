@@ -29,6 +29,8 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\KanjiKa.Api\KanjiKa.Api.csproj" />
+        <ProjectReference Include="..\..\src\KanjiKa.Application\KanjiKa.Application.csproj" />
+        <ProjectReference Include="..\..\src\KanjiKa.Domain\KanjiKa.Domain.csproj" />
     </ItemGroup>
 
 </Project>

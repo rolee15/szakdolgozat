@@ -1,5 +1,6 @@
-using KanjiKa.Core;
-using KanjiKa.Core.Interfaces;
+using KanjiKa.Application;
+using KanjiKa.Application.Interfaces;
+using KanjiKa.Domain.Interfaces;
 
 namespace KanjiKa.Data;
 
@@ -40,8 +41,7 @@ public class KanjiKaDataSeeder
 
         if (!_context.Users.Any())
         {
-            var savedCharacters = _context.Characters.ToList();
-            var users = TestData.GetUsers(savedCharacters);
+            var users = TestData.GetUsers();
             await _context.Users.AddRangeAsync(users);
         }
 

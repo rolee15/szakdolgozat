@@ -18,7 +18,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\KanjiKa.Core\KanjiKa.Core.csproj" />
+        <ProjectReference Include="..\KanjiKa.Domain\KanjiKa.Domain.csproj" />
+        <ProjectReference Include="..\KanjiKa.Application\KanjiKa.Application.csproj" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,7 +1,7 @@
 // [7] T. Coil, "Hanabira.org: Japanese Grammar and Vocabulary Learning Resource" — https://github.com/tristcoil/hanabira.org (accessed 2026-04-04)
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using KanjiKa.Core.Entities.Grammar;
+using KanjiKa.Domain.Entities.Grammar;
 
 namespace KanjiKa.Data;
 

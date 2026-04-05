@@ -1,5 +1,5 @@
-using KanjiKa.Core.Entities.Users;
-using KanjiKa.Core.Interfaces;
+using KanjiKa.Domain.Entities.Users;
+using KanjiKa.Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace KanjiKa.Data.Repositories;

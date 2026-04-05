@@ -1,10 +1,11 @@
-using KanjiKa.Api.Services;
-using KanjiKa.Core.DTOs.User;
-using KanjiKa.Core.Entities.Users;
-using KanjiKa.Core.Interfaces;
+using KanjiKa.Application.Services;
+using KanjiKa.Application.DTOs.User;
+using KanjiKa.Domain.Entities.Users;
+using KanjiKa.Application.Interfaces;
+using KanjiKa.Domain.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Moq;
-using static KanjiKa.Core.Entities.Users.UserRole;
+using static KanjiKa.Domain.Entities.Users.UserRole;
 
 namespace KanjiKa.UnitTests.Api.Services;
 

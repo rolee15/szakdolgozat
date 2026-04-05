@@ -1,9 +1,10 @@
-using KanjiKa.Core.DTOs.User;
-using KanjiKa.Core.Entities.Users;
-using KanjiKa.Core.Interfaces;
+using KanjiKa.Application.DTOs.User;
+using KanjiKa.Application.Interfaces;
+using KanjiKa.Domain.Entities.Users;
+using KanjiKa.Domain.Interfaces;
 using Microsoft.Extensions.Configuration;
 
-namespace KanjiKa.Api.Services;
+namespace KanjiKa.Application.Services;
 
 public class UserService : IUserService
 {

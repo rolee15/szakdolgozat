@@ -1,7 +1,7 @@
 // [1] EDRDG, "KANJIDIC2 Project" — http://www.edrdg.org/wiki/index.php/KANJIDIC_Project (accessed 2025-01-01)
 using System.IO.Compression;
 using System.Xml;
-using KanjiKa.Core.Entities.Kanji;
+using KanjiKa.Domain.Entities.Kanji;
 
 namespace KanjiKa.Data;
 

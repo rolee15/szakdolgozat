@@ -1,8 +1,8 @@
-using KanjiKa.Core.DTOs.Grammar;
-using KanjiKa.Core.Entities.Grammar;
-using KanjiKa.Core.Interfaces;
+using KanjiKa.Application.DTOs.Grammar;
+using KanjiKa.Application.Interfaces;
+using KanjiKa.Domain.Entities.Grammar;
 
-namespace KanjiKa.Api.Services;
+namespace KanjiKa.Application.Services;
 
 public class GrammarService : IGrammarService
 {

@@ -1,50 +1,42 @@
-﻿using KanjiKa.Core.DTOs.Kana;
-using KanjiKa.Core.Entities.Kana;
-using KanjiKa.Core.Entities.Users;
-using KanjiKa.Core.Interfaces;
-using KanjiKa.Data;
-using Microsoft.EntityFrameworkCore;
+using KanjiKa.Application.DTOs.Kana;
+using KanjiKa.Application.Interfaces;
+using KanjiKa.Domain.Entities.Kana;
+using KanjiKa.Domain.Entities.Users;
 
-namespace KanjiKa.Api.Services;
+namespace KanjiKa.Application.Services;
 
 public class KanaService : IKanaService
 {
-    private readonly KanjiKaDbContext _db;
+    private readonly IKanaRepository _repo;
 
-    public KanaService(KanjiKaDbContext db)
+    public KanaService(IKanaRepository repo)
     {
-        _db = db;
+        _repo = repo;
     }
 
     public async Task<IEnumerable<KanaCharacterDto>> GetKanaCharacters(KanaType type, int userId)
     {
-        var user = await _db.Users
-            .Include(x => x.Proficiencies)
-            .FirstOrDefaultAsync(u => u.Id == userId);
+        var user = await _repo.GetUserWithProficienciesAsync(userId);
 
         if (user == null)
         {
             throw new ArgumentException($"User with id {userId} not found");
         }
 
-        return _db.Characters
-            .Where(c => c.Type == type)
+        return _repo.GetCharactersByType(type)
             .Select(c => MapToKanaCharacterDto(c, user));
     }
 
     public async Task<KanaCharacterDetailDto> GetCharacterDetail(string character, KanaType type, int userId)
     {
-        var kanaCharacter = await _db.Characters.FirstOrDefaultAsync(c =>
-            c.Symbol == character && c.Type == type);
+        var kanaCharacter = await _repo.GetCharacterBySymbolAndTypeAsync(character, type);
 
         if (kanaCharacter == null)
         {
             throw new ArgumentException($"Character {character} not found");
         }
 
-        var user = await _db.Users
-            .Include(x => x.Proficiencies)
-            .FirstOrDefaultAsync(u => u.Id == userId);
+        var user = await _repo.GetUserWithProficienciesAsync(userId);
         if (user == null)
         {
             throw new ArgumentException($"User with id {userId} not found");
@@ -68,9 +60,7 @@ public class KanaService : IKanaService
 
     public async Task<IEnumerable<ExampleDto>> GetExamples(string character, KanaType type)
     {
-        var ch = await _db.Characters
-            .Include(x => x.Examples)
-            .FirstOrDefaultAsync(c => c.Symbol == character && c.Type == type);
+        var ch = await _repo.GetCharacterWithExamplesBySymbolAndTypeAsync(character, type);
 
         if (ch == null)
             throw new ArgumentException($"Character {character} not found");

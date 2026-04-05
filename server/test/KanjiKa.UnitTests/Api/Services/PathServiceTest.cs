@@ -1,7 +1,7 @@
-using KanjiKa.Api.Services;
-using KanjiKa.Core.DTOs.Path;
-using KanjiKa.Core.Entities.Path;
-using KanjiKa.Core.Interfaces;
+using KanjiKa.Application.Services;
+using KanjiKa.Application.DTOs.Path;
+using KanjiKa.Domain.Entities.Path;
+using KanjiKa.Application.Interfaces;
 using Moq;
 
 namespace KanjiKa.UnitTests.Api.Services;

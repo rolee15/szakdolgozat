@@ -1,5 +1,5 @@
 using System.Security.Claims;
-using KanjiKa.Core.Interfaces;
+using KanjiKa.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

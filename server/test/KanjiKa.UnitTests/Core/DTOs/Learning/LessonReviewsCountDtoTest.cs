@@ -1,4 +1,4 @@
-﻿using KanjiKa.Core.DTOs.Learning;
+﻿using KanjiKa.Application.DTOs.Learning;
 
 namespace KanjiKa.UnitTests.Core.DTOs.Learning;
 

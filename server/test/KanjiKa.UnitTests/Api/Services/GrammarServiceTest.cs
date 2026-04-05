@@ -1,7 +1,7 @@
-using KanjiKa.Api.Services;
-using KanjiKa.Core.DTOs.Grammar;
-using KanjiKa.Core.Entities.Grammar;
-using KanjiKa.Core.Interfaces;
+using KanjiKa.Application.Services;
+using KanjiKa.Application.DTOs.Grammar;
+using KanjiKa.Domain.Entities.Grammar;
+using KanjiKa.Application.Interfaces;
 using Moq;
 
 namespace KanjiKa.UnitTests.Api.Services;

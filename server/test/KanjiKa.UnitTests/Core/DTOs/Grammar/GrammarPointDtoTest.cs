@@ -1,4 +1,4 @@
-using KanjiKa.Core.DTOs.Grammar;
+using KanjiKa.Application.DTOs.Grammar;
 
 namespace KanjiKa.UnitTests.Core.DTOs.Grammar;
 

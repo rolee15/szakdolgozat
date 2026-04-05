@@ -1,7 +1,7 @@
-using KanjiKa.Api.Services;
-using KanjiKa.Core.DTOs.Learning;
-using KanjiKa.Core.Entities.Users;
-using KanjiKa.Core.Interfaces;
+using KanjiKa.Application.Services;
+using KanjiKa.Application.DTOs.Learning;
+using KanjiKa.Domain.Entities.Users;
+using KanjiKa.Application.Interfaces;
 using Moq;
 
 namespace KanjiKa.UnitTests.Api.Services.Lesson;

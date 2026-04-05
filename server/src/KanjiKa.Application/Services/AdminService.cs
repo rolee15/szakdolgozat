@@ -1,8 +1,8 @@
-using KanjiKa.Core.DTOs;
-using KanjiKa.Core.DTOs.Admin;
-using KanjiKa.Core.Interfaces;
+using KanjiKa.Application.DTOs;
+using KanjiKa.Application.DTOs.Admin;
+using KanjiKa.Application.Interfaces;
 
-namespace KanjiKa.Api.Services;
+namespace KanjiKa.Application.Services;
 
 public class AdminService : IAdminService
 {

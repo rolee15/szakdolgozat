@@ -1,9 +1,10 @@
-using KanjiKa.Core;
-using KanjiKa.Core.Entities.Grammar;
-using KanjiKa.Core.Entities.Path;
-using KanjiKa.Core.Entities.Reading;
-using KanjiKa.Core.Entities.Users;
-using KanjiKa.Core.Interfaces;
+using KanjiKa.Application;
+using KanjiKa.Domain.Entities.Grammar;
+using KanjiKa.Domain.Entities.Path;
+using KanjiKa.Domain.Entities.Reading;
+using KanjiKa.Domain.Entities.Users;
+using KanjiKa.Application.Interfaces;
+using KanjiKa.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace KanjiKa.Data.Seeders;

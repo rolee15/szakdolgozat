@@ -1,4 +1,4 @@
-﻿using KanjiKa.Core.Services;
+﻿using KanjiKa.Domain.Services;
 
 namespace KanjiKa.UnitTests.Core.Services;
 

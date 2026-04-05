@@ -1,10 +1,10 @@
-using KanjiKa.Core.Entities.Grammar;
-using KanjiKa.Core.Entities.Kana;
-using KanjiKa.Core.Entities.Kanji;
-using KanjiKa.Core.Entities.Learning;
-using KanjiKa.Core.Entities.Path;
-using KanjiKa.Core.Entities.Reading;
-using KanjiKa.Core.Entities.Users;
+using KanjiKa.Domain.Entities.Grammar;
+using KanjiKa.Domain.Entities.Kana;
+using KanjiKa.Domain.Entities.Kanji;
+using KanjiKa.Domain.Entities.Learning;
+using KanjiKa.Domain.Entities.Path;
+using KanjiKa.Domain.Entities.Reading;
+using KanjiKa.Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace KanjiKa.Data;

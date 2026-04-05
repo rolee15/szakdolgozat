@@ -1,8 +1,8 @@
-using KanjiKa.Core.DTOs.Reading;
-using KanjiKa.Core.Entities.Reading;
-using KanjiKa.Core.Interfaces;
+using KanjiKa.Application.DTOs.Reading;
+using KanjiKa.Application.Interfaces;
+using KanjiKa.Domain.Entities.Reading;
 
-namespace KanjiKa.Api.Services;
+namespace KanjiKa.Application.Services;
 
 public class ReadingService : IReadingService
 {

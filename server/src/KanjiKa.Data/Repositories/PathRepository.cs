@@ -1,9 +1,9 @@
-using KanjiKa.Core.Entities.Path;
-using KanjiKa.Core.Interfaces;
+using KanjiKa.Domain.Entities.Path;
+using KanjiKa.Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-// ContentType alias to avoid ambiguity with KanjiKa.Core.Entities.Path.ContentType
-using PathContentType = KanjiKa.Core.Entities.Path.ContentType;
+// ContentType alias to avoid ambiguity with KanjiKa.Domain.Entities.Path.ContentType
+using PathContentType = KanjiKa.Domain.Entities.Path.ContentType;
 
 namespace KanjiKa.Data.Repositories;
 

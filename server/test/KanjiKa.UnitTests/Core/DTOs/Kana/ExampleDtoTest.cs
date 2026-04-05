@@ -1,4 +1,4 @@
-﻿using KanjiKa.Core.DTOs.Kana;
+﻿using KanjiKa.Application.DTOs.Kana;
 
 namespace KanjiKa.UnitTests.Core.DTOs.Kana;
 

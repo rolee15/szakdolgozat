@@ -23,7 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\KanjiKa.Core\KanjiKa.Core.csproj" />
+      <ProjectReference Include="..\KanjiKa.Application\KanjiKa.Application.csproj" />
       <ProjectReference Include="..\KanjiKa.Data\KanjiKa.Data.csproj" />
     </ItemGroup>
 

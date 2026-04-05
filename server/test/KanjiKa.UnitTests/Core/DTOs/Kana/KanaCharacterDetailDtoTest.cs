@@ -1,5 +1,5 @@
-using KanjiKa.Core.DTOs.Kana;
-using KanjiKa.Core.Entities.Kana;
+using KanjiKa.Application.DTOs.Kana;
+using KanjiKa.Domain.Entities.Kana;
 
 namespace KanjiKa.UnitTests.Core.DTOs.Kana;
 

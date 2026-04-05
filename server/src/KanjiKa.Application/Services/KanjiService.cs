@@ -1,10 +1,10 @@
-using KanjiKa.Core.DTOs;
-using KanjiKa.Core.DTOs.Kanji;
-using KanjiKa.Core.Entities.Kana;
-using KanjiKa.Core.Entities.Kanji;
-using KanjiKa.Core.Interfaces;
+using KanjiKa.Application.DTOs;
+using KanjiKa.Application.DTOs.Kanji;
+using KanjiKa.Application.Interfaces;
+using KanjiKa.Domain.Entities.Kana;
+using KanjiKa.Domain.Entities.Kanji;
 
-namespace KanjiKa.Api.Services;
+namespace KanjiKa.Application.Services;
 
 public class KanjiService : IKanjiService
 {
