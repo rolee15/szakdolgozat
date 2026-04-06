@@ -6,7 +6,7 @@ namespace KanjiKa.Api.Extensions;
 
 public static class DatabaseExtensions
 {
-    public static async Task<WebApplication> InitialiseDatabaseAsync(this WebApplication app)
+    public async static Task<WebApplication> InitialiseDatabaseAsync(this WebApplication app)
     {
         using IServiceScope scope = app.Services.CreateScope();
 
