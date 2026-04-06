@@ -1,4 +1,5 @@
 using System.Text;
+using KanjiKa.Api.Filters;
 using KanjiKa.Api.Services;
 using KanjiKa.Application.Interfaces;
 using KanjiKa.Application.Services;
@@ -10,11 +11,32 @@ using KanjiKa.Domain.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "KanjiKa API",
+        Version = "v1",
+        Description = "REST API for the KanjiKa Japanese Hiragana/Katakana learning platform."
+    });
+
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter your JWT token (without the 'Bearer ' prefix)."
+    });
+
+    options.OperationFilter<AuthorizeOperationFilter>();
+});
 builder.Services.AddControllers();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
