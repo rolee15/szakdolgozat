@@ -1,4 +1,4 @@
-namespace KanjiKa.Domain.Interfaces;
+namespace KanjiKa.Application.Interfaces;
 
 public interface IHashService
 {

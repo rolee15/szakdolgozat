@@ -5,8 +5,6 @@ using KanjiKa.Application.Services;
 using KanjiKa.Data;
 using KanjiKa.Data.Repositories;
 using KanjiKa.Data.Seeders;
-using KanjiKa.Domain.Interfaces;
-using KanjiKa.Domain.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;

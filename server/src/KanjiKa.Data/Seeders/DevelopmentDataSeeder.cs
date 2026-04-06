@@ -4,7 +4,6 @@ using KanjiKa.Domain.Entities.Kanji;
 using KanjiKa.Domain.Entities.Learning;
 using KanjiKa.Domain.Entities.Users;
 using KanjiKa.Application.Interfaces;
-using KanjiKa.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace KanjiKa.Data.Seeders;

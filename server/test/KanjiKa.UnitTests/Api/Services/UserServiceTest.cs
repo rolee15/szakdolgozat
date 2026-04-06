@@ -2,7 +2,6 @@ using KanjiKa.Application.Services;
 using KanjiKa.Application.DTOs.User;
 using KanjiKa.Domain.Entities.Users;
 using KanjiKa.Application.Interfaces;
-using KanjiKa.Domain.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using static KanjiKa.Domain.Entities.Users.UserRole;

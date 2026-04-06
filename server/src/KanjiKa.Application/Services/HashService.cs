@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
-using KanjiKa.Domain.Interfaces;
+using KanjiKa.Application.Interfaces;
 
-namespace KanjiKa.Domain.Services;
+namespace KanjiKa.Application.Services;
 
 public class HashService : IHashService
 {

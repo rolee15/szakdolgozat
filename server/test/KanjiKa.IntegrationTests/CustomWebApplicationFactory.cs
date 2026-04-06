@@ -1,6 +1,7 @@
 ﻿using System.Data.Common;
 using KanjiKa.Api;
 using KanjiKa.Data;
+using KanjiKa.Data.Seeders;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -53,7 +54,7 @@ public sealed class CustomWebApplicationFactory : WebApplicationFactory<IApiMark
     public async Task SeedDatabaseAsync()
     {
         using IServiceScope scope = Services.CreateScope();
-        var seeder = scope.ServiceProvider.GetRequiredService<KanjiKaDataSeeder>();
+        var seeder = scope.ServiceProvider.GetRequiredService<DevelopmentDataSeeder>();
         await seeder.SeedAsync();
     }
 

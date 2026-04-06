@@ -1,7 +1,6 @@
 using KanjiKa.Application.DTOs.User;
 using KanjiKa.Application.Interfaces;
 using KanjiKa.Domain.Entities.Users;
-using KanjiKa.Domain.Interfaces;
 using Microsoft.Extensions.Configuration;
 
 namespace KanjiKa.Application.Services;
