@@ -7,7 +7,7 @@ public class ExampleDtoTest
     [Fact]
     public void ExampleDto_Constructor_ShouldInitializeProperties()
     {
-        var example = new ExampleDto()
+        var example = new ExampleDto
         {
             Word = "こんにちは",
             Romanization = "konnichiwa",

@@ -17,21 +17,21 @@ public class PathService : IPathService
 
     public async Task<List<LearningUnitDto>> GetPathAsync(int userId)
     {
-        var units = await _pathRepository.GetAllUnitsAsync();
-        var ids = units.Select(u => u.Id).ToList();
-        var progress = await _pathRepository.GetProgressForUserAsync(userId, ids);
+        List<LearningUnit> units = await _pathRepository.GetAllUnitsAsync();
+        List<int> ids = units.Select(u => u.Id).ToList();
+        Dictionary<int, UnitProgress> progress = await _pathRepository.GetProgressForUserAsync(userId, ids);
 
         var result = new List<LearningUnitDto>();
-        for (int i = 0; i < units.Count; i++)
+        for (var i = 0; i < units.Count; i++)
         {
-            var unit = units[i];
-            progress.TryGetValue(unit.Id, out var prog);
+            LearningUnit unit = units[i];
+            progress.TryGetValue(unit.Id, out UnitProgress? prog);
 
             bool isUnlocked = i == 0;
             if (i > 0)
             {
-                var prevUnit = units[i - 1];
-                progress.TryGetValue(prevUnit.Id, out var prevProg);
+                LearningUnit prevUnit = units[i - 1];
+                progress.TryGetValue(prevUnit.Id, out UnitProgress? prevProg);
                 isUnlocked = prevProg?.IsPassed ?? false;
             }
 
@@ -53,30 +53,30 @@ public class PathService : IPathService
 
     public async Task<LearningUnitDetailDto?> GetUnitDetailAsync(int unitId, int userId)
     {
-        var unit = await _pathRepository.GetUnitByIdAsync(unitId);
+        LearningUnit? unit = await _pathRepository.GetUnitByIdAsync(unitId);
         if (unit == null) return null;
 
-        var unitWithTest = await _pathRepository.GetUnitWithTestAsync(unitId);
-        var progress = await _pathRepository.GetProgressForUserAsync(userId, [unitId]);
-        progress.TryGetValue(unitId, out var prog);
+        LearningUnit? unitWithTest = await _pathRepository.GetUnitWithTestAsync(unitId);
+        Dictionary<int, UnitProgress> progress = await _pathRepository.GetProgressForUserAsync(userId, [unitId]);
+        progress.TryGetValue(unitId, out UnitProgress? prog);
 
-        var allUnits = await _pathRepository.GetAllUnitsAsync();
-        var sortedUnits = allUnits.OrderBy(u => u.SortOrder).ToList();
-        var index = sortedUnits.FindIndex(u => u.Id == unitId);
+        List<LearningUnit> allUnits = await _pathRepository.GetAllUnitsAsync();
+        List<LearningUnit> sortedUnits = allUnits.OrderBy(u => u.SortOrder).ToList();
+        int index = sortedUnits.FindIndex(u => u.Id == unitId);
 
         bool isUnlocked = index == 0;
         if (index > 0)
         {
-            var prevUnit = sortedUnits[index - 1];
-            var prevProgress = await _pathRepository.GetProgressForUserAsync(userId, [prevUnit.Id]);
-            prevProgress.TryGetValue(prevUnit.Id, out var prevProg);
+            LearningUnit prevUnit = sortedUnits[index - 1];
+            Dictionary<int, UnitProgress> prevProgress = await _pathRepository.GetProgressForUserAsync(userId, [prevUnit.Id]);
+            prevProgress.TryGetValue(prevUnit.Id, out UnitProgress? prevProg);
             isUnlocked = prevProg?.IsPassed ?? false;
         }
 
         var contentSummaries = new List<UnitContentSummaryDto>();
-        foreach (var content in unit.Contents)
+        foreach (UnitContent content in unit.Contents)
         {
-            var title = await _pathRepository.GetContentTitleAsync(content.ContentType, content.ContentId);
+            string? title = await _pathRepository.GetContentTitleAsync(content.ContentType, content.ContentId);
             contentSummaries.Add(new UnitContentSummaryDto
             {
                 ContentType = content.ContentType.ToString(),
@@ -102,7 +102,7 @@ public class PathService : IPathService
 
     public async Task<UnitTestDto?> GetUnitTestAsync(int unitId, int userId)
     {
-        var unit = await _pathRepository.GetUnitWithTestAsync(unitId);
+        LearningUnit? unit = await _pathRepository.GetUnitWithTestAsync(unitId);
         if (unit == null) return null;
 
         return new UnitTestDto
@@ -113,29 +113,28 @@ public class PathService : IPathService
                 QuestionText = t.QuestionText,
                 Options = new[] { ("A", t.OptionA), ("B", t.OptionB), ("C", t.OptionC), ("D", t.OptionD) }
                     .OrderBy(_ => Guid.NewGuid())
-                    .ToDictionary(pair => pair.Item1, pair => pair.Item2)
+                    .ToDictionary(keySelector: pair => pair.Item1, elementSelector: pair => pair.Item2)
             }).ToList()
         };
     }
 
     public async Task<UnitTestResultDto> SubmitTestAsync(int userId, int unitId, UnitSubmitDto submitDto)
     {
-        var unit = await _pathRepository.GetUnitWithTestAsync(unitId);
+        LearningUnit? unit = await _pathRepository.GetUnitWithTestAsync(unitId);
         if (unit == null)
             throw new KeyNotFoundException($"Learning unit {unitId} not found.");
 
-        var correctCount = unit.Tests.Count(t =>
-        {
-            submitDto.Answers.TryGetValue(t.Id, out var chosen);
+        int correctCount = unit.Tests.Count(t => {
+            submitDto.Answers.TryGetValue(t.Id, out string? chosen);
             return string.Equals(chosen, t.CorrectOption.ToString(), StringComparison.OrdinalIgnoreCase);
         });
 
-        var totalQuestions = unit.Tests.Count;
-        var score = totalQuestions > 0 ? correctCount * 100 / totalQuestions : 0;
-        var isPassed = score >= PassThreshold;
+        int totalQuestions = unit.Tests.Count;
+        int score = totalQuestions > 0 ? correctCount * 100 / totalQuestions : 0;
+        bool isPassed = score >= PassThreshold;
 
-        var progressDict = await _pathRepository.GetProgressForUserAsync(userId, [unitId]);
-        progressDict.TryGetValue(unitId, out var existing);
+        Dictionary<int, UnitProgress> progressDict = await _pathRepository.GetProgressForUserAsync(userId, [unitId]);
+        progressDict.TryGetValue(unitId, out UnitProgress? existing);
 
         var progress = new UnitProgress
         {

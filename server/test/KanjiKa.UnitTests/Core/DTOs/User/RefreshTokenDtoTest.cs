@@ -9,7 +9,7 @@ public class RefreshTokenDtoTest
     {
         var refreshToken = new RefreshTokenDto
         {
-            Token = "test_token",
+            Token = "test_token"
         };
 
         Assert.Equal("test_token", refreshToken.Token);

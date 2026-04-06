@@ -135,7 +135,7 @@ public class UserServiceTest
         ForgotPasswordDto result = await service.ForgotPassword("e@x.com");
 
         Assert.NotNull(result);
-        email.Verify(e => e.SendEmail("e@x.com", It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+        email.Verify(expression: e => e.SendEmail("e@x.com", It.IsAny<string>(), It.IsAny<string>()), Times.Once);
     }
 
     [Fact]
@@ -151,7 +151,7 @@ public class UserServiceTest
         ForgotPasswordDto result = await service.ForgotPassword("unknown@x.com");
 
         Assert.NotNull(result);
-        email.Verify(e => e.SendEmail(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        email.Verify(expression: e => e.SendEmail(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
     }
 
     [Fact]
@@ -303,7 +303,7 @@ public class UserServiceTest
         await service.Login("u", "p");
 
         // Assert
-        repo.Verify(r => r.UpdateRefreshTokenAsync(7, "ref", It.IsAny<DateTimeOffset>()), Times.Once);
+        repo.Verify(expression: r => r.UpdateRefreshTokenAsync(7, "ref", It.IsAny<DateTimeOffset>()), Times.Once);
     }
 
     [Fact]
@@ -423,7 +423,7 @@ public class UserServiceTest
         await service.ChangePassword(2, "current", "new");
 
         // Assert
-        repo.Verify(r => r.UpdateAsync(user), Times.Once);
-        repo.Verify(r => r.SaveChangesAsync(), Times.Once);
+        repo.Verify(expression: r => r.UpdateAsync(user), Times.Once);
+        repo.Verify(expression: r => r.SaveChangesAsync(), Times.Once);
     }
 }

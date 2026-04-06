@@ -1,6 +1,5 @@
 using System.Text;
 using KanjiKa.Api.Filters;
-using KanjiKa.Api.Services;
 using KanjiKa.Application.Interfaces;
 using KanjiKa.Application.Services;
 using KanjiKa.Data;
@@ -13,11 +12,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
+builder.Services.AddSwaggerGen(options => {
     options.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = "KanjiKa API",
@@ -40,8 +38,7 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddControllers();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
+    .AddJwtBearer(options => {
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
@@ -77,13 +74,13 @@ builder.Services.AddScoped<IAdminService, AdminService>();
 
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowReactApp",
-        x => x
+        configurePolicy: x => x
             .AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader());
 });
 
-var conn = builder.Configuration.GetConnectionString("DefaultConnection");
+string? conn = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<KanjiKaDbContext>(options =>
     options.UseNpgsql(conn));
 
@@ -92,7 +89,7 @@ if (builder.Environment.IsDevelopment())
 else
     builder.Services.AddScoped<IDataSeeder, ProductionDataSeeder>();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -108,7 +105,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
-using (var scope = app.Services.CreateScope())
+using (IServiceScope scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<KanjiKaDbContext>();
 

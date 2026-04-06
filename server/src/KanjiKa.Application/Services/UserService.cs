@@ -25,28 +25,28 @@ public class UserService : IUserService
 
     public async Task<LoginDto> Login(string username, string password)
     {
-        var user = await _repo.GetByUsernameAsync(username);
+        User? user = await _repo.GetByUsernameAsync(username);
         if (user == null)
         {
-            return new LoginDto()
+            return new LoginDto
             {
                 IsSuccess = false,
                 ErrorMessage = "Username or password is incorrect"
             };
         }
 
-        var isVerified = _hashService.Verify(password, user.PasswordHash, user.PasswordSalt);
+        bool isVerified = _hashService.Verify(password, user.PasswordHash, user.PasswordSalt);
         if (!isVerified)
         {
-            return new LoginDto()
+            return new LoginDto
             {
                 IsSuccess = false,
                 ErrorMessage = "Username or password is incorrect"
             };
         }
 
-        var (token, refreshToken) = _tokenService.GenerateToken(user.Id, user.Username, user.Role, user.MustChangePassword);
-        var expiryDays = int.Parse(_config["Jwt:RefreshTokenExpirationDays"] ?? "7");
+        (string token, string refreshToken) = _tokenService.GenerateToken(user.Id, user.Username, user.Role, user.MustChangePassword);
+        int expiryDays = int.Parse(_config["Jwt:RefreshTokenExpirationDays"] ?? "7");
         await _repo.UpdateRefreshTokenAsync(user.Id, refreshToken, DateTimeOffset.UtcNow.AddDays(expiryDays));
 
         return new LoginDto
@@ -61,7 +61,7 @@ public class UserService : IUserService
 
     public async Task<RegisterDto> Register(string username, string password)
     {
-        var user = await _repo.GetByUsernameAsync(username);
+        User? user = await _repo.GetByUsernameAsync(username);
         if (user != null)
         {
             return new RegisterDto
@@ -71,7 +71,7 @@ public class UserService : IUserService
             };
         }
 
-        var (passwordHash, passwordSalt) = _hashService.Hash(password);
+        (byte[] passwordHash, byte[] passwordSalt) = _hashService.Hash(password);
         var newUser = new User
         {
             Username = username,
@@ -82,8 +82,8 @@ public class UserService : IUserService
         await _repo.AddAsync(newUser);
         await _repo.SaveChangesAsync();
 
-        var (token, refreshToken) = _tokenService.GenerateToken(newUser.Id, newUser.Username, UserRole.User);
-        var expiryDays = int.Parse(_config["Jwt:RefreshTokenExpirationDays"] ?? "7");
+        (string token, string refreshToken) = _tokenService.GenerateToken(newUser.Id, newUser.Username, UserRole.User);
+        int expiryDays = int.Parse(_config["Jwt:RefreshTokenExpirationDays"] ?? "7");
         await _repo.UpdateRefreshTokenAsync(newUser.Id, refreshToken, DateTimeOffset.UtcNow.AddDays(expiryDays));
 
         return new RegisterDto
@@ -97,7 +97,7 @@ public class UserService : IUserService
 
     public async Task<ForgotPasswordDto> ForgotPassword(string email)
     {
-        var user = await _repo.GetByUsernameAsync(email);
+        User? user = await _repo.GetByUsernameAsync(email);
         if (user != null)
         {
             var code = Random.Shared.Next(100000, 1000000).ToString();
@@ -113,7 +113,7 @@ public class UserService : IUserService
 
     public async Task<ResetPasswordDto> ResetPassword(string username, string resetCode, string newPassword)
     {
-        var user = await _repo.GetByUsernameAsync(username);
+        User? user = await _repo.GetByUsernameAsync(username);
         if (user == null)
         {
             return new ResetPasswordDto
@@ -135,7 +135,7 @@ public class UserService : IUserService
             };
         }
 
-        var (passwordHash, passwordSalt) = _hashService.Hash(newPassword);
+        (byte[] passwordHash, byte[] passwordSalt) = _hashService.Hash(newPassword);
         user.PasswordHash = passwordHash;
         user.PasswordSalt = passwordSalt;
         user.PasswordResetCode = null;
@@ -151,14 +151,14 @@ public class UserService : IUserService
 
     public async Task<RefreshTokenDto> RefreshToken(string token, string refreshToken)
     {
-        var user = await _repo.GetByRefreshTokenAsync(refreshToken);
+        User? user = await _repo.GetByRefreshTokenAsync(refreshToken);
         if (user == null || user.RefreshTokenExpiry <= DateTimeOffset.UtcNow)
         {
             return new RefreshTokenDto { Token = string.Empty };
         }
 
-        var (newToken, newRefreshToken) = _tokenService.GenerateToken(user.Id, user.Username, user.Role, user.MustChangePassword);
-        var expiryDays = int.Parse(_config["Jwt:RefreshTokenExpirationDays"] ?? "7");
+        (string newToken, string newRefreshToken) = _tokenService.GenerateToken(user.Id, user.Username, user.Role, user.MustChangePassword);
+        int expiryDays = int.Parse(_config["Jwt:RefreshTokenExpirationDays"] ?? "7");
         await _repo.UpdateRefreshTokenAsync(user.Id, newRefreshToken, DateTimeOffset.UtcNow.AddDays(expiryDays));
 
         return new RefreshTokenDto { Token = newToken };
@@ -166,7 +166,7 @@ public class UserService : IUserService
 
     public async Task<ChangePasswordDto> ChangePassword(int userId, string currentPassword, string newPassword)
     {
-        var user = await _repo.GetByIdAsync(userId);
+        User? user = await _repo.GetByIdAsync(userId);
         if (user == null)
         {
             return new ChangePasswordDto
@@ -176,7 +176,7 @@ public class UserService : IUserService
             };
         }
 
-        var isVerified = _hashService.Verify(currentPassword, user.PasswordHash, user.PasswordSalt);
+        bool isVerified = _hashService.Verify(currentPassword, user.PasswordHash, user.PasswordSalt);
         if (!isVerified)
         {
             return new ChangePasswordDto
@@ -186,7 +186,7 @@ public class UserService : IUserService
             };
         }
 
-        var (passwordHash, passwordSalt) = _hashService.Hash(newPassword);
+        (byte[] passwordHash, byte[] passwordSalt) = _hashService.Hash(newPassword);
         user.PasswordHash = passwordHash;
         user.PasswordSalt = passwordSalt;
         user.MustChangePassword = false;

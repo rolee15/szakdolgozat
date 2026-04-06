@@ -16,7 +16,7 @@ public class LessonCompletionTest
             Id = userId,
             Username = "testUser",
             PasswordHash = "passwordHash"u8.ToArray(),
-            PasswordSalt = "passwordSalt"u8.ToArray(),
+            PasswordSalt = "passwordSalt"u8.ToArray()
         };
         const int characterId = 1;
         var character = new Character

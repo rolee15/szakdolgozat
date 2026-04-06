@@ -2,12 +2,12 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using KanjiKa.Domain.Entities.Users;
 using KanjiKa.Application.Interfaces;
+using KanjiKa.Domain.Entities.Users;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-namespace KanjiKa.Api.Services;
+namespace KanjiKa.Application.Services;
 
 public class TokenService : ITokenService
 {
@@ -22,14 +22,14 @@ public class TokenService : ITokenService
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-        var expiry = DateTime.UtcNow.AddMinutes(double.Parse(_config["Jwt:AccessTokenExpirationMinutes"]!));
+        DateTime expiry = DateTime.UtcNow.AddMinutes(double.Parse(_config["Jwt:AccessTokenExpirationMinutes"]!));
 
         var claims = new List<Claim>
         {
             new(JwtRegisteredClaimNames.Sub, userId.ToString()),
             new(JwtRegisteredClaimNames.UniqueName, username),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new(ClaimTypes.Role, role.ToString()),
+            new(ClaimTypes.Role, role.ToString())
         };
 
         if (mustChangePassword)
@@ -38,15 +38,15 @@ public class TokenService : ITokenService
         }
 
         var token = new JwtSecurityToken(
-            issuer: _config["Jwt:Issuer"],
-            audience: _config["Jwt:Audience"],
-            claims: claims,
+            _config["Jwt:Issuer"],
+            _config["Jwt:Audience"],
+            claims,
             expires: expiry,
             signingCredentials: creds
         );
 
-        var accessToken = new JwtSecurityTokenHandler().WriteToken(token);
-        var refreshToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+        string? accessToken = new JwtSecurityTokenHandler().WriteToken(token);
+        string refreshToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
 
         return (accessToken, refreshToken);
     }

@@ -145,9 +145,9 @@ public class KanjiServiceTest
         var repo = new Mock<IKanjiRepository>();
         repo.Setup(r => r.GetDueReviewsAsync(1)).ReturnsAsync(
         [
-            new KanjiProficiency { UserId = 1, KanjiId = 1, SrsStage = KanjiKa.Domain.Entities.Kana.SrsStage.Apprentice1 },
-            new KanjiProficiency { UserId = 1, KanjiId = 2, SrsStage = KanjiKa.Domain.Entities.Kana.SrsStage.Apprentice2 },
-            new KanjiProficiency { UserId = 1, KanjiId = 3, SrsStage = KanjiKa.Domain.Entities.Kana.SrsStage.Guru1 }
+            new KanjiProficiency { UserId = 1, KanjiId = 1, SrsStage = Domain.Entities.Kana.SrsStage.Apprentice1 },
+            new KanjiProficiency { UserId = 1, KanjiId = 2, SrsStage = Domain.Entities.Kana.SrsStage.Apprentice2 },
+            new KanjiProficiency { UserId = 1, KanjiId = 3, SrsStage = Domain.Entities.Kana.SrsStage.Guru1 }
         ]);
         var service = new KanjiService(repo.Object);
 
@@ -180,10 +180,16 @@ public class KanjiServiceTest
         var repo = new Mock<IKanjiRepository>();
         repo.Setup(r => r.GetDueReviewsAsync(1)).ReturnsAsync(
         [
-            new KanjiProficiency { UserId = 1, KanjiId = 10, SrsStage = KanjiKa.Domain.Entities.Kana.SrsStage.Apprentice1,
-                Kanji = new Kanji { Id = 10, Character = "日", Meaning = "sun", OnyomiReading = "ニチ", KunyomiReading = "ひ", JlptLevel = 5, StrokeCount = 4 } },
-            new KanjiProficiency { UserId = 1, KanjiId = 20, SrsStage = KanjiKa.Domain.Entities.Kana.SrsStage.Apprentice2,
-                Kanji = new Kanji { Id = 20, Character = "月", Meaning = "moon", OnyomiReading = "ゲツ", KunyomiReading = "つき", JlptLevel = 5, StrokeCount = 4 } }
+            new KanjiProficiency
+            {
+                UserId = 1, KanjiId = 10, SrsStage = Domain.Entities.Kana.SrsStage.Apprentice1,
+                Kanji = new Kanji { Id = 10, Character = "日", Meaning = "sun", OnyomiReading = "ニチ", KunyomiReading = "ひ", JlptLevel = 5, StrokeCount = 4 }
+            },
+            new KanjiProficiency
+            {
+                UserId = 1, KanjiId = 20, SrsStage = Domain.Entities.Kana.SrsStage.Apprentice2,
+                Kanji = new Kanji { Id = 20, Character = "月", Meaning = "moon", OnyomiReading = "ゲツ", KunyomiReading = "つき", JlptLevel = 5, StrokeCount = 4 }
+            }
         ]);
         var service = new KanjiService(repo.Object);
 
@@ -217,11 +223,11 @@ public class KanjiServiceTest
 
         // Assert
         Assert.Multiple(
-            () => Assert.Equal(KanjiKa.Domain.Entities.Kana.SrsStage.Apprentice1, result.SrsStage),
+            () => Assert.Equal(Domain.Entities.Kana.SrsStage.Apprentice1, result.SrsStage),
             () => Assert.NotNull(result.NextReviewDate)
         );
-        repo.Verify(r => r.AddProficiencyAsync(It.IsAny<KanjiProficiency>()), Times.Once);
-        repo.Verify(r => r.SaveChangesAsync(), Times.Once);
+        repo.Verify(expression: r => r.AddProficiencyAsync(It.IsAny<KanjiProficiency>()), Times.Once);
+        repo.Verify(expression: r => r.SaveChangesAsync(), Times.Once);
     }
 
     [Fact]
@@ -230,7 +236,7 @@ public class KanjiServiceTest
         // Arrange
         var repo = new Mock<IKanjiRepository>();
         repo.Setup(r => r.GetProficiencyAsync(1, 5))
-            .ReturnsAsync(new KanjiProficiency { UserId = 1, KanjiId = 5, SrsStage = KanjiKa.Domain.Entities.Kana.SrsStage.Apprentice1 });
+            .ReturnsAsync(new KanjiProficiency { UserId = 1, KanjiId = 5, SrsStage = Domain.Entities.Kana.SrsStage.Apprentice1 });
         var service = new KanjiService(repo.Object);
 
         // Act & Assert
@@ -242,7 +248,7 @@ public class KanjiServiceTest
     {
         // Arrange
         var repo = new Mock<IKanjiRepository>();
-        var proficiency = new KanjiProficiency { UserId = 1, KanjiId = 7, SrsStage = KanjiKa.Domain.Entities.Kana.SrsStage.Apprentice1 };
+        var proficiency = new KanjiProficiency { UserId = 1, KanjiId = 7, SrsStage = Domain.Entities.Kana.SrsStage.Apprentice1 };
         repo.Setup(r => r.GetProficiencyAsync(1, 7)).ReturnsAsync(proficiency);
         repo.Setup(r => r.SaveChangesAsync()).Returns(Task.CompletedTask);
         var service = new KanjiService(repo.Object);
@@ -254,7 +260,7 @@ public class KanjiServiceTest
         // Assert
         Assert.Multiple(
             () => Assert.True(result.IsCorrect),
-            () => Assert.Equal((int)KanjiKa.Domain.Entities.Kana.SrsStage.Apprentice2, result.SrsStage)
+            () => Assert.Equal((int)Domain.Entities.Kana.SrsStage.Apprentice2, result.SrsStage)
         );
     }
 
@@ -263,7 +269,7 @@ public class KanjiServiceTest
     {
         // Arrange
         var repo = new Mock<IKanjiRepository>();
-        var proficiency = new KanjiProficiency { UserId = 1, KanjiId = 7, SrsStage = KanjiKa.Domain.Entities.Kana.SrsStage.Apprentice3 };
+        var proficiency = new KanjiProficiency { UserId = 1, KanjiId = 7, SrsStage = Domain.Entities.Kana.SrsStage.Apprentice3 };
         repo.Setup(r => r.GetProficiencyAsync(1, 7)).ReturnsAsync(proficiency);
         repo.Setup(r => r.SaveChangesAsync()).Returns(Task.CompletedTask);
         var service = new KanjiService(repo.Object);
@@ -275,7 +281,7 @@ public class KanjiServiceTest
         // Assert
         Assert.Multiple(
             () => Assert.False(result.IsCorrect),
-            () => Assert.Equal((int)KanjiKa.Domain.Entities.Kana.SrsStage.Apprentice1, result.SrsStage)
+            () => Assert.Equal((int)Domain.Entities.Kana.SrsStage.Apprentice1, result.SrsStage)
         );
     }
 

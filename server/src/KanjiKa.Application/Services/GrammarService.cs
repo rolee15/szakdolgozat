@@ -17,13 +17,12 @@ public class GrammarService : IGrammarService
 
     public async Task<List<GrammarPointDto>> GetGrammarPointsAsync(int userId)
     {
-        var points = await _grammarRepository.GetAllAsync();
-        var ids = points.Select(p => p.Id).ToList();
-        var proficiencies = await _grammarRepository.GetProficienciesForUserAsync(userId, ids);
+        List<GrammarPoint> points = await _grammarRepository.GetAllAsync();
+        List<int> ids = points.Select(p => p.Id).ToList();
+        Dictionary<int, GrammarProficiency> proficiencies = await _grammarRepository.GetProficienciesForUserAsync(userId, ids);
 
-        return points.Select(p =>
-        {
-            proficiencies.TryGetValue(p.Id, out var prof);
+        return points.Select(p => {
+            proficiencies.TryGetValue(p.Id, out GrammarProficiency? prof);
             return new GrammarPointDto
             {
                 Id = p.Id,
@@ -39,11 +38,11 @@ public class GrammarService : IGrammarService
 
     public async Task<GrammarPointDetailDto?> GetGrammarPointDetailAsync(int grammarPointId, int userId)
     {
-        var point = await _grammarRepository.GetByIdAsync(grammarPointId);
+        GrammarPoint? point = await _grammarRepository.GetByIdAsync(grammarPointId);
         if (point == null) return null;
 
-        var proficiencies = await _grammarRepository.GetProficienciesForUserAsync(userId, [point.Id]);
-        proficiencies.TryGetValue(point.Id, out var prof);
+        Dictionary<int, GrammarProficiency> proficiencies = await _grammarRepository.GetProficienciesForUserAsync(userId, [point.Id]);
+        proficiencies.TryGetValue(point.Id, out GrammarProficiency? prof);
 
         return new GrammarPointDetailDto
         {
@@ -74,19 +73,19 @@ public class GrammarService : IGrammarService
 
     public async Task<GrammarExerciseResultDto> CheckExerciseAsync(int userId, int grammarPointId, GrammarExerciseAnswerDto answer)
     {
-        var exercise = await _grammarRepository.GetExerciseByIdAsync(answer.ExerciseId);
+        GrammarExercise? exercise = await _grammarRepository.GetExerciseByIdAsync(answer.ExerciseId);
         if (exercise == null)
             throw new KeyNotFoundException($"Exercise {answer.ExerciseId} not found.");
 
         if (exercise.GrammarPointId != grammarPointId)
             throw new ArgumentException($"Exercise {answer.ExerciseId} does not belong to grammar point {grammarPointId}.");
 
-        var isCorrect = string.Equals(
+        bool isCorrect = string.Equals(
             answer.Answer.Trim(),
             exercise.CorrectAnswer.Trim(),
             StringComparison.OrdinalIgnoreCase);
 
-        var proficiency = await _grammarRepository.GetProficiencyAsync(userId, grammarPointId);
+        GrammarProficiency? proficiency = await _grammarRepository.GetProficiencyAsync(userId, grammarPointId);
         if (proficiency == null)
         {
             proficiency = new GrammarProficiency

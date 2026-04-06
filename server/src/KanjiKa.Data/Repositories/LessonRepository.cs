@@ -88,13 +88,13 @@ public class LessonRepository : ILessonRepository
 
     public async Task<List<Proficiency>> GetDueReviewsAsync(int userId)
     {
-        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
         return await _db.Proficiencies
             .Include(p => p.Character)
             .Where(p => p.UserId == userId
-                     && p.NextReviewDate != null
-                     && p.NextReviewDate <= now
-                     && p.SrsStage != SrsStage.Burned)
+                        && p.NextReviewDate != null
+                        && p.NextReviewDate <= now
+                        && p.SrsStage != SrsStage.Burned)
             .ToListAsync();
     }
 

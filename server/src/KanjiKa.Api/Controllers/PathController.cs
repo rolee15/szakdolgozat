@@ -18,29 +18,33 @@ public class PathController : ControllerBase
         _pathService = pathService;
     }
 
-    private int GetUserId() =>
-        int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    private int GetUserId()
+    {
+        return int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    }
 
     [HttpGet]
     public async Task<IActionResult> GetPath()
     {
-        var result = await _pathService.GetPathAsync(GetUserId());
+        List<LearningUnitDto> result = await _pathService.GetPathAsync(GetUserId());
         return Ok(result);
     }
 
     [HttpGet("{unitId:int}")]
     public async Task<IActionResult> GetUnitDetail(int unitId)
     {
-        var result = await _pathService.GetUnitDetailAsync(unitId, GetUserId());
+        LearningUnitDetailDto? result = await _pathService.GetUnitDetailAsync(unitId, GetUserId());
         if (result == null) return NotFound();
+
         return Ok(result);
     }
 
     [HttpGet("{unitId:int}/test")]
     public async Task<IActionResult> GetUnitTest(int unitId)
     {
-        var result = await _pathService.GetUnitTestAsync(unitId, GetUserId());
+        UnitTestDto? result = await _pathService.GetUnitTestAsync(unitId, GetUserId());
         if (result == null) return NotFound();
+
         return Ok(result);
     }
 
@@ -49,7 +53,7 @@ public class PathController : ControllerBase
     {
         try
         {
-            var result = await _pathService.SubmitTestAsync(GetUserId(), unitId, submitDto);
+            UnitTestResultDto result = await _pathService.SubmitTestAsync(GetUserId(), unitId, submitDto);
             return Ok(result);
         }
         catch (KeyNotFoundException)

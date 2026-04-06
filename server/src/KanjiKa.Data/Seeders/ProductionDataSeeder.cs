@@ -4,6 +4,8 @@ using KanjiKa.Domain.Entities.Path;
 using KanjiKa.Domain.Entities.Reading;
 using KanjiKa.Domain.Entities.Users;
 using KanjiKa.Application.Interfaces;
+using KanjiKa.Domain.Entities.Kana;
+using KanjiKa.Domain.Entities.Kanji;
 using KanjiKa.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -35,7 +37,7 @@ public class ProductionDataSeeder : IDataSeeder
         if (await Context.Characters.AnyAsync())
             return;
 
-        var characters = TestData.GetKanaCharacters();
+        List<Character> characters = TestData.GetKanaCharacters();
         await Context.Characters.AddRangeAsync(characters);
         await Context.SaveChangesAsync();
     }
@@ -45,7 +47,7 @@ public class ProductionDataSeeder : IDataSeeder
         if (await Context.Kanjis.AnyAsync())
             return;
 
-        var kanjis = Kanjidic2Parser.Parse();
+        List<Kanji> kanjis = Kanjidic2Parser.Parse();
         await Context.Kanjis.AddRangeAsync(kanjis);
         await Context.SaveChangesAsync();
     }
@@ -55,7 +57,7 @@ public class ProductionDataSeeder : IDataSeeder
         if (await Context.GrammarPoints.AnyAsync())
             return;
 
-        var grammarPoints = GrammarDataParser.Parse();
+        List<GrammarPoint> grammarPoints = GrammarDataParser.Parse();
         await Context.GrammarPoints.AddRangeAsync(grammarPoints);
         await Context.SaveChangesAsync();
     }
@@ -478,7 +480,7 @@ public class ProductionDataSeeder : IDataSeeder
         if (await Context.Users.AnyAsync(u => u.Role == UserRole.Admin))
             return;
 
-        var (hash, salt) = _hashService.Hash("Admin123!");
+        (byte[] hash, byte[] salt) = _hashService.Hash("Admin123!");
         var admin = new User
         {
             Username = "admin@kanjika.com",

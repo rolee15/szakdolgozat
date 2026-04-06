@@ -23,7 +23,7 @@ public class UsersController : ControllerBase
     {
         try
         {
-            var loginDto = await _userService.Login(request.Email, request.Password);
+            LoginDto loginDto = await _userService.Login(request.Email, request.Password);
             return Ok(loginDto);
         }
         catch (ArgumentException ex)
@@ -35,7 +35,7 @@ public class UsersController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
-        var registerDto = await _userService.Register(request.Email, request.Password);
+        RegisterDto registerDto = await _userService.Register(request.Email, request.Password);
         if (!registerDto.IsSuccess)
         {
             return BadRequest(registerDto);
@@ -47,14 +47,14 @@ public class UsersController : ControllerBase
     [HttpPost("forgotPassword")]
     public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
     {
-        var forgotPasswordDto = await _userService.ForgotPassword(request.Email);
+        ForgotPasswordDto forgotPasswordDto = await _userService.ForgotPassword(request.Email);
         return Ok(forgotPasswordDto);
     }
 
     [HttpPost("resetPassword")]
     public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
     {
-        var resetPasswordDto = await _userService.ResetPassword(request.Email, request.ResetCode, request.NewPassword);
+        ResetPasswordDto resetPasswordDto = await _userService.ResetPassword(request.Email, request.ResetCode, request.NewPassword);
         if (!resetPasswordDto.IsSuccess)
         {
             return BadRequest(resetPasswordDto);
@@ -66,7 +66,7 @@ public class UsersController : ControllerBase
     [HttpPost("refreshToken")]
     public async Task<IActionResult> RefreshToken([FromBody] string token, string refreshToken)
     {
-        var refreshTokenDto = await _userService.RefreshToken(token, refreshToken);
+        RefreshTokenDto refreshTokenDto = await _userService.RefreshToken(token, refreshToken);
         return Ok(refreshTokenDto);
     }
 
@@ -74,8 +74,8 @@ public class UsersController : ControllerBase
     [HttpPost("changePassword")]
     public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
     {
-        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        var result = await _userService.ChangePassword(userId, request.CurrentPassword, request.NewPassword);
+        int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        ChangePasswordDto result = await _userService.ChangePassword(userId, request.CurrentPassword, request.NewPassword);
         if (!result.IsSuccess)
         {
             return BadRequest(result);

@@ -18,21 +18,24 @@ public class ReadingController : ControllerBase
         _readingService = readingService;
     }
 
-    private int GetUserId() =>
-        int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    private int GetUserId()
+    {
+        return int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    }
 
     [HttpGet]
     public async Task<IActionResult> GetPassages()
     {
-        var result = await _readingService.GetPassagesAsync(GetUserId());
+        List<ReadingPassageDto> result = await _readingService.GetPassagesAsync(GetUserId());
         return Ok(result);
     }
 
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetPassageDetail(int id)
     {
-        var result = await _readingService.GetPassageDetailAsync(id, GetUserId());
+        ReadingPassageDetailDto? result = await _readingService.GetPassageDetailAsync(id, GetUserId());
         if (result == null) return NotFound();
+
         return Ok(result);
     }
 
@@ -44,7 +47,7 @@ public class ReadingController : ControllerBase
 
         try
         {
-            var result = await _readingService.SubmitAnswersAsync(GetUserId(), submitDto);
+            ReadingResultDto result = await _readingService.SubmitAnswersAsync(GetUserId(), submitDto);
             return Ok(result);
         }
         catch (KeyNotFoundException)

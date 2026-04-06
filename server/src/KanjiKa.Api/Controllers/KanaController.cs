@@ -19,13 +19,16 @@ public class KanaCharactersController : ControllerBase
         _kanaService = kanaService;
     }
 
-    private int GetUserId() => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    private int GetUserId()
+    {
+        return int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    }
 
     [HttpGet("")]
     public async Task<ActionResult<IEnumerable<KanaCharacterDto>>> GetCharacters(string type)
     {
         var kanaType = Enum.Parse<KanaType>(type, true);
-        var characters = await _kanaService.GetKanaCharacters(kanaType, GetUserId());
+        IEnumerable<KanaCharacterDto> characters = await _kanaService.GetKanaCharacters(kanaType, GetUserId());
         return Ok(characters);
     }
 
@@ -33,7 +36,7 @@ public class KanaCharactersController : ControllerBase
     public async Task<ActionResult<KanaCharacterDetailDto>> GetCharacterDetail(string type, string character)
     {
         var kanaType = Enum.Parse<KanaType>(type, true);
-        var charDetail = await _kanaService.GetCharacterDetail(character, kanaType, GetUserId());
+        KanaCharacterDetailDto charDetail = await _kanaService.GetCharacterDetail(character, kanaType, GetUserId());
         return Ok(charDetail);
     }
 
@@ -41,7 +44,7 @@ public class KanaCharactersController : ControllerBase
     public async Task<ActionResult<IEnumerable<string>>> GetExamples(string type, string character)
     {
         var kanaType = Enum.Parse<KanaType>(type, true);
-        var examples = await _kanaService.GetExamples(character, kanaType);
+        IEnumerable<ExampleDto> examples = await _kanaService.GetExamples(character, kanaType);
         return Ok(examples);
     }
 }

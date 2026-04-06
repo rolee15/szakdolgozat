@@ -51,7 +51,7 @@ public class PathRepository : IPathRepository
 
     public async Task UpsertProgressAsync(UnitProgress progress)
     {
-        var existing = await _context.UnitProgresses
+        UnitProgress? existing = await _context.UnitProgresses
             .FirstOrDefaultAsync(up => up.UserId == progress.UserId && up.LearningUnitId == progress.LearningUnitId);
 
         if (existing == null)

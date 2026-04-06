@@ -1,4 +1,5 @@
 // [7] T. Coil, "Hanabira.org: Japanese Grammar and Vocabulary Learning Resource" — https://github.com/tristcoil/hanabira.org (accessed 2026-04-04)
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using KanjiKa.Domain.Entities.Grammar;
@@ -14,11 +15,11 @@ public static class GrammarDataParser
 
     public static List<GrammarPoint> Parse()
     {
-        var assembly = typeof(GrammarDataParser).Assembly;
-        using var stream = assembly.GetManifestResourceStream("KanjiKa.Data.Data.grammar-n5.json")!;
+        Assembly assembly = typeof(GrammarDataParser).Assembly;
+        using Stream stream = assembly.GetManifestResourceStream("KanjiKa.Data.Data.grammar-n5.json")!;
 
-        var records = JsonSerializer.Deserialize<List<GrammarPointRecord>>(stream, JsonOptions)
-                      ?? throw new InvalidOperationException("Failed to deserialize grammar-n5.json");
+        List<GrammarPointRecord> records = JsonSerializer.Deserialize<List<GrammarPointRecord>>(stream, JsonOptions)
+                                           ?? throw new InvalidOperationException("Failed to deserialize grammar-n5.json");
 
         return records.Select(r => new GrammarPoint
         {

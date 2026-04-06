@@ -52,7 +52,7 @@ public sealed class CustomWebApplicationFactory : WebApplicationFactory<IApiMark
 
     public async Task SeedDatabaseAsync()
     {
-        using var scope = Services.CreateScope();
+        using IServiceScope scope = Services.CreateScope();
         var seeder = scope.ServiceProvider.GetRequiredService<KanjiKaDataSeeder>();
         await seeder.SeedAsync();
     }

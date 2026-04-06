@@ -8,27 +8,33 @@ namespace KanjiKa.UnitTests.Api.Services;
 
 public class PathServiceTest
 {
-    private static LearningUnit MakeUnit(int id, string title = "Unit") => new()
+    private static LearningUnit MakeUnit(int id, string title = "Unit")
     {
-        Id = id,
-        Title = title,
-        Description = $"Description {id}",
-        SortOrder = id
-    };
+        return new LearningUnit
+        {
+            Id = id,
+            Title = title,
+            Description = $"Description {id}",
+            SortOrder = id
+        };
+    }
 
-    private static UnitTest MakeTest(int id, char correct) => new()
+    private static UnitTest MakeTest(int id, char correct)
     {
-        Id = id,
-        LearningUnitId = 1,
-        QuestionText = $"Question {id}?",
-        OptionA = "A",
-        OptionB = "B",
-        OptionC = "C",
-        OptionD = "D",
-        CorrectOption = correct,
-        ContentType = ContentType.Kana,
-        SortOrder = id
-    };
+        return new UnitTest
+        {
+            Id = id,
+            LearningUnitId = 1,
+            QuestionText = $"Question {id}?",
+            OptionA = "A",
+            OptionB = "B",
+            OptionC = "C",
+            OptionD = "D",
+            CorrectOption = correct,
+            ContentType = ContentType.Kana,
+            SortOrder = id
+        };
+    }
 
     // ── GetPathAsync ──────────────────────────────────────────────────────────
 
@@ -45,7 +51,7 @@ public class PathServiceTest
         var service = new PathService(repo.Object);
 
         // Act
-        var result = await service.GetPathAsync(1);
+        List<LearningUnitDto> result = await service.GetPathAsync(1);
 
         // Assert
         Assert.Single(result);
@@ -62,13 +68,13 @@ public class PathServiceTest
         repo.Setup(r => r.GetProgressForUserAsync(1, It.IsAny<List<int>>()))
             .ReturnsAsync(new Dictionary<int, UnitProgress>
             {
-                [1] = new UnitProgress { Id = 1, UserId = 1, LearningUnitId = 1, IsPassed = false }
+                [1] = new() { Id = 1, UserId = 1, LearningUnitId = 1, IsPassed = false }
             });
 
         var service = new PathService(repo.Object);
 
         // Act
-        var result = await service.GetPathAsync(1);
+        List<LearningUnitDto> result = await service.GetPathAsync(1);
 
         // Assert
         Assert.Equal(2, result.Count);
@@ -85,13 +91,13 @@ public class PathServiceTest
         repo.Setup(r => r.GetProgressForUserAsync(1, It.IsAny<List<int>>()))
             .ReturnsAsync(new Dictionary<int, UnitProgress>
             {
-                [1] = new UnitProgress { Id = 1, UserId = 1, LearningUnitId = 1, IsPassed = true }
+                [1] = new() { Id = 1, UserId = 1, LearningUnitId = 1, IsPassed = true }
             });
 
         var service = new PathService(repo.Object);
 
         // Act
-        var result = await service.GetPathAsync(1);
+        List<LearningUnitDto> result = await service.GetPathAsync(1);
 
         // Assert
         Assert.True(result[1].IsUnlocked);
@@ -111,10 +117,10 @@ public class PathServiceTest
         var service = new PathService(repo.Object);
 
         // Act
-        var result = await service.GetPathAsync(1);
+        List<LearningUnitDto> result = await service.GetPathAsync(1);
 
         // Assert
-        Assert.True(result[0].IsUnlocked);  // first always unlocked
+        Assert.True(result[0].IsUnlocked); // first always unlocked
         Assert.False(result[1].IsUnlocked); // second locked without prev progress
     }
 
@@ -128,13 +134,13 @@ public class PathServiceTest
         repo.Setup(r => r.GetProgressForUserAsync(1, It.IsAny<List<int>>()))
             .ReturnsAsync(new Dictionary<int, UnitProgress>
             {
-                [1] = new UnitProgress { Id = 1, UserId = 1, LearningUnitId = 1, IsPassed = true, BestScore = 90 }
+                [1] = new() { Id = 1, UserId = 1, LearningUnitId = 1, IsPassed = true, BestScore = 90 }
             });
 
         var service = new PathService(repo.Object);
 
         // Act
-        var result = await service.GetPathAsync(1);
+        List<LearningUnitDto> result = await service.GetPathAsync(1);
 
         // Assert
         Assert.Single(result);
@@ -156,7 +162,7 @@ public class PathServiceTest
         var service = new PathService(repo.Object);
 
         // Act
-        var result = await service.GetUnitDetailAsync(99, 1);
+        LearningUnitDetailDto? result = await service.GetUnitDetailAsync(99, 1);
 
         // Assert
         Assert.Null(result);
@@ -167,7 +173,7 @@ public class PathServiceTest
     {
         // Arrange
         var repo = new Mock<IPathRepository>();
-        var unit = MakeUnit(1, "Hiragana Vowels");
+        LearningUnit unit = MakeUnit(1, "Hiragana Vowels");
         unit.Contents.Add(new UnitContent { Id = 1, LearningUnitId = 1, ContentType = ContentType.Kana, ContentId = 1, SortOrder = 1 });
 
         repo.Setup(r => r.GetUnitByIdAsync(1)).ReturnsAsync(unit);
@@ -186,7 +192,7 @@ public class PathServiceTest
         var service = new PathService(repo.Object);
 
         // Act
-        var result = await service.GetUnitDetailAsync(1, 1);
+        LearningUnitDetailDto? result = await service.GetUnitDetailAsync(1, 1);
 
         // Assert
         Assert.NotNull(result);
@@ -209,7 +215,7 @@ public class PathServiceTest
         var service = new PathService(repo.Object);
 
         // Act
-        var result = await service.GetUnitTestAsync(99, 1);
+        UnitTestDto? result = await service.GetUnitTestAsync(99, 1);
 
         // Assert
         Assert.Null(result);
@@ -220,7 +226,7 @@ public class PathServiceTest
     {
         // Arrange
         var repo = new Mock<IPathRepository>();
-        var unit = MakeUnit(1);
+        LearningUnit unit = MakeUnit(1);
         unit.Tests.Add(MakeTest(1, 'A'));
         unit.Tests.Add(MakeTest(2, 'B'));
         repo.Setup(r => r.GetUnitWithTestAsync(1)).ReturnsAsync(unit);
@@ -228,12 +234,12 @@ public class PathServiceTest
         var service = new PathService(repo.Object);
 
         // Act
-        var result = await service.GetUnitTestAsync(1, 1);
+        UnitTestDto? result = await service.GetUnitTestAsync(1, 1);
 
         // Assert
         Assert.NotNull(result);
         Assert.Equal(2, result.Questions.Count);
-        Assert.All(result.Questions, q => Assert.Equal(4, q.Options.Count));
+        Assert.All(result.Questions, action: q => Assert.Equal(4, q.Options.Count));
     }
 
     // ── SubmitTestAsync ───────────────────────────────────────────────────────
@@ -257,7 +263,7 @@ public class PathServiceTest
     {
         // Arrange
         var repo = new Mock<IPathRepository>();
-        var unit = MakeUnit(1);
+        LearningUnit unit = MakeUnit(1);
         unit.Tests.Add(MakeTest(1, 'A'));
         unit.Tests.Add(MakeTest(2, 'B'));
         repo.Setup(r => r.GetUnitWithTestAsync(1)).ReturnsAsync(unit);
@@ -273,7 +279,7 @@ public class PathServiceTest
         };
 
         // Act
-        var result = await service.SubmitTestAsync(1, 1, submitDto);
+        UnitTestResultDto result = await service.SubmitTestAsync(1, 1, submitDto);
 
         // Assert
         Assert.Multiple(
@@ -289,7 +295,7 @@ public class PathServiceTest
     {
         // Arrange
         var repo = new Mock<IPathRepository>();
-        var unit = MakeUnit(1);
+        LearningUnit unit = MakeUnit(1);
         unit.Tests.Add(MakeTest(1, 'A'));
         unit.Tests.Add(MakeTest(2, 'A'));
         repo.Setup(r => r.GetUnitWithTestAsync(1)).ReturnsAsync(unit);
@@ -305,7 +311,7 @@ public class PathServiceTest
         };
 
         // Act
-        var result = await service.SubmitTestAsync(1, 1, submitDto);
+        UnitTestResultDto result = await service.SubmitTestAsync(1, 1, submitDto);
 
         // Assert
         Assert.Multiple(
@@ -320,13 +326,13 @@ public class PathServiceTest
     {
         // Arrange
         var repo = new Mock<IPathRepository>();
-        var unit = MakeUnit(1);
+        LearningUnit unit = MakeUnit(1);
         unit.Tests.Add(MakeTest(1, 'A'));
         repo.Setup(r => r.GetUnitWithTestAsync(1)).ReturnsAsync(unit);
         repo.Setup(r => r.GetProgressForUserAsync(1, It.IsAny<List<int>>()))
             .ReturnsAsync(new Dictionary<int, UnitProgress>
             {
-                [1] = new UnitProgress { Id = 1, UserId = 1, LearningUnitId = 1, BestScore = 60, AttemptCount = 2, IsPassed = false }
+                [1] = new() { Id = 1, UserId = 1, LearningUnitId = 1, BestScore = 60, AttemptCount = 2, IsPassed = false }
             });
 
         UnitProgress? captured = null;
@@ -351,7 +357,7 @@ public class PathServiceTest
     {
         // Arrange
         var repo = new Mock<IPathRepository>();
-        var unit = MakeUnit(1);
+        LearningUnit unit = MakeUnit(1);
         unit.Tests.Add(MakeTest(1, 'A'));
         repo.Setup(r => r.GetUnitWithTestAsync(1)).ReturnsAsync(unit);
         repo.Setup(r => r.GetProgressForUserAsync(1, It.IsAny<List<int>>()))
@@ -379,13 +385,13 @@ public class PathServiceTest
     {
         // Arrange
         var repo = new Mock<IPathRepository>();
-        var unit = MakeUnit(1);
+        LearningUnit unit = MakeUnit(1);
         unit.Tests.Add(MakeTest(1, 'A'));
         repo.Setup(r => r.GetUnitWithTestAsync(1)).ReturnsAsync(unit);
         repo.Setup(r => r.GetProgressForUserAsync(1, It.IsAny<List<int>>()))
             .ReturnsAsync(new Dictionary<int, UnitProgress>
             {
-                [1] = new UnitProgress { Id = 1, UserId = 1, LearningUnitId = 1, BestScore = 50, AttemptCount = 1, IsPassed = false }
+                [1] = new() { Id = 1, UserId = 1, LearningUnitId = 1, BestScore = 50, AttemptCount = 1, IsPassed = false }
             });
 
         UnitProgress? captured = null;
@@ -399,7 +405,7 @@ public class PathServiceTest
         var submitDto = new UnitSubmitDto { Answers = new Dictionary<int, string> { [1] = "A" } };
 
         // Act
-        var result = await service.SubmitTestAsync(1, 1, submitDto);
+        UnitTestResultDto result = await service.SubmitTestAsync(1, 1, submitDto);
 
         // Assert — the UpsertProgressAsync receives the new score; the repository handles best-score comparison
         Assert.NotNull(captured);

@@ -1,5 +1,5 @@
 using System.Text.Json;
-using KanjiKa.Api.Services;
+using KanjiKa.Application.Services;
 using Microsoft.Extensions.Configuration;
 
 namespace KanjiKa.UnitTests.Core.Services;
@@ -30,7 +30,7 @@ public class TokenServiceTest
         const string username = "testuser";
 
         // Act
-        (string accessToken, string refreshToken) = tokenService.GenerateToken(userId, username, KanjiKa.Domain.Entities.Users.UserRole.User);
+        (string accessToken, string refreshToken) = tokenService.GenerateToken(userId, username, Domain.Entities.Users.UserRole.User);
 
         // Assert
         Assert.Multiple(
@@ -46,8 +46,8 @@ public class TokenServiceTest
         var tokenService = new TokenService(BuildConfig());
 
         // Act
-        var (_, refresh1) = tokenService.GenerateToken(1, "user", KanjiKa.Domain.Entities.Users.UserRole.User);
-        var (_, refresh2) = tokenService.GenerateToken(1, "user", KanjiKa.Domain.Entities.Users.UserRole.User);
+        (_, string refresh1) = tokenService.GenerateToken(1, "user", Domain.Entities.Users.UserRole.User);
+        (_, string refresh2) = tokenService.GenerateToken(1, "user", Domain.Entities.Users.UserRole.User);
 
         // Assert
         Assert.NotEqual(refresh1, refresh2);
@@ -60,12 +60,12 @@ public class TokenServiceTest
         var tokenService = new TokenService(BuildConfig());
 
         // Act
-        var (accessToken, _) = tokenService.GenerateToken(1, "user", KanjiKa.Domain.Entities.Users.UserRole.User);
+        (string accessToken, _) = tokenService.GenerateToken(1, "user", Domain.Entities.Users.UserRole.User);
 
         // Assert — a JWT has exactly 3 dot-separated base64url parts
         string[] parts = accessToken.Split('.');
         Assert.Equal(3, parts.Length);
-        Assert.All(parts, part => Assert.NotEmpty(part));
+        Assert.All(parts, action: part => Assert.NotEmpty(part));
     }
 
     [Fact]
@@ -76,7 +76,7 @@ public class TokenServiceTest
         const int userId = 42;
 
         // Act
-        var (accessToken, _) = tokenService.GenerateToken(userId, "user", KanjiKa.Domain.Entities.Users.UserRole.User);
+        (string accessToken, _) = tokenService.GenerateToken(userId, "user", Domain.Entities.Users.UserRole.User);
 
         // Assert — decode the payload (second part) and verify sub = userId
         string[] parts = accessToken.Split('.');
@@ -86,7 +86,7 @@ public class TokenServiceTest
         if (padding != 0) payload += new string('=', 4 - padding);
         string json = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(
             payload.Replace('-', '+').Replace('_', '/')));
-        using var doc = JsonDocument.Parse(json);
+        using JsonDocument doc = JsonDocument.Parse(json);
         string sub = doc.RootElement.GetProperty("sub").GetString()!;
 
         Assert.Equal(userId.ToString(), sub);
@@ -100,7 +100,7 @@ public class TokenServiceTest
         const string username = "kanjika_user";
 
         // Act
-        var (accessToken, _) = tokenService.GenerateToken(1, username, KanjiKa.Domain.Entities.Users.UserRole.User);
+        (string accessToken, _) = tokenService.GenerateToken(1, username, Domain.Entities.Users.UserRole.User);
 
         // Assert — decode the payload and verify unique_name = username
         string[] parts = accessToken.Split('.');
@@ -109,7 +109,7 @@ public class TokenServiceTest
         if (padding != 0) payload += new string('=', 4 - padding);
         string json = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(
             payload.Replace('-', '+').Replace('_', '/')));
-        using var doc = JsonDocument.Parse(json);
+        using JsonDocument doc = JsonDocument.Parse(json);
         string uniqueName = doc.RootElement.GetProperty("unique_name").GetString()!;
 
         Assert.Equal(username, uniqueName);
@@ -122,7 +122,7 @@ public class TokenServiceTest
         var tokenService = new TokenService(BuildConfig());
 
         // Act
-        var (accessToken, refreshToken) = tokenService.GenerateToken(1, "user", KanjiKa.Domain.Entities.Users.UserRole.User);
+        (string accessToken, string refreshToken) = tokenService.GenerateToken(1, "user", Domain.Entities.Users.UserRole.User);
 
         // Assert
         Assert.NotEqual(accessToken, refreshToken);
@@ -135,7 +135,7 @@ public class TokenServiceTest
         var tokenService = new TokenService(BuildConfig());
 
         // Act
-        var (_, refreshToken) = tokenService.GenerateToken(1, "user", KanjiKa.Domain.Entities.Users.UserRole.User);
+        (_, string refreshToken) = tokenService.GenerateToken(1, "user", Domain.Entities.Users.UserRole.User);
 
         // Assert — Convert.FromBase64String throws if not valid base64
         byte[] decoded = Convert.FromBase64String(refreshToken);
@@ -150,7 +150,7 @@ public class TokenServiceTest
         const string roleClaimKey = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
 
         // Act
-        var (accessToken, _) = tokenService.GenerateToken(1, "admin", KanjiKa.Domain.Entities.Users.UserRole.Admin);
+        (string accessToken, _) = tokenService.GenerateToken(1, "admin", Domain.Entities.Users.UserRole.Admin);
 
         // Assert — decode the payload and verify the role claim equals "Admin"
         string[] parts = accessToken.Split('.');
@@ -159,7 +159,7 @@ public class TokenServiceTest
         if (padding != 0) payload += new string('=', 4 - padding);
         string json = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(
             payload.Replace('-', '+').Replace('_', '/')));
-        using var doc = JsonDocument.Parse(json);
+        using JsonDocument doc = JsonDocument.Parse(json);
         string role = doc.RootElement.GetProperty(roleClaimKey).GetString()!;
 
         Assert.Equal("Admin", role);

@@ -1,5 +1,8 @@
 using KanjiKa.Application;
 using KanjiKa.Application.Interfaces;
+using KanjiKa.Domain.Entities.Kana;
+using KanjiKa.Domain.Entities.Kanji;
+using KanjiKa.Domain.Entities.Users;
 using KanjiKa.Domain.Interfaces;
 
 namespace KanjiKa.Data;
@@ -27,13 +30,13 @@ public class KanjiKaDataSeeder
     {
         if (!_context.Characters.Any())
         {
-            var characters = TestData.GetKanaCharacters();
+            List<Character> characters = TestData.GetKanaCharacters();
             await _context.Characters.AddRangeAsync(characters);
         }
 
         if (!_context.Kanjis.Any())
         {
-            var kanjis = Kanjidic2Parser.Parse();
+            List<Kanji> kanjis = Kanjidic2Parser.Parse();
             await _context.Kanjis.AddRangeAsync(kanjis);
         }
 
@@ -41,7 +44,7 @@ public class KanjiKaDataSeeder
 
         if (!_context.Users.Any())
         {
-            var users = TestData.GetUsers();
+            List<User> users = TestData.GetUsers();
             await _context.Users.AddRangeAsync(users);
         }
 

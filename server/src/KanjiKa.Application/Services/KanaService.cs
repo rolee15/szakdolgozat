@@ -16,7 +16,7 @@ public class KanaService : IKanaService
 
     public async Task<IEnumerable<KanaCharacterDto>> GetKanaCharacters(KanaType type, int userId)
     {
-        var user = await _repo.GetUserWithProficienciesAsync(userId);
+        User? user = await _repo.GetUserWithProficienciesAsync(userId);
 
         if (user == null)
         {
@@ -29,23 +29,23 @@ public class KanaService : IKanaService
 
     public async Task<KanaCharacterDetailDto> GetCharacterDetail(string character, KanaType type, int userId)
     {
-        var kanaCharacter = await _repo.GetCharacterBySymbolAndTypeAsync(character, type);
+        Character? kanaCharacter = await _repo.GetCharacterBySymbolAndTypeAsync(character, type);
 
         if (kanaCharacter == null)
         {
             throw new ArgumentException($"Character {character} not found");
         }
 
-        var user = await _repo.GetUserWithProficienciesAsync(userId);
+        User? user = await _repo.GetUserWithProficienciesAsync(userId);
         if (user == null)
         {
             throw new ArgumentException($"User with id {userId} not found");
         }
 
-        var userProficiency = user.Proficiencies
+        Proficiency? userProficiency = user.Proficiencies
             .FirstOrDefault(p => p.CharacterId == kanaCharacter.Id);
-        var level = userProficiency?.Level ?? 0;
-        var srsStage = userProficiency?.SrsStage ?? SrsStage.Locked;
+        int level = userProficiency?.Level ?? 0;
+        SrsStage srsStage = userProficiency?.SrsStage ?? SrsStage.Locked;
 
         return new KanaCharacterDetailDto
         {
@@ -60,7 +60,7 @@ public class KanaService : IKanaService
 
     public async Task<IEnumerable<ExampleDto>> GetExamples(string character, KanaType type)
     {
-        var ch = await _repo.GetCharacterWithExamplesBySymbolAndTypeAsync(character, type);
+        Character? ch = await _repo.GetCharacterWithExamplesBySymbolAndTypeAsync(character, type);
 
         if (ch == null)
             throw new ArgumentException($"Character {character} not found");

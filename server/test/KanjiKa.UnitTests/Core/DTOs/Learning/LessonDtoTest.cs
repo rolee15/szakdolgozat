@@ -22,8 +22,8 @@ public class LessonDtoTest
         };
         var examples = new List<Example>
         {
-            new Example { Id = 1, CharacterId = character.Id, Character = character, Word = "あお", Romanization = "ao", Meaning = "blue" },
-            new Example { Id = 2, CharacterId = character.Id, Character = character, Word = "あか", Romanization = "aka", Meaning = "red" }
+            new() { Id = 1, CharacterId = character.Id, Character = character, Word = "あお", Romanization = "ao", Meaning = "blue" },
+            new() { Id = 2, CharacterId = character.Id, Character = character, Word = "あか", Romanization = "aka", Meaning = "red" }
         };
 
         // Act

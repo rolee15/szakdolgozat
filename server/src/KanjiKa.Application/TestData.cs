@@ -3,10 +3,6 @@ using KanjiKa.Domain.Entities.Learning;
 using KanjiKa.Domain.Entities.Users;
 using KanjiKa.Domain.Services;
 
-
-
-
-
 namespace KanjiKa.Application;
 
 public static class TestData
@@ -2238,7 +2234,7 @@ public static class TestData
     {
         const string testPassword = "12345";
         var hashService = new HashService();
-        var (hash, salt) = hashService.Hash(testPassword);
+        (byte[] hash, byte[] salt) = hashService.Hash(testPassword);
         return
         [
             new User
@@ -2800,372 +2796,373 @@ public static class TestData
                         LastPracticed = DateTimeOffset.UtcNow.AddDays(-1)
                     }
                 ],
-                LessonCompletions = [
+                LessonCompletions =
+                [
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 1,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-100),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-100)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 2,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-99),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-99)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 3,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-98),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-98)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 4,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-97),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-97)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 5,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-96),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-96)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 6,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-95),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-95)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 7,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-94),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-94)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 8,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-93),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-93)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 9,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-92),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-92)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 10,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-91),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-91)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 11,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-90),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-90)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 12,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-89),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-89)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 13,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-88),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-88)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 14,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-87),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-87)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 15,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-86),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-86)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 16,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-85),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-85)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 17,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-84),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-84)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 18,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-83),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-83)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 19,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-82),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-82)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 20,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-81),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-81)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 21,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-80),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-80)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 22,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-79),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-79)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 23,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-78),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-78)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 24,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-77),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-77)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 25,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-76),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-76)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 26,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-75),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-75)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 27,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-74),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-74)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 28,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-73),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-73)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 29,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-72),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-72)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 30,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-71),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-71)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 31,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-70),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-70)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 32,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-69),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-69)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 33,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-68),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-68)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 34,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-67),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-67)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 35,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-66),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-66)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 36,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-65),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-65)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 37,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-64),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-64)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 38,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-63),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-63)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 39,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-62),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-62)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 40,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-61),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-61)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 41,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-60),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-60)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 42,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-59),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-59)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 43,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-58),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-58)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 44,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-57),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-57)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 45,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-56),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-56)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 46,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-55),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-55)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 47,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-54),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-54)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 48,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-53),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-53)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 49,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-52),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-52)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 50,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-51),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-51)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 51,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-50),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-50)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 52,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-49),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-49)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 53,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-48),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-48)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 54,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-47),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-47)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 55,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-46),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-46)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 56,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-45),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-45)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 57,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-44),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-44)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 58,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-43),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-43)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 59,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-42),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-42)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 60,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-41),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-41)
                     },
                     new LessonCompletion
                     {
                         UserId = 1,
                         CharacterId = 61,
-                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-40),
+                        CompletionDate = DateTimeOffset.UtcNow.AddDays(-40)
                     }
                 ]
             }

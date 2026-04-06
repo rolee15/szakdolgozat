@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using KanjiKa.Application.DTOs;
 using KanjiKa.Application.DTOs.Kanji;
 using KanjiKa.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -18,8 +19,10 @@ public class KanjiController : ControllerBase
         _kanjiService = kanjiService;
     }
 
-    private int GetUserId() =>
-        int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    private int GetUserId()
+    {
+        return int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    }
 
     [HttpGet("level/{jlptLevel:int}")]
     public async Task<IActionResult> GetByLevel(int jlptLevel)
@@ -27,15 +30,16 @@ public class KanjiController : ControllerBase
         if (jlptLevel < 1 || jlptLevel > 5)
             return BadRequest("JLPT level must be between 1 and 5.");
 
-        var result = await _kanjiService.GetKanjiByLevelAsync(jlptLevel, GetUserId());
+        List<KanjiDto> result = await _kanjiService.GetKanjiByLevelAsync(jlptLevel, GetUserId());
         return Ok(result);
     }
 
     [HttpGet("{character}")]
     public async Task<IActionResult> GetDetail(string character)
     {
-        var result = await _kanjiService.GetKanjiDetailAsync(character, GetUserId());
+        KanjiDetailDto? result = await _kanjiService.GetKanjiDetailAsync(character, GetUserId());
         if (result == null) return NotFound();
+
         return Ok(result);
     }
 
@@ -47,21 +51,21 @@ public class KanjiController : ControllerBase
     {
         if (page < 1) page = 1;
         if (pageSize < 1 || pageSize > 200) pageSize = 50;
-        var result = await _kanjiService.GetKanjiPagedAsync(jlptLevel, page, pageSize, GetUserId());
+        PagedResult<KanjiDto> result = await _kanjiService.GetKanjiPagedAsync(jlptLevel, page, pageSize, GetUserId());
         return Ok(result);
     }
 
     [HttpGet("reviews/count")]
     public async Task<IActionResult> GetDueReviewsCount()
     {
-        var count = await _kanjiService.GetDueReviewsCountAsync(GetUserId());
+        int count = await _kanjiService.GetDueReviewsCountAsync(GetUserId());
         return Ok(new { count });
     }
 
     [HttpGet("reviews")]
     public async Task<IActionResult> GetDueReviews()
     {
-        var reviews = await _kanjiService.GetDueReviewsAsync(GetUserId());
+        List<KanjiReviewDto> reviews = await _kanjiService.GetDueReviewsAsync(GetUserId());
         return Ok(reviews);
     }
 
@@ -70,7 +74,7 @@ public class KanjiController : ControllerBase
     {
         try
         {
-            var result = await _kanjiService.CheckReviewAsync(GetUserId(), answer);
+            KanjiReviewResultDto result = await _kanjiService.CheckReviewAsync(GetUserId(), answer);
             return Ok(result);
         }
         catch (KeyNotFoundException)

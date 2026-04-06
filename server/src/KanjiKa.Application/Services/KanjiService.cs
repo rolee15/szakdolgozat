@@ -17,22 +17,22 @@ public class KanjiService : IKanjiService
 
     public async Task<List<KanjiDto>> GetKanjiByLevelAsync(int jlptLevel, int userId)
     {
-        var kanjis = await _kanjiRepository.GetByJlptLevelAsync(jlptLevel);
-        var ids = kanjis.Select(k => k.Id).ToList();
-        var proficiencies = await _kanjiRepository.GetProficienciesForUserAsync(userId, ids);
+        List<Kanji> kanjis = await _kanjiRepository.GetByJlptLevelAsync(jlptLevel);
+        List<int> ids = kanjis.Select(k => k.Id).ToList();
+        Dictionary<int, KanjiProficiency> proficiencies = await _kanjiRepository.GetProficienciesForUserAsync(userId, ids);
 
         return kanjis.Select(k => MapToDto(k, proficiencies)).ToList();
     }
 
     public async Task<KanjiDetailDto?> GetKanjiDetailAsync(string character, int userId)
     {
-        var kanji = await _kanjiRepository.GetByCharacterAsync(character);
+        Kanji? kanji = await _kanjiRepository.GetByCharacterAsync(character);
         if (kanji == null) return null;
 
-        var proficiencies = await _kanjiRepository.GetProficienciesForUserAsync(userId, [kanji.Id]);
-        proficiencies.TryGetValue(kanji.Id, out var prof);
+        Dictionary<int, KanjiProficiency> proficiencies = await _kanjiRepository.GetProficienciesForUserAsync(userId, [kanji.Id]);
+        proficiencies.TryGetValue(kanji.Id, out KanjiProficiency? prof);
 
-        var srsStage = prof?.SrsStage ?? SrsStage.Locked;
+        SrsStage srsStage = prof?.SrsStage ?? SrsStage.Locked;
 
         return new KanjiDetailDto
         {
@@ -56,9 +56,9 @@ public class KanjiService : IKanjiService
 
     public async Task<PagedResult<KanjiDto>> GetKanjiPagedAsync(int? jlptLevel, int page, int pageSize, int userId)
     {
-        var (items, totalCount) = await _kanjiRepository.GetPagedAsync(jlptLevel, page, pageSize);
-        var ids = items.Select(k => k.Id).ToList();
-        var proficiencies = await _kanjiRepository.GetProficienciesForUserAsync(userId, ids);
+        (List<Kanji> items, int totalCount) = await _kanjiRepository.GetPagedAsync(jlptLevel, page, pageSize);
+        List<int> ids = items.Select(k => k.Id).ToList();
+        Dictionary<int, KanjiProficiency> proficiencies = await _kanjiRepository.GetProficienciesForUserAsync(userId, ids);
 
         return new PagedResult<KanjiDto>
         {
@@ -71,13 +71,13 @@ public class KanjiService : IKanjiService
 
     public async Task<int> GetDueReviewsCountAsync(int userId)
     {
-        var reviews = await _kanjiRepository.GetDueReviewsAsync(userId);
+        List<KanjiProficiency> reviews = await _kanjiRepository.GetDueReviewsAsync(userId);
         return reviews.Count;
     }
 
     public async Task<List<KanjiReviewDto>> GetDueReviewsAsync(int userId)
     {
-        var reviews = await _kanjiRepository.GetDueReviewsAsync(userId);
+        List<KanjiProficiency> reviews = await _kanjiRepository.GetDueReviewsAsync(userId);
         return reviews.Select(kp => new KanjiReviewDto
         {
             KanjiId = kp.KanjiId,
@@ -90,7 +90,7 @@ public class KanjiService : IKanjiService
 
     public async Task<KanjiReviewResultDto> CheckReviewAsync(int userId, KanjiReviewAnswerDto answer)
     {
-        var proficiency = await _kanjiRepository.GetProficiencyAsync(userId, answer.KanjiId);
+        KanjiProficiency? proficiency = await _kanjiRepository.GetProficiencyAsync(userId, answer.KanjiId);
         if (proficiency == null)
             throw new KeyNotFoundException($"Proficiency for kanji {answer.KanjiId} not found for user {userId}.");
 
@@ -112,7 +112,7 @@ public class KanjiService : IKanjiService
 
     public async Task<KanjiProficiency> LearnKanjiAsync(int userId, int kanjiId)
     {
-        var existing = await _kanjiRepository.GetProficiencyAsync(userId, kanjiId);
+        KanjiProficiency? existing = await _kanjiRepository.GetProficiencyAsync(userId, kanjiId);
         if (existing != null)
             throw new InvalidOperationException($"User {userId} has already learned kanji {kanjiId}.");
 
@@ -132,8 +132,8 @@ public class KanjiService : IKanjiService
 
     private static KanjiDto MapToDto(Kanji kanji, Dictionary<int, KanjiProficiency> proficiencies)
     {
-        proficiencies.TryGetValue(kanji.Id, out var prof);
-        var srsStage = prof?.SrsStage ?? SrsStage.Locked;
+        proficiencies.TryGetValue(kanji.Id, out KanjiProficiency? prof);
+        SrsStage srsStage = prof?.SrsStage ?? SrsStage.Locked;
 
         return new KanjiDto
         {

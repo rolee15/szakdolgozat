@@ -18,21 +18,24 @@ public class GrammarController : ControllerBase
         _grammarService = grammarService;
     }
 
-    private int GetUserId() =>
-        int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    private int GetUserId()
+    {
+        return int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    }
 
     [HttpGet]
     public async Task<IActionResult> GetGrammarPoints()
     {
-        var result = await _grammarService.GetGrammarPointsAsync(GetUserId());
+        List<GrammarPointDto> result = await _grammarService.GetGrammarPointsAsync(GetUserId());
         return Ok(result);
     }
 
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetGrammarPointDetail(int id)
     {
-        var result = await _grammarService.GetGrammarPointDetailAsync(id, GetUserId());
+        GrammarPointDetailDto? result = await _grammarService.GetGrammarPointDetailAsync(id, GetUserId());
         if (result == null) return NotFound();
+
         return Ok(result);
     }
 
@@ -41,7 +44,7 @@ public class GrammarController : ControllerBase
     {
         try
         {
-            var result = await _grammarService.CheckExerciseAsync(GetUserId(), id, answer);
+            GrammarExerciseResultDto result = await _grammarService.CheckExerciseAsync(GetUserId(), id, answer);
             return Ok(result);
         }
         catch (KeyNotFoundException)

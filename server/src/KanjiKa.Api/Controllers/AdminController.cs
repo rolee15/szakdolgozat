@@ -1,4 +1,6 @@
 using System.Security.Claims;
+using KanjiKa.Application.DTOs;
+using KanjiKa.Application.DTOs.Admin;
 using KanjiKa.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,24 +22,26 @@ public class AdminController : ControllerBase
     [HttpGet("users")]
     public async Task<IActionResult> GetUsers([FromQuery] int page = 1, [FromQuery] int pageSize = 20, [FromQuery] string? search = null)
     {
-        var result = await _adminService.GetUsersAsync(page, pageSize, search);
+        PagedResult<AdminUserDto> result = await _adminService.GetUsersAsync(page, pageSize, search);
         return Ok(result);
     }
 
     [HttpGet("users/{id}")]
     public async Task<IActionResult> GetUserById(int id)
     {
-        var result = await _adminService.GetUserByIdAsync(id);
+        AdminUserDetailDto? result = await _adminService.GetUserByIdAsync(id);
         if (result == null) return NotFound();
+
         return Ok(result);
     }
 
     [HttpDelete("users/{id}")]
     public async Task<IActionResult> DeleteUser(int id)
     {
-        var adminUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        var deleted = await _adminService.DeleteUserAsync(adminUserId, id);
+        int adminUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        bool deleted = await _adminService.DeleteUserAsync(adminUserId, id);
         if (!deleted) return BadRequest("Cannot delete this user.");
+
         return NoContent();
     }
 }

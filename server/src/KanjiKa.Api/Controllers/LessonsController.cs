@@ -18,19 +18,22 @@ public class LessonsController : ControllerBase
         _lessonService = lessonService;
     }
 
-    private int GetUserId() => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    private int GetUserId()
+    {
+        return int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    }
 
     [HttpGet("count")]
     public async Task<IActionResult> GetLessonsCount()
     {
-        var count = await _lessonService.GetLessonsCountAsync(GetUserId());
+        LessonsCountDto count = await _lessonService.GetLessonsCountAsync(GetUserId());
         return Ok(count);
     }
 
     [HttpGet]
     public async Task<IActionResult> GetNewLessons([FromQuery] int pageIndex = 0, [FromQuery] int pageSize = 5)
     {
-        var lessons = await _lessonService.GetLessonsAsync(GetUserId(), pageIndex, pageSize);
+        IEnumerable<LessonDto> lessons = await _lessonService.GetLessonsAsync(GetUserId(), pageIndex, pageSize);
         return Ok(lessons);
     }
 
@@ -44,42 +47,42 @@ public class LessonsController : ControllerBase
     [HttpGet("reviews/count")]
     public async Task<IActionResult> GetReviewCount()
     {
-        var count = await _lessonService.GetLessonReviewsCountAsync(GetUserId());
+        LessonReviewsCountDto count = await _lessonService.GetLessonReviewsCountAsync(GetUserId());
         return Ok(count);
     }
 
     [HttpGet("reviews")]
     public async Task<IActionResult> GetLessonReviews()
     {
-        var reviewItems = await _lessonService.GetLessonReviewsAsync(GetUserId());
+        IEnumerable<LessonReviewDto> reviewItems = await _lessonService.GetLessonReviewsAsync(GetUserId());
         return Ok(reviewItems);
     }
 
     [HttpPost("reviews/check")]
     public async Task<IActionResult> CheckLessonReviewAnswer([FromBody] LessonReviewAnswerDto answer)
     {
-        var result = await _lessonService.CheckLessonReviewAnswerAsync(GetUserId(), answer);
+        LessonReviewAnswerResultDto result = await _lessonService.CheckLessonReviewAnswerAsync(GetUserId(), answer);
         return Ok(result);
     }
 
     [HttpGet("writing-reviews/count")]
     public async Task<IActionResult> GetWritingReviewsCount()
     {
-        var count = await _lessonService.GetWritingReviewsCountAsync(GetUserId());
+        LessonReviewsCountDto count = await _lessonService.GetWritingReviewsCountAsync(GetUserId());
         return Ok(count);
     }
 
     [HttpGet("writing-reviews")]
     public async Task<IActionResult> GetWritingReviews()
     {
-        var reviewItems = await _lessonService.GetWritingReviewsAsync(GetUserId());
+        IEnumerable<WritingReviewDto> reviewItems = await _lessonService.GetWritingReviewsAsync(GetUserId());
         return Ok(reviewItems);
     }
 
     [HttpPost("writing-reviews/check")]
     public async Task<IActionResult> CheckWritingReviewAnswer([FromBody] WritingReviewAnswerDto answer)
     {
-        var result = await _lessonService.CheckWritingReviewAnswerAsync(GetUserId(), answer);
+        LessonReviewAnswerResultDto result = await _lessonService.CheckWritingReviewAnswerAsync(GetUserId(), answer);
         return Ok(result);
     }
 }

@@ -7,24 +7,24 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="EFCore.NamingConventions" Version="8.0.3" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.25" />
+        <PackageReference Include="EFCore.NamingConventions" Version="8.0.3"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.25"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.25">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.25" />
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.25"/>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\KanjiKa.Domain\KanjiKa.Domain.csproj" />
-        <ProjectReference Include="..\KanjiKa.Application\KanjiKa.Application.csproj" />
+        <ProjectReference Include="..\KanjiKa.Domain\KanjiKa.Domain.csproj"/>
+        <ProjectReference Include="..\KanjiKa.Application\KanjiKa.Application.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="Data/kanjidic2.xml.gz" />
-        <EmbeddedResource Include="Data/grammar-n5.json" />
+        <EmbeddedResource Include="Data/kanjidic2.xml.gz"/>
+        <EmbeddedResource Include="Data/grammar-n5.json"/>
     </ItemGroup>
 
 </Project>

@@ -1,5 +1,6 @@
 // [1] EDRDG, "KANJIDIC2 Project" — http://www.edrdg.org/wiki/index.php/KANJIDIC_Project (accessed 2025-01-01)
 using System.IO.Compression;
+using System.Reflection;
 using System.Xml;
 using KanjiKa.Domain.Entities.Kanji;
 
@@ -17,8 +18,8 @@ public static class Kanjidic2Parser
 
     public static List<Kanji> Parse()
     {
-        var assembly = typeof(Kanjidic2Parser).Assembly;
-        using var gzStream = assembly.GetManifestResourceStream("KanjiKa.Data.Data.kanjidic2.xml.gz")!;
+        Assembly assembly = typeof(Kanjidic2Parser).Assembly;
+        using Stream gzStream = assembly.GetManifestResourceStream("KanjiKa.Data.Data.kanjidic2.xml.gz")!;
         using var deflateStream = new GZipStream(gzStream, CompressionMode.Decompress);
 
         var settings = new XmlReaderSettings
@@ -36,8 +37,8 @@ public static class Kanjidic2Parser
             if (reader.NodeType != XmlNodeType.Element || reader.LocalName != "character")
                 continue;
 
-            using var subtree = reader.ReadSubtree();
-            var kanji = ParseCharacter(subtree);
+            using XmlReader subtree = reader.ReadSubtree();
+            Kanji? kanji = ParseCharacter(subtree);
             if (kanji != null)
                 result.Add(kanji);
         }
@@ -51,9 +52,9 @@ public static class Kanjidic2Parser
         var meanings = new List<string>();
         var onyomi = new List<string>();
         var kunyomi = new List<string>();
-        int strokeCount = 0;
-        int grade = 0;
-        int jlptLevel = 0;
+        var strokeCount = 0;
+        var grade = 0;
+        var jlptLevel = 0;
 
         while (reader.Read())
         {
@@ -67,24 +68,24 @@ public static class Kanjidic2Parser
                     break;
 
                 case "grade":
-                    if (int.TryParse(reader.ReadElementContentAsString(), out var g))
+                    if (int.TryParse(reader.ReadElementContentAsString(), out int g))
                         grade = g;
                     break;
 
                 case "stroke_count":
                     // Only capture the first stroke_count element
-                    if (strokeCount == 0 && int.TryParse(reader.ReadElementContentAsString(), out var sc))
+                    if (strokeCount == 0 && int.TryParse(reader.ReadElementContentAsString(), out int sc))
                         strokeCount = sc;
                     break;
 
                 case "jlpt":
-                    if (int.TryParse(reader.ReadElementContentAsString(), out var rawJlpt))
-                        jlptLevel = JlptMap.TryGetValue(rawJlpt, out var mapped) ? mapped : 0;
+                    if (int.TryParse(reader.ReadElementContentAsString(), out int rawJlpt))
+                        jlptLevel = JlptMap.TryGetValue(rawJlpt, out int mapped) ? mapped : 0;
                     break;
 
                 case "reading":
-                    var rType = reader.GetAttribute("r_type");
-                    var readingValue = reader.ReadElementContentAsString();
+                    string? rType = reader.GetAttribute("r_type");
+                    string readingValue = reader.ReadElementContentAsString();
                     if (rType == "ja_on")
                         onyomi.Add(readingValue);
                     else if (rType == "ja_kun")
@@ -92,7 +93,7 @@ public static class Kanjidic2Parser
                     break;
 
                 case "meaning":
-                    var mLang = reader.GetAttribute("m_lang");
+                    string? mLang = reader.GetAttribute("m_lang");
                     if (mLang == null) // no m_lang attribute means English
                         meanings.Add(reader.ReadElementContentAsString());
                     break;
@@ -102,9 +103,9 @@ public static class Kanjidic2Parser
         if (literal == null)
             return null;
 
-        var meaningStr = string.Join(", ", meanings);
-        var onyomiStr = string.Join(", ", onyomi);
-        var kunyomiStr = string.Join(", ", kunyomi);
+        string meaningStr = string.Join(", ", meanings);
+        string onyomiStr = string.Join(", ", onyomi);
+        string kunyomiStr = string.Join(", ", kunyomi);
 
         // Skip kanji where all of meaning, onyomi, and kunyomi are empty
         if (string.IsNullOrEmpty(meaningStr) && string.IsNullOrEmpty(onyomiStr) && string.IsNullOrEmpty(kunyomiStr))

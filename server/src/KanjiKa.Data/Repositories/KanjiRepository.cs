@@ -33,11 +33,11 @@ public class KanjiRepository : IKanjiRepository
 
     public async Task<(List<Kanji> Items, int TotalCount)> GetPagedAsync(int? jlptLevel, int page, int pageSize)
     {
-        var query = _context.Kanjis.AsNoTracking();
+        IQueryable<Kanji> query = _context.Kanjis.AsNoTracking();
         if (jlptLevel.HasValue)
             query = query.Where(k => k.JlptLevel == jlptLevel.Value);
-        var totalCount = await query.CountAsync();
-        var items = await query
+        int totalCount = await query.CountAsync();
+        List<Kanji> items = await query
             .OrderBy(k => k.JlptLevel == 0 ? int.MaxValue : k.JlptLevel)
             .ThenBy(k => k.Character)
             .Skip((page - 1) * pageSize)

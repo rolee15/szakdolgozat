@@ -101,7 +101,7 @@ public class LessonService : ILessonService
 
     public async Task<LessonReviewsCountDto> GetLessonReviewsCountAsync(int userId)
     {
-        var dueReviews = await _repo.GetDueReviewsAsync(userId);
+        List<Proficiency> dueReviews = await _repo.GetDueReviewsAsync(userId);
 
         return new LessonReviewsCountDto
         {
@@ -111,8 +111,8 @@ public class LessonService : ILessonService
 
     public async Task<IEnumerable<LessonReviewDto>> GetLessonReviewsAsync(int userId)
     {
-        var dueReviews = await _repo.GetDueReviewsAsync(userId);
-        var ordered = dueReviews
+        List<Proficiency> dueReviews = await _repo.GetDueReviewsAsync(userId);
+        List<LessonReviewDto> ordered = dueReviews
             .OrderBy(p => p.NextReviewDate)
             .Select(p => new LessonReviewDto
             {
@@ -160,7 +160,7 @@ public class LessonService : ILessonService
 
     public async Task<LessonReviewsCountDto> GetWritingReviewsCountAsync(int userId)
     {
-        var dueReviews = await _repo.GetDueReviewsAsync(userId);
+        List<Proficiency> dueReviews = await _repo.GetDueReviewsAsync(userId);
 
         return new LessonReviewsCountDto
         {
@@ -170,8 +170,8 @@ public class LessonService : ILessonService
 
     public async Task<IEnumerable<WritingReviewDto>> GetWritingReviewsAsync(int userId)
     {
-        var dueReviews = await _repo.GetDueReviewsAsync(userId);
-        var ordered = dueReviews
+        List<Proficiency> dueReviews = await _repo.GetDueReviewsAsync(userId);
+        List<WritingReviewDto> ordered = dueReviews
             .OrderBy(p => p.NextReviewDate)
             .Select(p => new WritingReviewDto
             {
@@ -227,7 +227,7 @@ public class LessonService : ILessonService
             CharacterId = character.Id,
             Symbol = character.Symbol,
             Romanization = character.Romanization,
-            Type = character.Type,
+            Type = character.Type
         };
     }
 }

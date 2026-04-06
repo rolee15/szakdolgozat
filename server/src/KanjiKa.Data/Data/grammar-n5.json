@@ -6,12 +6,32 @@
     "jlptLevel": 5,
     "sortOrder": 1,
     "examples": [
-      { "japanese": "これはペンです。", "reading": "Kore wa pen desu.", "english": "This is a pen." },
-      { "japanese": "わたしは学生です。", "reading": "Watashi wa gakusei desu.", "english": "I am a student." }
+      {
+        "japanese": "これはペンです。",
+        "reading": "Kore wa pen desu.",
+        "english": "This is a pen."
+      },
+      {
+        "japanese": "わたしは学生です。",
+        "reading": "Watashi wa gakusei desu.",
+        "english": "I am a student."
+      }
     ],
     "exercises": [
-      { "sentence": "これ___ペンです。", "correctAnswer": "は", "distractor1": "が", "distractor2": "を", "distractor3": "に" },
-      { "sentence": "わたし___学生です。", "correctAnswer": "は", "distractor1": "の", "distractor2": "も", "distractor3": "と" }
+      {
+        "sentence": "これ___ペンです。",
+        "correctAnswer": "は",
+        "distractor1": "が",
+        "distractor2": "を",
+        "distractor3": "に"
+      },
+      {
+        "sentence": "わたし___学生です。",
+        "correctAnswer": "は",
+        "distractor1": "の",
+        "distractor2": "も",
+        "distractor3": "と"
+      }
     ]
   },
   {
@@ -21,12 +41,32 @@
     "jlptLevel": 5,
     "sortOrder": 2,
     "examples": [
-      { "japanese": "猫がいます。", "reading": "Neko ga imasu.", "english": "There is a cat." },
-      { "japanese": "雨が降っています。", "reading": "Ame ga futte imasu.", "english": "It is raining." }
+      {
+        "japanese": "猫がいます。",
+        "reading": "Neko ga imasu.",
+        "english": "There is a cat."
+      },
+      {
+        "japanese": "雨が降っています。",
+        "reading": "Ame ga futte imasu.",
+        "english": "It is raining."
+      }
     ],
     "exercises": [
-      { "sentence": "猫___います。", "correctAnswer": "が", "distractor1": "は", "distractor2": "を", "distractor3": "で" },
-      { "sentence": "だれ___来ましたか。", "correctAnswer": "が", "distractor1": "は", "distractor2": "に", "distractor3": "の" }
+      {
+        "sentence": "猫___います。",
+        "correctAnswer": "が",
+        "distractor1": "は",
+        "distractor2": "を",
+        "distractor3": "で"
+      },
+      {
+        "sentence": "だれ___来ましたか。",
+        "correctAnswer": "が",
+        "distractor1": "は",
+        "distractor2": "に",
+        "distractor3": "の"
+      }
     ]
   },
   {
@@ -36,12 +76,32 @@
     "jlptLevel": 5,
     "sortOrder": 3,
     "examples": [
-      { "japanese": "りんごを食べます。", "reading": "Ringo wo tabemasu.", "english": "I eat an apple." },
-      { "japanese": "本を読みます。", "reading": "Hon wo yomimasu.", "english": "I read a book." }
+      {
+        "japanese": "りんごを食べます。",
+        "reading": "Ringo wo tabemasu.",
+        "english": "I eat an apple."
+      },
+      {
+        "japanese": "本を読みます。",
+        "reading": "Hon wo yomimasu.",
+        "english": "I read a book."
+      }
     ],
     "exercises": [
-      { "sentence": "りんご___食べます。", "correctAnswer": "を", "distractor1": "が", "distractor2": "は", "distractor3": "に" },
-      { "sentence": "本___読みます。", "correctAnswer": "を", "distractor1": "で", "distractor2": "の", "distractor3": "と" }
+      {
+        "sentence": "りんご___食べます。",
+        "correctAnswer": "を",
+        "distractor1": "が",
+        "distractor2": "は",
+        "distractor3": "に"
+      },
+      {
+        "sentence": "本___読みます。",
+        "correctAnswer": "を",
+        "distractor1": "で",
+        "distractor2": "の",
+        "distractor3": "と"
+      }
     ]
   },
   {
@@ -51,12 +111,32 @@
     "jlptLevel": 5,
     "sortOrder": 4,
     "examples": [
-      { "japanese": "学校に行きます。", "reading": "Gakkou ni ikimasu.", "english": "I go to school." },
-      { "japanese": "三時に起きます。", "reading": "Sanji ni okimasu.", "english": "I wake up at three o'clock." }
+      {
+        "japanese": "学校に行きます。",
+        "reading": "Gakkou ni ikimasu.",
+        "english": "I go to school."
+      },
+      {
+        "japanese": "三時に起きます。",
+        "reading": "Sanji ni okimasu.",
+        "english": "I wake up at three o'clock."
+      }
     ],
     "exercises": [
-      { "sentence": "学校___行きます。", "correctAnswer": "に", "distractor1": "で", "distractor2": "を", "distractor3": "から" },
-      { "sentence": "三時___起きます。", "correctAnswer": "に", "distractor1": "は", "distractor2": "が", "distractor3": "まで" }
+      {
+        "sentence": "学校___行きます。",
+        "correctAnswer": "に",
+        "distractor1": "で",
+        "distractor2": "を",
+        "distractor3": "から"
+      },
+      {
+        "sentence": "三時___起きます。",
+        "correctAnswer": "に",
+        "distractor1": "は",
+        "distractor2": "が",
+        "distractor3": "まで"
+      }
     ]
   },
   {
@@ -66,12 +146,32 @@
     "jlptLevel": 5,
     "sortOrder": 5,
     "examples": [
-      { "japanese": "図書館で勉強します。", "reading": "Toshokan de benkyou shimasu.", "english": "I study at the library." },
-      { "japanese": "バスで行きます。", "reading": "Basu de ikimasu.", "english": "I go by bus." }
+      {
+        "japanese": "図書館で勉強します。",
+        "reading": "Toshokan de benkyou shimasu.",
+        "english": "I study at the library."
+      },
+      {
+        "japanese": "バスで行きます。",
+        "reading": "Basu de ikimasu.",
+        "english": "I go by bus."
+      }
     ],
     "exercises": [
-      { "sentence": "図書館___勉強します。", "correctAnswer": "で", "distractor1": "に", "distractor2": "を", "distractor3": "が" },
-      { "sentence": "バス___行きます。", "correctAnswer": "で", "distractor1": "に", "distractor2": "は", "distractor3": "から" }
+      {
+        "sentence": "図書館___勉強します。",
+        "correctAnswer": "で",
+        "distractor1": "に",
+        "distractor2": "を",
+        "distractor3": "が"
+      },
+      {
+        "sentence": "バス___行きます。",
+        "correctAnswer": "で",
+        "distractor1": "に",
+        "distractor2": "は",
+        "distractor3": "から"
+      }
     ]
   },
   {
@@ -81,12 +181,32 @@
     "jlptLevel": 5,
     "sortOrder": 6,
     "examples": [
-      { "japanese": "わたしの本です。", "reading": "Watashi no hon desu.", "english": "It is my book." },
-      { "japanese": "日本語の先生です。", "reading": "Nihongo no sensei desu.", "english": "He is a Japanese language teacher." }
+      {
+        "japanese": "わたしの本です。",
+        "reading": "Watashi no hon desu.",
+        "english": "It is my book."
+      },
+      {
+        "japanese": "日本語の先生です。",
+        "reading": "Nihongo no sensei desu.",
+        "english": "He is a Japanese language teacher."
+      }
     ],
     "exercises": [
-      { "sentence": "わたし___本です。", "correctAnswer": "の", "distractor1": "は", "distractor2": "が", "distractor3": "と" },
-      { "sentence": "日本語___先生です。", "correctAnswer": "の", "distractor1": "で", "distractor2": "に", "distractor3": "を" }
+      {
+        "sentence": "わたし___本です。",
+        "correctAnswer": "の",
+        "distractor1": "は",
+        "distractor2": "が",
+        "distractor3": "と"
+      },
+      {
+        "sentence": "日本語___先生です。",
+        "correctAnswer": "の",
+        "distractor1": "で",
+        "distractor2": "に",
+        "distractor3": "を"
+      }
     ]
   },
   {
@@ -96,12 +216,32 @@
     "jlptLevel": 5,
     "sortOrder": 7,
     "examples": [
-      { "japanese": "田中さんも学生です。", "reading": "Tanaka-san mo gakusei desu.", "english": "Tanaka is also a student." },
-      { "japanese": "わたしも行きます。", "reading": "Watashi mo ikimasu.", "english": "I will go too." }
+      {
+        "japanese": "田中さんも学生です。",
+        "reading": "Tanaka-san mo gakusei desu.",
+        "english": "Tanaka is also a student."
+      },
+      {
+        "japanese": "わたしも行きます。",
+        "reading": "Watashi mo ikimasu.",
+        "english": "I will go too."
+      }
     ],
     "exercises": [
-      { "sentence": "田中さん___学生です。", "correctAnswer": "も", "distractor1": "は", "distractor2": "が", "distractor3": "の" },
-      { "sentence": "わたし___行きます。", "correctAnswer": "も", "distractor1": "は", "distractor2": "で", "distractor3": "に" }
+      {
+        "sentence": "田中さん___学生です。",
+        "correctAnswer": "も",
+        "distractor1": "は",
+        "distractor2": "が",
+        "distractor3": "の"
+      },
+      {
+        "sentence": "わたし___行きます。",
+        "correctAnswer": "も",
+        "distractor1": "は",
+        "distractor2": "で",
+        "distractor3": "に"
+      }
     ]
   },
   {
@@ -111,12 +251,32 @@
     "jlptLevel": 5,
     "sortOrder": 8,
     "examples": [
-      { "japanese": "りんごとバナナを買います。", "reading": "Ringo to banana wo kaimasu.", "english": "I will buy an apple and a banana." },
-      { "japanese": "友達と映画を見ます。", "reading": "Tomodachi to eiga wo mimasu.", "english": "I watch a movie with a friend." }
+      {
+        "japanese": "りんごとバナナを買います。",
+        "reading": "Ringo to banana wo kaimasu.",
+        "english": "I will buy an apple and a banana."
+      },
+      {
+        "japanese": "友達と映画を見ます。",
+        "reading": "Tomodachi to eiga wo mimasu.",
+        "english": "I watch a movie with a friend."
+      }
     ],
     "exercises": [
-      { "sentence": "りんご___バナナを買います。", "correctAnswer": "と", "distractor1": "や", "distractor2": "に", "distractor3": "が" },
-      { "sentence": "友達___映画を見ます。", "correctAnswer": "と", "distractor1": "で", "distractor2": "に", "distractor3": "の" }
+      {
+        "sentence": "りんご___バナナを買います。",
+        "correctAnswer": "と",
+        "distractor1": "や",
+        "distractor2": "に",
+        "distractor3": "が"
+      },
+      {
+        "sentence": "友達___映画を見ます。",
+        "correctAnswer": "と",
+        "distractor1": "で",
+        "distractor2": "に",
+        "distractor3": "の"
+      }
     ]
   },
   {
@@ -126,12 +286,32 @@
     "jlptLevel": 5,
     "sortOrder": 9,
     "examples": [
-      { "japanese": "九時から授業があります。", "reading": "Kuji kara jugyou ga arimasu.", "english": "Class starts from nine o'clock." },
-      { "japanese": "東京から来ました。", "reading": "Toukyou kara kimashita.", "english": "I came from Tokyo." }
+      {
+        "japanese": "九時から授業があります。",
+        "reading": "Kuji kara jugyou ga arimasu.",
+        "english": "Class starts from nine o'clock."
+      },
+      {
+        "japanese": "東京から来ました。",
+        "reading": "Toukyou kara kimashita.",
+        "english": "I came from Tokyo."
+      }
     ],
     "exercises": [
-      { "sentence": "九時___授業があります。", "correctAnswer": "から", "distractor1": "まで", "distractor2": "に", "distractor3": "で" },
-      { "sentence": "東京___来ました。", "correctAnswer": "から", "distractor1": "に", "distractor2": "へ", "distractor3": "まで" }
+      {
+        "sentence": "九時___授業があります。",
+        "correctAnswer": "から",
+        "distractor1": "まで",
+        "distractor2": "に",
+        "distractor3": "で"
+      },
+      {
+        "sentence": "東京___来ました。",
+        "correctAnswer": "から",
+        "distractor1": "に",
+        "distractor2": "へ",
+        "distractor3": "まで"
+      }
     ]
   },
   {
@@ -141,12 +321,32 @@
     "jlptLevel": 5,
     "sortOrder": 10,
     "examples": [
-      { "japanese": "五時まで働きます。", "reading": "Goji made hatarakimasu.", "english": "I work until five o'clock." },
-      { "japanese": "駅まで歩きます。", "reading": "Eki made arukimasu.", "english": "I walk to the station." }
+      {
+        "japanese": "五時まで働きます。",
+        "reading": "Goji made hatarakimasu.",
+        "english": "I work until five o'clock."
+      },
+      {
+        "japanese": "駅まで歩きます。",
+        "reading": "Eki made arukimasu.",
+        "english": "I walk to the station."
+      }
     ],
     "exercises": [
-      { "sentence": "五時___働きます。", "correctAnswer": "まで", "distractor1": "から", "distractor2": "に", "distractor3": "で" },
-      { "sentence": "駅___歩きます。", "correctAnswer": "まで", "distractor1": "に", "distractor2": "へ", "distractor3": "から" }
+      {
+        "sentence": "五時___働きます。",
+        "correctAnswer": "まで",
+        "distractor1": "から",
+        "distractor2": "に",
+        "distractor3": "で"
+      },
+      {
+        "sentence": "駅___歩きます。",
+        "correctAnswer": "まで",
+        "distractor1": "に",
+        "distractor2": "へ",
+        "distractor3": "から"
+      }
     ]
   },
   {
@@ -156,12 +356,32 @@
     "jlptLevel": 5,
     "sortOrder": 11,
     "examples": [
-      { "japanese": "いい天気ですね。", "reading": "Ii tenki desu ne.", "english": "Nice weather, isn't it?" },
-      { "japanese": "おいしいですね。", "reading": "Oishii desu ne.", "english": "It's delicious, right?" }
+      {
+        "japanese": "いい天気ですね。",
+        "reading": "Ii tenki desu ne.",
+        "english": "Nice weather, isn't it?"
+      },
+      {
+        "japanese": "おいしいですね。",
+        "reading": "Oishii desu ne.",
+        "english": "It's delicious, right?"
+      }
     ],
     "exercises": [
-      { "sentence": "いい天気です___。", "correctAnswer": "ね", "distractor1": "よ", "distractor2": "か", "distractor3": "な" },
-      { "sentence": "難しいです___。", "correctAnswer": "ね", "distractor1": "よ", "distractor2": "ぞ", "distractor3": "わ" }
+      {
+        "sentence": "いい天気です___。",
+        "correctAnswer": "ね",
+        "distractor1": "よ",
+        "distractor2": "か",
+        "distractor3": "な"
+      },
+      {
+        "sentence": "難しいです___。",
+        "correctAnswer": "ね",
+        "distractor1": "よ",
+        "distractor2": "ぞ",
+        "distractor3": "わ"
+      }
     ]
   },
   {
@@ -171,12 +391,32 @@
     "jlptLevel": 5,
     "sortOrder": 12,
     "examples": [
-      { "japanese": "あそこに駅がありますよ。", "reading": "Asoko ni eki ga arimasu yo.", "english": "There's a station over there (let me tell you)." },
-      { "japanese": "これは辛いですよ。", "reading": "Kore wa karai desu yo.", "english": "This is spicy, I'm telling you." }
+      {
+        "japanese": "あそこに駅がありますよ。",
+        "reading": "Asoko ni eki ga arimasu yo.",
+        "english": "There's a station over there (let me tell you)."
+      },
+      {
+        "japanese": "これは辛いですよ。",
+        "reading": "Kore wa karai desu yo.",
+        "english": "This is spicy, I'm telling you."
+      }
     ],
     "exercises": [
-      { "sentence": "あそこに駅があります___。", "correctAnswer": "よ", "distractor1": "ね", "distractor2": "か", "distractor3": "な" },
-      { "sentence": "これは辛いです___。", "correctAnswer": "よ", "distractor1": "ね", "distractor2": "わ", "distractor3": "ぞ" }
+      {
+        "sentence": "あそこに駅があります___。",
+        "correctAnswer": "よ",
+        "distractor1": "ね",
+        "distractor2": "か",
+        "distractor3": "な"
+      },
+      {
+        "sentence": "これは辛いです___。",
+        "correctAnswer": "よ",
+        "distractor1": "ね",
+        "distractor2": "わ",
+        "distractor3": "ぞ"
+      }
     ]
   }
 ]

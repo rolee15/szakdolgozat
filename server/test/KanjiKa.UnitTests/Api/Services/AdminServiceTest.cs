@@ -17,7 +17,7 @@ public class AdminServiceTest
         // Arrange
         var users = new List<User>
         {
-            new User
+            new()
             {
                 Id = 1,
                 Username = "alice",
@@ -25,10 +25,10 @@ public class AdminServiceTest
                 PasswordSalt = [2],
                 Role = UserRole.User,
                 MustChangePassword = false,
-                Proficiencies = new List<Proficiency> { new Proficiency { CharacterId = 10 } },
+                Proficiencies = new List<Proficiency> { new() { CharacterId = 10 } },
                 LessonCompletions = new List<LessonCompletion>
                 {
-                    new LessonCompletion
+                    new()
                     {
                         CharacterId = 10,
                         Character = new Character { Id = 10, Symbol = "あ", Romanization = "a" },
@@ -36,7 +36,7 @@ public class AdminServiceTest
                     }
                 }
             },
-            new User
+            new()
             {
                 Id = 2,
                 Username = "bob",
@@ -62,7 +62,7 @@ public class AdminServiceTest
         Assert.Equal(10, result.PageSize);
         Assert.Equal(2, result.Items.Count);
 
-        var first = result.Items[0];
+        AdminUserDto first = result.Items[0];
         Assert.Equal(1, first.Id);
         Assert.Equal("alice", first.Username);
         Assert.Equal(UserRole.User, first.Role);
@@ -70,7 +70,7 @@ public class AdminServiceTest
         Assert.Equal(1, first.ProficiencyCount);
         Assert.Equal(1, first.LessonCompletionCount);
 
-        var second = result.Items[1];
+        AdminUserDto second = result.Items[1];
         Assert.Equal(2, second.Id);
         Assert.Equal("bob", second.Username);
         Assert.Equal(UserRole.Admin, second.Role);
@@ -116,9 +116,9 @@ public class AdminServiceTest
     public async Task GetUserById_Found_ReturnsMappedDetail()
     {
         // Arrange
-        var learnedAt = DateTimeOffset.UtcNow.AddDays(-5);
-        var lastPracticed = DateTimeOffset.UtcNow.AddDays(-1);
-        var completionDate = DateTimeOffset.UtcNow.AddDays(-2);
+        DateTimeOffset learnedAt = DateTimeOffset.UtcNow.AddDays(-5);
+        DateTimeOffset lastPracticed = DateTimeOffset.UtcNow.AddDays(-1);
+        DateTimeOffset completionDate = DateTimeOffset.UtcNow.AddDays(-2);
         var character = new Character { Id = 7, Symbol = "い", Romanization = "i" };
 
         var user = new User
@@ -131,7 +131,7 @@ public class AdminServiceTest
             MustChangePassword = false,
             Proficiencies = new List<Proficiency>
             {
-                new Proficiency
+                new()
                 {
                     CharacterId = 7,
                     Character = character,
@@ -141,7 +141,7 @@ public class AdminServiceTest
             },
             LessonCompletions = new List<LessonCompletion>
             {
-                new LessonCompletion
+                new()
                 {
                     CharacterId = 7,
                     Character = character,
@@ -168,13 +168,13 @@ public class AdminServiceTest
         Assert.Equal(1, result.ProficiencyCount);
         Assert.Equal(1, result.LessonCompletionCount);
 
-        var prof = result.Proficiencies[0];
+        ProficiencySummaryDto prof = result.Proficiencies[0];
         Assert.Equal(7, prof.CharacterId);
         Assert.Equal("い", prof.CharacterSymbol);
         Assert.Equal(learnedAt, prof.LearnedAt);
         Assert.Equal(lastPracticed, prof.LastPracticed);
 
-        var lc = result.LessonCompletions[0];
+        LessonCompletionSummaryDto lc = result.LessonCompletions[0];
         Assert.Equal(7, lc.CharacterId);
         Assert.Equal("い", lc.CharacterSymbol);
         Assert.Equal(completionDate, lc.CompletionDate);
@@ -193,7 +193,7 @@ public class AdminServiceTest
 
         // Assert
         Assert.False(result);
-        repo.Verify(r => r.DeleteByIdAsync(It.IsAny<int>()), Times.Never);
+        repo.Verify(expression: r => r.DeleteByIdAsync(It.IsAny<int>()), Times.Never);
     }
 
     [Fact]
@@ -210,7 +210,7 @@ public class AdminServiceTest
 
         // Assert
         Assert.True(result);
-        repo.Verify(r => r.DeleteByIdAsync(10), Times.Once);
+        repo.Verify(expression: r => r.DeleteByIdAsync(10), Times.Once);
     }
 
     [Fact]

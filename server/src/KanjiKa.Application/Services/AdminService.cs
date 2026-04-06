@@ -1,6 +1,7 @@
 using KanjiKa.Application.DTOs;
 using KanjiKa.Application.DTOs.Admin;
 using KanjiKa.Application.Interfaces;
+using KanjiKa.Domain.Entities.Users;
 
 namespace KanjiKa.Application.Services;
 
@@ -15,7 +16,7 @@ public class AdminService : IAdminService
 
     public async Task<PagedResult<AdminUserDto>> GetUsersAsync(int page, int pageSize, string? search)
     {
-        var (users, totalCount) = await _repo.GetUsersPagedAsync(page, pageSize, search);
+        (List<User> users, int totalCount) = await _repo.GetUsersPagedAsync(page, pageSize, search);
 
         return new PagedResult<AdminUserDto>
         {
@@ -36,7 +37,7 @@ public class AdminService : IAdminService
 
     public async Task<AdminUserDetailDto?> GetUserByIdAsync(int id)
     {
-        var user = await _repo.GetByIdWithStatsAsync(id);
+        User? user = await _repo.GetByIdWithStatsAsync(id);
         if (user == null) return null;
 
         return new AdminUserDetailDto

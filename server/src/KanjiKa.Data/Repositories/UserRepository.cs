@@ -38,15 +38,15 @@ public class UserRepository : IUserRepository
 
     public async Task<(List<User> Users, int TotalCount)> GetUsersPagedAsync(int page, int pageSize, string? search)
     {
-        var query = _db.Users.AsQueryable();
+        IQueryable<User> query = _db.Users.AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(search))
         {
             query = query.Where(u => u.Username.Contains(search));
         }
 
-        var totalCount = await query.CountAsync();
-        var users = await query
+        int totalCount = await query.CountAsync();
+        List<User> users = await query
             .Include(u => u.Proficiencies)
             .Include(u => u.LessonCompletions)
             .OrderBy(u => u.Id)
@@ -70,8 +70,9 @@ public class UserRepository : IUserRepository
 
     public async Task UpdateRefreshTokenAsync(int userId, string refreshToken, DateTimeOffset expiry)
     {
-        var user = await _db.Users.FindAsync(userId);
+        User? user = await _db.Users.FindAsync(userId);
         if (user == null) return;
+
         user.RefreshToken = refreshToken;
         user.RefreshTokenExpiry = expiry;
         await _db.SaveChangesAsync();
@@ -79,8 +80,9 @@ public class UserRepository : IUserRepository
 
     public async Task<bool> DeleteByIdAsync(int id)
     {
-        var user = await _db.Users.FindAsync(id);
+        User? user = await _db.Users.FindAsync(id);
         if (user == null) return false;
+
         _db.Users.Remove(user);
         await _db.SaveChangesAsync();
         return true;

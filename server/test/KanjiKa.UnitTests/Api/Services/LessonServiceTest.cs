@@ -46,7 +46,7 @@ public class LessonServiceTest
         {
             new() { UserId = userId, CharacterId = 1 },
             new() { UserId = userId, CharacterId = 2 },
-            new() { UserId = userId, CharacterId = 3 },
+            new() { UserId = userId, CharacterId = 3 }
         };
         var repo = new Mock<ILessonRepository>();
         repo.Setup(r => r.GetDueReviewsAsync(userId)).ReturnsAsync(dueReviews);
@@ -67,12 +67,21 @@ public class LessonServiceTest
         DateTimeOffset now = DateTimeOffset.UtcNow;
         var dueReviews = new List<Proficiency>
         {
-            new() { UserId = userId, CharacterId = 1, NextReviewDate = now.AddMinutes(5),
-                Character = new Character { Id = 1, Symbol = "び", Romanization = "bi" } },
-            new() { UserId = userId, CharacterId = 2, NextReviewDate = now.AddMinutes(-2),
-                Character = new Character { Id = 2, Symbol = "あ", Romanization = "a" } },
-            new() { UserId = userId, CharacterId = 3, NextReviewDate = now.AddMinutes(1),
-                Character = new Character { Id = 3, Symbol = "ち", Romanization = "chi" } },
+            new()
+            {
+                UserId = userId, CharacterId = 1, NextReviewDate = now.AddMinutes(5),
+                Character = new Character { Id = 1, Symbol = "び", Romanization = "bi" }
+            },
+            new()
+            {
+                UserId = userId, CharacterId = 2, NextReviewDate = now.AddMinutes(-2),
+                Character = new Character { Id = 2, Symbol = "あ", Romanization = "a" }
+            },
+            new()
+            {
+                UserId = userId, CharacterId = 3, NextReviewDate = now.AddMinutes(1),
+                Character = new Character { Id = 3, Symbol = "ち", Romanization = "chi" }
+            }
         };
 
         var repo = new Mock<ILessonRepository>();

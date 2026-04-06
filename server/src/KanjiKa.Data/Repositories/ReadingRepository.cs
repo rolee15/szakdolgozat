@@ -39,7 +39,7 @@ public class ReadingRepository : IReadingRepository
 
     public async Task UpsertProficiencyAsync(ReadingProficiency proficiency)
     {
-        var existing = await _context.ReadingProficiencies
+        ReadingProficiency? existing = await _context.ReadingProficiencies
             .FirstOrDefaultAsync(rp => rp.UserId == proficiency.UserId && rp.ReadingPassageId == proficiency.ReadingPassageId);
 
         if (existing == null)

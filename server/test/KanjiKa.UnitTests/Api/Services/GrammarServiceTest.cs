@@ -62,7 +62,7 @@ public class GrammarServiceTest
         repo.Setup(r => r.GetProficienciesForUserAsync(1, It.IsAny<List<int>>()))
             .ReturnsAsync(new Dictionary<int, GrammarProficiency>
             {
-                [1] = new GrammarProficiency { Id = 1, UserId = 1, GrammarPointId = 1, CorrectCount = 3, AttemptCount = 3 }
+                [1] = new() { Id = 1, UserId = 1, GrammarPointId = 1, CorrectCount = 3, AttemptCount = 3 }
             });
 
         var service = new GrammarService(repo.Object);
@@ -87,7 +87,7 @@ public class GrammarServiceTest
         repo.Setup(r => r.GetProficienciesForUserAsync(1, It.IsAny<List<int>>()))
             .ReturnsAsync(new Dictionary<int, GrammarProficiency>
             {
-                [1] = new GrammarProficiency { Id = 1, UserId = 1, GrammarPointId = 1, CorrectCount = 2, AttemptCount = 3 }
+                [1] = new() { Id = 1, UserId = 1, GrammarPointId = 1, CorrectCount = 2, AttemptCount = 3 }
             });
 
         var service = new GrammarService(repo.Object);
@@ -331,6 +331,6 @@ public class GrammarServiceTest
         await service.CheckExerciseAsync(1, 1, answer);
 
         // Assert
-        repo.Verify(r => r.AddProficiencyAsync(It.IsAny<GrammarProficiency>()), Times.Once);
+        repo.Verify(expression: r => r.AddProficiencyAsync(It.IsAny<GrammarProficiency>()), Times.Once);
     }
 }

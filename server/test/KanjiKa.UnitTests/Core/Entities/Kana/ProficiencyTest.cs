@@ -25,7 +25,7 @@ public class ProficiencyTest
             Id = userId,
             Username = "testUser",
             PasswordHash = "passwordHash"u8.ToArray(),
-            PasswordSalt = "passwordSalt"u8.ToArray(),
+            PasswordSalt = "passwordSalt"u8.ToArray()
         };
         var lessonCompletion = new LessonCompletion
         {

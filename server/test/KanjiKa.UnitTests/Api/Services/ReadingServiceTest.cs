@@ -8,28 +8,34 @@ namespace KanjiKa.UnitTests.Api.Services;
 
 public class ReadingServiceTest
 {
-    private static ReadingPassage MakePassage(int id = 1) => new()
+    private static ReadingPassage MakePassage(int id = 1)
     {
-        Id = id,
-        Title = $"Passage {id}",
-        Content = "Content text.",
-        Source = "Original",
-        JlptLevel = 5,
-        SortOrder = id
-    };
+        return new ReadingPassage
+        {
+            Id = id,
+            Title = $"Passage {id}",
+            Content = "Content text.",
+            Source = "Original",
+            JlptLevel = 5,
+            SortOrder = id
+        };
+    }
 
-    private static ComprehensionQuestion MakeQuestion(int id, char correct) => new()
+    private static ComprehensionQuestion MakeQuestion(int id, char correct)
     {
-        Id = id,
-        ReadingPassageId = 1,
-        QuestionText = $"Question {id}?",
-        OptionA = "A answer",
-        OptionB = "B answer",
-        OptionC = "C answer",
-        OptionD = "D answer",
-        CorrectOption = correct,
-        SortOrder = id
-    };
+        return new ComprehensionQuestion
+        {
+            Id = id,
+            ReadingPassageId = 1,
+            QuestionText = $"Question {id}?",
+            OptionA = "A answer",
+            OptionB = "B answer",
+            OptionC = "C answer",
+            OptionD = "D answer",
+            CorrectOption = correct,
+            SortOrder = id
+        };
+    }
 
     // ── GetPassagesAsync ──────────────────────────────────────────────────────
 
@@ -46,12 +52,11 @@ public class ReadingServiceTest
         var service = new ReadingService(repo.Object);
 
         // Act
-        var result = await service.GetPassagesAsync(1);
+        List<ReadingPassageDto> result = await service.GetPassagesAsync(1);
 
         // Assert
         Assert.Equal(2, result.Count);
-        Assert.All(result, dto =>
-        {
+        Assert.All(result, action: dto => {
             Assert.False(dto.IsPassed);
             Assert.Equal(0, dto.Score);
             Assert.Equal(0, dto.AttemptCount);
@@ -63,12 +68,12 @@ public class ReadingServiceTest
     {
         // Arrange
         var repo = new Mock<IReadingRepository>();
-        var passage = MakePassage(1);
+        ReadingPassage passage = MakePassage(1);
         repo.Setup(r => r.GetAllAsync()).ReturnsAsync([passage]);
         repo.Setup(r => r.GetProficienciesForUserAsync(1, It.IsAny<List<int>>()))
             .ReturnsAsync(new Dictionary<int, ReadingProficiency>
             {
-                [1] = new ReadingProficiency
+                [1] = new()
                 {
                     Id = 1, UserId = 1, ReadingPassageId = 1,
                     Score = 80, AttemptCount = 2, IsPassed = true
@@ -78,11 +83,11 @@ public class ReadingServiceTest
         var service = new ReadingService(repo.Object);
 
         // Act
-        var result = await service.GetPassagesAsync(1);
+        List<ReadingPassageDto> result = await service.GetPassagesAsync(1);
 
         // Assert
         Assert.Single(result);
-        var dto = result[0];
+        ReadingPassageDto dto = result[0];
         Assert.Multiple(
             () => Assert.True(dto.IsPassed),
             () => Assert.Equal(80, dto.Score),
@@ -102,7 +107,7 @@ public class ReadingServiceTest
         var service = new ReadingService(repo.Object);
 
         // Act
-        var result = await service.GetPassageDetailAsync(99, 1);
+        ReadingPassageDetailDto? result = await service.GetPassageDetailAsync(99, 1);
 
         // Assert
         Assert.Null(result);
@@ -113,7 +118,7 @@ public class ReadingServiceTest
     {
         // Arrange
         var repo = new Mock<IReadingRepository>();
-        var passage = MakePassage(1);
+        ReadingPassage passage = MakePassage(1);
         passage.Questions.Add(MakeQuestion(1, 'A'));
         repo.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(passage);
         repo.Setup(r => r.GetProficienciesForUserAsync(1, It.IsAny<List<int>>()))
@@ -122,7 +127,7 @@ public class ReadingServiceTest
         var service = new ReadingService(repo.Object);
 
         // Act
-        var result = await service.GetPassageDetailAsync(1, 1);
+        ReadingPassageDetailDto? result = await service.GetPassageDetailAsync(1, 1);
 
         // Assert
         Assert.NotNull(result);
@@ -139,12 +144,12 @@ public class ReadingServiceTest
     {
         // Arrange
         var repo = new Mock<IReadingRepository>();
-        var passage = MakePassage(1);
+        ReadingPassage passage = MakePassage(1);
         repo.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(passage);
         repo.Setup(r => r.GetProficienciesForUserAsync(1, It.IsAny<List<int>>()))
             .ReturnsAsync(new Dictionary<int, ReadingProficiency>
             {
-                [1] = new ReadingProficiency
+                [1] = new()
                 {
                     Id = 1, UserId = 1, ReadingPassageId = 1,
                     Score = 100, AttemptCount = 1, IsPassed = true
@@ -154,7 +159,7 @@ public class ReadingServiceTest
         var service = new ReadingService(repo.Object);
 
         // Act
-        var result = await service.GetPassageDetailAsync(1, 1);
+        ReadingPassageDetailDto? result = await service.GetPassageDetailAsync(1, 1);
 
         // Assert
         Assert.NotNull(result);
@@ -167,7 +172,7 @@ public class ReadingServiceTest
     {
         // Arrange
         var repo = new Mock<IReadingRepository>();
-        var passage = MakePassage(1);
+        ReadingPassage passage = MakePassage(1);
         passage.Questions.Add(MakeQuestion(1, 'B'));
         repo.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(passage);
         repo.Setup(r => r.GetProficienciesForUserAsync(1, It.IsAny<List<int>>()))
@@ -176,7 +181,7 @@ public class ReadingServiceTest
         var service = new ReadingService(repo.Object);
 
         // Act
-        var result = await service.GetPassageDetailAsync(1, 1);
+        ReadingPassageDetailDto? result = await service.GetPassageDetailAsync(1, 1);
 
         // Assert
         Assert.NotNull(result);
@@ -205,7 +210,7 @@ public class ReadingServiceTest
     {
         // Arrange
         var repo = new Mock<IReadingRepository>();
-        var passage = MakePassage(1);
+        ReadingPassage passage = MakePassage(1);
         passage.Questions.Add(MakeQuestion(1, 'A'));
         passage.Questions.Add(MakeQuestion(2, 'B'));
         repo.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(passage);
@@ -222,7 +227,7 @@ public class ReadingServiceTest
         };
 
         // Act
-        var result = await service.SubmitAnswersAsync(1, submitDto);
+        ReadingResultDto result = await service.SubmitAnswersAsync(1, submitDto);
 
         // Assert
         Assert.Multiple(
@@ -238,7 +243,7 @@ public class ReadingServiceTest
     {
         // Arrange
         var repo = new Mock<IReadingRepository>();
-        var passage = MakePassage(1);
+        ReadingPassage passage = MakePassage(1);
         passage.Questions.Add(MakeQuestion(1, 'A'));
         passage.Questions.Add(MakeQuestion(2, 'A'));
         passage.Questions.Add(MakeQuestion(3, 'A'));
@@ -256,7 +261,7 @@ public class ReadingServiceTest
         };
 
         // Act
-        var result = await service.SubmitAnswersAsync(1, submitDto);
+        ReadingResultDto result = await service.SubmitAnswersAsync(1, submitDto);
 
         // Assert
         Assert.Multiple(
@@ -271,9 +276,9 @@ public class ReadingServiceTest
     {
         // Arrange
         var repo = new Mock<IReadingRepository>();
-        var passage = MakePassage(1);
+        ReadingPassage passage = MakePassage(1);
         // 7 out of 10 correct = 70 score
-        for (int i = 1; i <= 10; i++)
+        for (var i = 1; i <= 10; i++)
             passage.Questions.Add(MakeQuestion(i, 'A'));
 
         repo.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(passage);
@@ -284,12 +289,12 @@ public class ReadingServiceTest
 
         var service = new ReadingService(repo.Object);
         var answers = new Dictionary<int, string>();
-        for (int i = 1; i <= 7; i++) answers[i] = "A";  // correct
-        for (int i = 8; i <= 10; i++) answers[i] = "B"; // incorrect
+        for (var i = 1; i <= 7; i++) answers[i] = "A"; // correct
+        for (var i = 8; i <= 10; i++) answers[i] = "B"; // incorrect
         var submitDto = new ReadingSubmitDto { PassageId = 1, Answers = answers };
 
         // Act
-        var result = await service.SubmitAnswersAsync(1, submitDto);
+        ReadingResultDto result = await service.SubmitAnswersAsync(1, submitDto);
 
         // Assert
         Assert.Multiple(
@@ -303,13 +308,13 @@ public class ReadingServiceTest
     {
         // Arrange
         var repo = new Mock<IReadingRepository>();
-        var passage = MakePassage(1);
+        ReadingPassage passage = MakePassage(1);
         passage.Questions.Add(MakeQuestion(1, 'A'));
         repo.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(passage);
         repo.Setup(r => r.GetProficienciesForUserAsync(1, It.IsAny<List<int>>()))
             .ReturnsAsync(new Dictionary<int, ReadingProficiency>
             {
-                [1] = new ReadingProficiency { Id = 1, UserId = 1, ReadingPassageId = 1, Score = 50, AttemptCount = 3, IsPassed = false }
+                [1] = new() { Id = 1, UserId = 1, ReadingPassageId = 1, Score = 50, AttemptCount = 3, IsPassed = false }
             });
 
         ReadingProficiency? captured = null;
@@ -338,7 +343,7 @@ public class ReadingServiceTest
     {
         // Arrange
         var repo = new Mock<IReadingRepository>();
-        var passage = MakePassage(1);
+        ReadingPassage passage = MakePassage(1);
         passage.Questions.Add(MakeQuestion(1, 'A'));
         repo.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(passage);
         repo.Setup(r => r.GetProficienciesForUserAsync(1, It.IsAny<List<int>>()))
