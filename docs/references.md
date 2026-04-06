@@ -49,6 +49,14 @@ Used in: `server/src/KanjiKa.Data/Data/grammar-n5.json`, `server/src/KanjiKa.Dat
 
 ---
 
+[14] The Unicode Consortium, "Hiragana," *Unicode Standard*, <https://www.unicode.org/charts/PDF/U3040.pdf>. Accessed: 2026-04-06.
+     Used in: `server/src/KanjiKa.Data/KanaData.cs`
+
+[15] The Unicode Consortium, "Katakana," *Unicode Standard*, <https://www.unicode.org/charts/PDF/U30A0.pdf>. Accessed: 2026-04-06.
+     Used in: `server/src/KanjiKa.Data/KanaData.cs`
+
+---
+
 ## Notes
 
 - All EDRDG resources require the attribution statement: *"This application uses data from the Electronic Dictionary Research and Development Group (<http://www.edrdg.org>)."*

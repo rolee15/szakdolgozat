@@ -2,10 +2,12 @@
 
 namespace KanjiKa.Data;
 
-public static class TestData
+public static class KanaData
 {
     public static List<Character> GetKanaCharacters()
     {
+        // [14] The Unicode Consortium, "Hiragana," Unicode Standard, <https://www.unicode.org/charts/PDF/U3040.pdf>. Accessed: 2026-04-06.
+        // [15] The Unicode Consortium, "Katakana," Unicode Standard, <https://www.unicode.org/charts/PDF/U30A0.pdf>. Accessed: 2026-04-06.
         return
         [
             new Character

@@ -283,3 +283,13 @@ Precondition: dev DB running, backend started, frontend started (see CLAUDE.md f
 - [ ] API failure (stop backend) -> frontend shows error state, does not crash
 - [ ] Refresh any protected page while logged in -> page loads correctly
 - [ ] Non-admin accessing `/admin/*` routes -> redirected to home
+
+---
+
+## 12. Learning Path
+
+- [ ] Learning path displays 15 units in order
+- [ ] Units 1–14 are kana-only content (hiragana rows 1–8, katakana rows 9–14)
+- [ ] Unit 15 is the Mixed N5 Review (grammar + reading)
+- [ ] Completing a unit unlocks the next unit
+- [ ] Unit tests use multiple-choice kana recognition questions

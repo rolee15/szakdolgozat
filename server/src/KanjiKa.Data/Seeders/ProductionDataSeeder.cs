@@ -36,7 +36,7 @@ public class ProductionDataSeeder : IDataSeeder
         if (await Context.Characters.AnyAsync())
             return;
 
-        List<Character> characters = TestData.GetKanaCharacters();
+        List<Character> characters = KanaData.GetKanaCharacters();
         await Context.Characters.AddRangeAsync(characters);
         await Context.SaveChangesAsync();
     }
@@ -422,21 +422,110 @@ public class ProductionDataSeeder : IDataSeeder
             },
             new()
             {
-                Title = "Katakana Basics",
-                Description = "Learn the katakana A-row (ア、イ、ウ、エ、オ) and K-row (カ、キ、ク、ケ、コ) characters.",
+                Title = "Hiragana H-row",
+                Description = "Learn the hiragana H-row characters: は、ひ、ふ、へ、ほ.",
                 SortOrder = 5,
                 Contents =
                 [
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 47, SortOrder = 1 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 48, SortOrder = 2 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 49, SortOrder = 3 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 50, SortOrder = 4 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 51, SortOrder = 5 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 52, SortOrder = 6 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 53, SortOrder = 7 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 54, SortOrder = 8 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 55, SortOrder = 9 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 56, SortOrder = 10 }
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 26, SortOrder = 1 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 27, SortOrder = 2 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 28, SortOrder = 3 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 29, SortOrder = 4 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 30, SortOrder = 5 }
+                ],
+                Tests =
+                [
+                    new UnitTest { QuestionText = "Which hiragana represents 'ha'?", OptionA = "は", OptionB = "ひ", OptionC = "ふ", OptionD = "へ", CorrectOption = 'A', ContentType = ContentType.Kana, SortOrder = 1 },
+                    new UnitTest { QuestionText = "Which hiragana represents 'hi'?", OptionA = "は", OptionB = "ひ", OptionC = "ほ", OptionD = "ふ", CorrectOption = 'B', ContentType = ContentType.Kana, SortOrder = 2 },
+                    new UnitTest { QuestionText = "Which hiragana represents 'fu'?", OptionA = "へ", OptionB = "ほ", OptionC = "は", OptionD = "ふ", CorrectOption = 'D', ContentType = ContentType.Kana, SortOrder = 3 },
+                    new UnitTest { QuestionText = "Which hiragana represents 'he'?", OptionA = "ふ", OptionB = "ほ", OptionC = "へ", OptionD = "は", CorrectOption = 'C', ContentType = ContentType.Kana, SortOrder = 4 },
+                    new UnitTest { QuestionText = "Which hiragana represents 'ho'?", OptionA = "は", OptionB = "ひ", OptionC = "へ", OptionD = "ほ", CorrectOption = 'D', ContentType = ContentType.Kana, SortOrder = 5 }
+                ]
+            },
+            new()
+            {
+                Title = "Hiragana M-row",
+                Description = "Learn the hiragana M-row characters: ま、み、む、め、も.",
+                SortOrder = 6,
+                Contents =
+                [
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 31, SortOrder = 1 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 32, SortOrder = 2 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 33, SortOrder = 3 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 34, SortOrder = 4 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 35, SortOrder = 5 }
+                ],
+                Tests =
+                [
+                    new UnitTest { QuestionText = "Which hiragana represents 'ma'?", OptionA = "ま", OptionB = "み", OptionC = "む", OptionD = "め", CorrectOption = 'A', ContentType = ContentType.Kana, SortOrder = 1 },
+                    new UnitTest { QuestionText = "Which hiragana represents 'mi'?", OptionA = "ま", OptionB = "も", OptionC = "み", OptionD = "む", CorrectOption = 'C', ContentType = ContentType.Kana, SortOrder = 2 },
+                    new UnitTest { QuestionText = "Which hiragana represents 'mu'?", OptionA = "め", OptionB = "む", OptionC = "ま", OptionD = "も", CorrectOption = 'B', ContentType = ContentType.Kana, SortOrder = 3 },
+                    new UnitTest { QuestionText = "Which hiragana represents 'me'?", OptionA = "む", OptionB = "も", OptionC = "ま", OptionD = "め", CorrectOption = 'D', ContentType = ContentType.Kana, SortOrder = 4 },
+                    new UnitTest { QuestionText = "Which hiragana represents 'mo'?", OptionA = "み", OptionB = "む", OptionC = "も", OptionD = "め", CorrectOption = 'C', ContentType = ContentType.Kana, SortOrder = 5 }
+                ]
+            },
+            new()
+            {
+                Title = "Hiragana Y & R rows",
+                Description = "Learn the hiragana Y-row (や、ゆ、よ) and R-row (ら、り、る、れ、ろ) characters.",
+                SortOrder = 7,
+                Contents =
+                [
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 36, SortOrder = 1 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 37, SortOrder = 2 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 38, SortOrder = 3 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 39, SortOrder = 4 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 40, SortOrder = 5 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 41, SortOrder = 6 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 42, SortOrder = 7 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 43, SortOrder = 8 }
+                ],
+                Tests =
+                [
+                    new UnitTest { QuestionText = "Which hiragana represents 'ya'?", OptionA = "ゆ", OptionB = "よ", OptionC = "や", OptionD = "ら", CorrectOption = 'C', ContentType = ContentType.Kana, SortOrder = 1 },
+                    new UnitTest { QuestionText = "Which hiragana represents 'yu'?", OptionA = "や", OptionB = "ゆ", OptionC = "よ", OptionD = "る", CorrectOption = 'B', ContentType = ContentType.Kana, SortOrder = 2 },
+                    new UnitTest { QuestionText = "Which hiragana represents 'yo'?", OptionA = "ゆ", OptionB = "や", OptionC = "ろ", OptionD = "よ", CorrectOption = 'D', ContentType = ContentType.Kana, SortOrder = 3 },
+                    new UnitTest { QuestionText = "Which hiragana represents 'ra'?", OptionA = "り", OptionB = "ら", OptionC = "る", OptionD = "れ", CorrectOption = 'B', ContentType = ContentType.Kana, SortOrder = 4 },
+                    new UnitTest { QuestionText = "Which hiragana represents 'ru'?", OptionA = "ら", OptionB = "れ", OptionC = "る", OptionD = "ろ", CorrectOption = 'C', ContentType = ContentType.Kana, SortOrder = 5 }
+                ]
+            },
+            new()
+            {
+                Title = "Hiragana W-row & N",
+                Description = "Learn the final hiragana characters: わ、を、ん.",
+                SortOrder = 8,
+                Contents =
+                [
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 44, SortOrder = 1 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 45, SortOrder = 2 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 46, SortOrder = 3 }
+                ],
+                Tests =
+                [
+                    new UnitTest { QuestionText = "Which hiragana represents 'wa'?", OptionA = "わ", OptionB = "を", OptionC = "ん", OptionD = "ろ", CorrectOption = 'A', ContentType = ContentType.Kana, SortOrder = 1 },
+                    new UnitTest { QuestionText = "Which hiragana represents 'wo'?", OptionA = "わ", OptionB = "ん", OptionC = "を", OptionD = "れ", CorrectOption = 'C', ContentType = ContentType.Kana, SortOrder = 2 },
+                    new UnitTest { QuestionText = "Which hiragana represents 'n'?", OptionA = "を", OptionB = "わ", OptionC = "る", OptionD = "ん", CorrectOption = 'D', ContentType = ContentType.Kana, SortOrder = 3 },
+                    new UnitTest { QuestionText = "What sound does わ make?", OptionA = "'wo'", OptionB = "'wa'", OptionC = "'n'", OptionD = "'ra'", CorrectOption = 'B', ContentType = ContentType.Kana, SortOrder = 4 },
+                    new UnitTest { QuestionText = "What sound does ん make?", OptionA = "'wa'", OptionB = "'wo'", OptionC = "'ru'", OptionD = "'n'", CorrectOption = 'D', ContentType = ContentType.Kana, SortOrder = 5 }
+                ]
+            },
+            new()
+            {
+                Title = "Katakana Vowels & K-row",
+                Description = "Learn the katakana A-row (ア、イ、ウ、エ、オ) and K-row (カ、キ、ク、ケ、コ) characters.",
+                SortOrder = 9,
+                Contents =
+                [
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 70, SortOrder = 1 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 71, SortOrder = 2 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 72, SortOrder = 3 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 73, SortOrder = 4 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 74, SortOrder = 5 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 75, SortOrder = 6 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 76, SortOrder = 7 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 77, SortOrder = 8 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 78, SortOrder = 9 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 79, SortOrder = 10 }
                 ],
                 Tests =
                 [
@@ -449,9 +538,130 @@ public class ProductionDataSeeder : IDataSeeder
             },
             new()
             {
+                Title = "Katakana S-row",
+                Description = "Learn the katakana S-row characters: サ、シ、ス、セ、ソ.",
+                SortOrder = 10,
+                Contents =
+                [
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 80, SortOrder = 1 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 81, SortOrder = 2 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 82, SortOrder = 3 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 83, SortOrder = 4 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 84, SortOrder = 5 }
+                ],
+                Tests =
+                [
+                    new UnitTest { QuestionText = "Which katakana represents 'sa'?", OptionA = "シ", OptionB = "サ", OptionC = "ス", OptionD = "セ", CorrectOption = 'B', ContentType = ContentType.Kana, SortOrder = 1 },
+                    new UnitTest { QuestionText = "Which katakana represents 'shi'?", OptionA = "サ", OptionB = "ス", OptionC = "シ", OptionD = "ソ", CorrectOption = 'C', ContentType = ContentType.Kana, SortOrder = 2 },
+                    new UnitTest { QuestionText = "Which katakana represents 'su'?", OptionA = "ス", OptionB = "サ", OptionC = "セ", OptionD = "シ", CorrectOption = 'A', ContentType = ContentType.Kana, SortOrder = 3 },
+                    new UnitTest { QuestionText = "Which katakana represents 'se'?", OptionA = "ソ", OptionB = "シ", OptionC = "ス", OptionD = "セ", CorrectOption = 'D', ContentType = ContentType.Kana, SortOrder = 4 },
+                    new UnitTest { QuestionText = "Which katakana represents 'so'?", OptionA = "サ", OptionB = "ソ", OptionC = "シ", OptionD = "ス", CorrectOption = 'B', ContentType = ContentType.Kana, SortOrder = 5 }
+                ]
+            },
+            new()
+            {
+                Title = "Katakana T & N rows",
+                Description = "Learn the katakana T-row (タ、チ、ツ、テ、ト) and N-row (ナ、ニ、ヌ、ネ、ノ) characters.",
+                SortOrder = 11,
+                Contents =
+                [
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 85, SortOrder = 1 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 86, SortOrder = 2 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 87, SortOrder = 3 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 88, SortOrder = 4 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 89, SortOrder = 5 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 90, SortOrder = 6 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 91, SortOrder = 7 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 92, SortOrder = 8 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 93, SortOrder = 9 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 94, SortOrder = 10 }
+                ],
+                Tests =
+                [
+                    new UnitTest { QuestionText = "Which katakana represents 'ta'?", OptionA = "チ", OptionB = "タ", OptionC = "ツ", OptionD = "テ", CorrectOption = 'B', ContentType = ContentType.Kana, SortOrder = 1 },
+                    new UnitTest { QuestionText = "Which katakana represents 'chi'?", OptionA = "タ", OptionB = "ツ", OptionC = "チ", OptionD = "ト", CorrectOption = 'C', ContentType = ContentType.Kana, SortOrder = 2 },
+                    new UnitTest { QuestionText = "Which katakana represents 'na'?", OptionA = "ニ", OptionB = "ナ", OptionC = "ヌ", OptionD = "ネ", CorrectOption = 'B', ContentType = ContentType.Kana, SortOrder = 3 },
+                    new UnitTest { QuestionText = "Which katakana represents 'ni'?", OptionA = "ナ", OptionB = "ニ", OptionC = "ヌ", OptionD = "ノ", CorrectOption = 'B', ContentType = ContentType.Kana, SortOrder = 4 },
+                    new UnitTest { QuestionText = "Which katakana represents 'no'?", OptionA = "ナ", OptionB = "ネ", OptionC = "ニ", OptionD = "ノ", CorrectOption = 'D', ContentType = ContentType.Kana, SortOrder = 5 }
+                ]
+            },
+            new()
+            {
+                Title = "Katakana H-row",
+                Description = "Learn the katakana H-row characters: ハ、ヒ、フ、ヘ、ホ.",
+                SortOrder = 12,
+                Contents =
+                [
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 95, SortOrder = 1 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 96, SortOrder = 2 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 97, SortOrder = 3 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 98, SortOrder = 4 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 99, SortOrder = 5 }
+                ],
+                Tests =
+                [
+                    new UnitTest { QuestionText = "Which katakana represents 'ha'?", OptionA = "ハ", OptionB = "ヒ", OptionC = "フ", OptionD = "ヘ", CorrectOption = 'A', ContentType = ContentType.Kana, SortOrder = 1 },
+                    new UnitTest { QuestionText = "Which katakana represents 'hi'?", OptionA = "ハ", OptionB = "ヒ", OptionC = "ホ", OptionD = "フ", CorrectOption = 'B', ContentType = ContentType.Kana, SortOrder = 2 },
+                    new UnitTest { QuestionText = "Which katakana represents 'fu'?", OptionA = "ヘ", OptionB = "ホ", OptionC = "ハ", OptionD = "フ", CorrectOption = 'D', ContentType = ContentType.Kana, SortOrder = 3 },
+                    new UnitTest { QuestionText = "Which katakana represents 'he'?", OptionA = "フ", OptionB = "ホ", OptionC = "ヘ", OptionD = "ハ", CorrectOption = 'C', ContentType = ContentType.Kana, SortOrder = 4 },
+                    new UnitTest { QuestionText = "Which katakana represents 'ho'?", OptionA = "ハ", OptionB = "ヒ", OptionC = "ヘ", OptionD = "ホ", CorrectOption = 'D', ContentType = ContentType.Kana, SortOrder = 5 }
+                ]
+            },
+            new()
+            {
+                Title = "Katakana M & Y rows",
+                Description = "Learn the katakana M-row (マ、ミ、ム、メ、モ) and Y-row (ヤ、ユ、ヨ) characters.",
+                SortOrder = 13,
+                Contents =
+                [
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 100, SortOrder = 1 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 101, SortOrder = 2 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 102, SortOrder = 3 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 103, SortOrder = 4 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 104, SortOrder = 5 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 105, SortOrder = 6 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 106, SortOrder = 7 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 107, SortOrder = 8 }
+                ],
+                Tests =
+                [
+                    new UnitTest { QuestionText = "Which katakana represents 'ma'?", OptionA = "マ", OptionB = "ミ", OptionC = "ム", OptionD = "メ", CorrectOption = 'A', ContentType = ContentType.Kana, SortOrder = 1 },
+                    new UnitTest { QuestionText = "Which katakana represents 'mi'?", OptionA = "マ", OptionB = "モ", OptionC = "ミ", OptionD = "ム", CorrectOption = 'C', ContentType = ContentType.Kana, SortOrder = 2 },
+                    new UnitTest { QuestionText = "Which katakana represents 'ya'?", OptionA = "ユ", OptionB = "ヨ", OptionC = "マ", OptionD = "ヤ", CorrectOption = 'D', ContentType = ContentType.Kana, SortOrder = 3 },
+                    new UnitTest { QuestionText = "Which katakana represents 'yu'?", OptionA = "ヤ", OptionB = "ユ", OptionC = "ヨ", OptionD = "モ", CorrectOption = 'B', ContentType = ContentType.Kana, SortOrder = 4 },
+                    new UnitTest { QuestionText = "Which katakana represents 'yo'?", OptionA = "ヤ", OptionB = "ユ", OptionC = "ヨ", OptionD = "ム", CorrectOption = 'C', ContentType = ContentType.Kana, SortOrder = 5 }
+                ]
+            },
+            new()
+            {
+                Title = "Katakana R & W rows",
+                Description = "Learn the final katakana characters: ラ、リ、ル、レ、ロ、ワ、ヲ、ン.",
+                SortOrder = 14,
+                Contents =
+                [
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 108, SortOrder = 1 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 109, SortOrder = 2 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 110, SortOrder = 3 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 111, SortOrder = 4 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 112, SortOrder = 5 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 113, SortOrder = 6 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 114, SortOrder = 7 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 115, SortOrder = 8 }
+                ],
+                Tests =
+                [
+                    new UnitTest { QuestionText = "Which katakana represents 'ra'?", OptionA = "リ", OptionB = "ラ", OptionC = "ル", OptionD = "レ", CorrectOption = 'B', ContentType = ContentType.Kana, SortOrder = 1 },
+                    new UnitTest { QuestionText = "Which katakana represents 'ru'?", OptionA = "ラ", OptionB = "レ", OptionC = "ル", OptionD = "ロ", CorrectOption = 'C', ContentType = ContentType.Kana, SortOrder = 2 },
+                    new UnitTest { QuestionText = "Which katakana represents 'wa'?", OptionA = "ヲ", OptionB = "ン", OptionC = "ロ", OptionD = "ワ", CorrectOption = 'D', ContentType = ContentType.Kana, SortOrder = 3 },
+                    new UnitTest { QuestionText = "Which katakana represents 'wo'?", OptionA = "ワ", OptionB = "ヲ", OptionC = "ン", OptionD = "ル", CorrectOption = 'B', ContentType = ContentType.Kana, SortOrder = 4 },
+                    new UnitTest { QuestionText = "Which katakana represents 'n'?", OptionA = "ワ", OptionB = "ヲ", OptionC = "ン", OptionD = "ロ", CorrectOption = 'C', ContentType = ContentType.Kana, SortOrder = 5 }
+                ]
+            },
+            new()
+            {
                 Title = "Mixed N5 Review",
                 Description = "Review mix of N5 grammar and reading comprehension to consolidate your learning.",
-                SortOrder = 6,
+                SortOrder = 15,
                 Contents =
                 [
                     new UnitContent { ContentType = ContentType.Grammar, ContentId = 1, SortOrder = 1 },
