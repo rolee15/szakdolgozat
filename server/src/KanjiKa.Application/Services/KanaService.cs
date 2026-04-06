@@ -14,7 +14,7 @@ public class KanaService : IKanaService
         _repo = repo;
     }
 
-    public async Task<IEnumerable<KanaCharacterDto>> GetKanaCharacters(KanaType type, int userId)
+    public async Task<IEnumerable<KanaDto>> GetKanaCharacters(KanaType type, int userId)
     {
         User? user = await _repo.GetUserWithProficienciesAsync(userId);
 
@@ -27,7 +27,7 @@ public class KanaService : IKanaService
             .Select(c => MapToKanaCharacterDto(c, user));
     }
 
-    public async Task<KanaCharacterDetailDto> GetCharacterDetail(string character, KanaType type, int userId)
+    public async Task<KanaDetailDto> GetCharacterDetail(string character, KanaType type, int userId)
     {
         Character? kanaCharacter = await _repo.GetCharacterBySymbolAndTypeAsync(character, type);
 
@@ -47,7 +47,7 @@ public class KanaService : IKanaService
         int level = userProficiency?.Level ?? 0;
         SrsStage srsStage = userProficiency?.SrsStage ?? SrsStage.Locked;
 
-        return new KanaCharacterDetailDto
+        return new KanaDetailDto
         {
             Character = kanaCharacter.Symbol,
             Romanization = kanaCharacter.Romanization,
@@ -58,14 +58,14 @@ public class KanaService : IKanaService
         };
     }
 
-    public async Task<IEnumerable<ExampleDto>> GetExamples(string character, KanaType type)
+    public async Task<IEnumerable<KanaExampleDto>> GetExamples(string character, KanaType type)
     {
         Character? ch = await _repo.GetCharacterWithExamplesBySymbolAndTypeAsync(character, type);
 
         if (ch == null)
             throw new ArgumentException($"Character {character} not found");
 
-        return ch.Examples.Select(e => new ExampleDto
+        return ch.Examples.Select(e => new KanaExampleDto
         {
             Word = e.Word,
             Romanization = e.Romanization,
@@ -73,9 +73,9 @@ public class KanaService : IKanaService
         });
     }
 
-    private static KanaCharacterDto MapToKanaCharacterDto(Character c, User user)
+    private static KanaDto MapToKanaCharacterDto(Character c, User user)
     {
-        return new KanaCharacterDto
+        return new KanaDto
         {
             Character = c.Symbol,
             Romanization = c.Romanization,

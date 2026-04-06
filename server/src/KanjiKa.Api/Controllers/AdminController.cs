@@ -28,7 +28,7 @@ public class AdminController : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet("users/{id}")]
+    [HttpGet("users/{id:int}")]
     [ProducesResponseType(typeof(AdminUserDetailDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetUserById(int id)
@@ -39,7 +39,7 @@ public class AdminController : ControllerBase
         return Ok(result);
     }
 
-    [HttpDelete("users/{id}")]
+    [HttpDelete("users/{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> DeleteUser(int id)

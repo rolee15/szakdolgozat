@@ -2,12 +2,12 @@
 
 namespace KanjiKa.UnitTests.Core.DTOs.Kana;
 
-public class ExampleDtoTest
+public class KanaExampleDtoTest
 {
     [Fact]
     public void ExampleDto_Constructor_ShouldInitializeProperties()
     {
-        var example = new ExampleDto
+        var example = new KanaExampleDto
         {
             Word = "こんにちは",
             Romanization = "konnichiwa",

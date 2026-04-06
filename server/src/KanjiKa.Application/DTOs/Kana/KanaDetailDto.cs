@@ -2,7 +2,7 @@ using KanjiKa.Domain.Entities.Kana;
 
 namespace KanjiKa.Application.DTOs.Kana;
 
-public class KanaCharacterDetailDto
+public class KanaDetailDto
 {
     public required string Character { get; set; }
     public required string Romanization { get; set; }

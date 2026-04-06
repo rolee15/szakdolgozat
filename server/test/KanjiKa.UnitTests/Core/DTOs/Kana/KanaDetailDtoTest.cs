@@ -3,12 +3,12 @@ using KanjiKa.Domain.Entities.Kana;
 
 namespace KanjiKa.UnitTests.Core.DTOs.Kana;
 
-public class KanaCharacterDetailDtoTest
+public class KanaDetailDtoTest
 {
     [Fact]
     public void KanaCharacterDetailDto_Constructor_ShouldInitializeProperties()
     {
-        var character = new KanaCharacterDetailDto
+        var character = new KanaDetailDto
         {
             Character = "あ",
             Romanization = "a",

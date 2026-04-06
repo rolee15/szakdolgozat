@@ -31,24 +31,24 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddScoped<IKanaService, KanaService>();
-builder.Services.AddScoped<IKanaRepository, KanaRepository>();
-builder.Services.AddScoped<ILessonService, LessonService>();
-builder.Services.AddScoped<ILessonRepository, LessonRepository>();
+builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IKanaService, KanaService>();
+builder.Services.AddScoped<IKanaRepository, KanaRepository>();
+builder.Services.AddScoped<IKanjiService, KanjiService>();
+builder.Services.AddScoped<IKanjiRepository, KanjiRepository>();
+builder.Services.AddScoped<ILessonService, LessonService>();
+builder.Services.AddScoped<ILessonRepository, LessonRepository>();
+builder.Services.AddScoped<IGrammarService, GrammarService>();
+builder.Services.AddScoped<IGrammarRepository, GrammarRepository>();
+builder.Services.AddScoped<IReadingService, ReadingService>();
+builder.Services.AddScoped<IReadingRepository, ReadingRepository>();
+builder.Services.AddScoped<IPathRepository, PathRepository>();
+builder.Services.AddScoped<IPathService, PathService>();
 builder.Services.AddScoped<IHashService, HashService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IEmailService, DummyEmailService>();
-builder.Services.AddScoped<IKanjiRepository, KanjiRepository>();
-builder.Services.AddScoped<IKanjiService, KanjiService>();
-builder.Services.AddScoped<IGrammarRepository, GrammarRepository>();
-builder.Services.AddScoped<IGrammarService, GrammarService>();
-builder.Services.AddScoped<IReadingRepository, ReadingRepository>();
-builder.Services.AddScoped<IReadingService, ReadingService>();
-builder.Services.AddScoped<IPathRepository, PathRepository>();
-builder.Services.AddScoped<IPathService, PathService>();
-builder.Services.AddScoped<IAdminService, AdminService>();
 
 builder.Services.AddCors(options =>
 {
@@ -79,33 +79,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
-using (IServiceScope scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<KanjiKaDbContext>();
-
-    if (app.Environment.IsDevelopment())
-    {
-        // Terminate other connections to avoid EnsureDeletedAsync timeout
-        try
-        {
-            await db.Database.ExecuteSqlRawAsync(
-                "SELECT pg_terminate_backend(pg_stat_activity.pid) " +
-                "FROM pg_stat_activity " +
-                "WHERE pg_stat_activity.datname = current_database() " +
-                "AND pid <> pg_backend_pid();");
-        }
-        catch
-        {
-            // Database may not exist yet on first run
-        }
-
-        await db.Database.EnsureDeletedAsync();
-    }
-
-    await db.Database.MigrateAsync();
-
-    var seeder = scope.ServiceProvider.GetRequiredService<IDataSeeder>();
-    await seeder.SeedAsync();
-}
+await app.InitialiseDatabaseAsync();
 
 await app.RunAsync();

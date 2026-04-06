@@ -5,9 +5,9 @@ namespace KanjiKa.Application.Interfaces;
 
 public interface IKanaService
 {
-    Task<IEnumerable<KanaCharacterDto>> GetKanaCharacters(KanaType type, int userId);
+    Task<IEnumerable<KanaDto>> GetKanaCharacters(KanaType type, int userId);
 
-    Task<KanaCharacterDetailDto> GetCharacterDetail(string character, KanaType type, int userId);
+    Task<KanaDetailDto> GetCharacterDetail(string character, KanaType type, int userId);
 
-    Task<IEnumerable<ExampleDto>> GetExamples(string character, KanaType type);
+    Task<IEnumerable<KanaExampleDto>> GetExamples(string character, KanaType type);
 }
