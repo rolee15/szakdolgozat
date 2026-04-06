@@ -9,6 +9,7 @@ namespace KanjiKa.Api.Controllers;
 [ApiController]
 [Authorize]
 [Route("api/lessons")]
+[Produces("application/json")]
 public class LessonsController : ControllerBase
 {
     private readonly ILessonService _lessonService;
@@ -24,6 +25,7 @@ public class LessonsController : ControllerBase
     }
 
     [HttpGet("count")]
+    [ProducesResponseType(typeof(LessonsCountDto), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetLessonsCount()
     {
         LessonsCountDto count = await _lessonService.GetLessonsCountAsync(GetUserId());
@@ -31,6 +33,7 @@ public class LessonsController : ControllerBase
     }
 
     [HttpGet]
+    [ProducesResponseType(typeof(IEnumerable<LessonDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetNewLessons([FromQuery] int pageIndex = 0, [FromQuery] int pageSize = 5)
     {
         IEnumerable<LessonDto> lessons = await _lessonService.GetLessonsAsync(GetUserId(), pageIndex, pageSize);
@@ -38,6 +41,7 @@ public class LessonsController : ControllerBase
     }
 
     [HttpPost("learn/{characterId:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> LearnLesson(int characterId)
     {
         await _lessonService.LearnLessonAsync(GetUserId(), characterId);
@@ -45,6 +49,7 @@ public class LessonsController : ControllerBase
     }
 
     [HttpGet("reviews/count")]
+    [ProducesResponseType(typeof(LessonReviewsCountDto), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetReviewCount()
     {
         LessonReviewsCountDto count = await _lessonService.GetLessonReviewsCountAsync(GetUserId());
@@ -52,6 +57,7 @@ public class LessonsController : ControllerBase
     }
 
     [HttpGet("reviews")]
+    [ProducesResponseType(typeof(IEnumerable<LessonReviewDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetLessonReviews()
     {
         IEnumerable<LessonReviewDto> reviewItems = await _lessonService.GetLessonReviewsAsync(GetUserId());
@@ -59,6 +65,8 @@ public class LessonsController : ControllerBase
     }
 
     [HttpPost("reviews/check")]
+    [Consumes("application/json")]
+    [ProducesResponseType(typeof(LessonReviewAnswerResultDto), StatusCodes.Status200OK)]
     public async Task<IActionResult> CheckLessonReviewAnswer([FromBody] LessonReviewAnswerDto answer)
     {
         LessonReviewAnswerResultDto result = await _lessonService.CheckLessonReviewAnswerAsync(GetUserId(), answer);
@@ -66,6 +74,7 @@ public class LessonsController : ControllerBase
     }
 
     [HttpGet("writing-reviews/count")]
+    [ProducesResponseType(typeof(LessonReviewsCountDto), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetWritingReviewsCount()
     {
         LessonReviewsCountDto count = await _lessonService.GetWritingReviewsCountAsync(GetUserId());
@@ -73,6 +82,7 @@ public class LessonsController : ControllerBase
     }
 
     [HttpGet("writing-reviews")]
+    [ProducesResponseType(typeof(IEnumerable<WritingReviewDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetWritingReviews()
     {
         IEnumerable<WritingReviewDto> reviewItems = await _lessonService.GetWritingReviewsAsync(GetUserId());
@@ -80,6 +90,8 @@ public class LessonsController : ControllerBase
     }
 
     [HttpPost("writing-reviews/check")]
+    [Consumes("application/json")]
+    [ProducesResponseType(typeof(LessonReviewAnswerResultDto), StatusCodes.Status200OK)]
     public async Task<IActionResult> CheckWritingReviewAnswer([FromBody] WritingReviewAnswerDto answer)
     {
         LessonReviewAnswerResultDto result = await _lessonService.CheckWritingReviewAnswerAsync(GetUserId(), answer);

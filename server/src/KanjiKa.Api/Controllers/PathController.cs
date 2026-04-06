@@ -9,6 +9,7 @@ namespace KanjiKa.Api.Controllers;
 [ApiController]
 [Authorize]
 [Route("api/path")]
+[Produces("application/json")]
 public class PathController : ControllerBase
 {
     private readonly IPathService _pathService;
@@ -24,6 +25,7 @@ public class PathController : ControllerBase
     }
 
     [HttpGet]
+    [ProducesResponseType(typeof(List<LearningUnitDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetPath()
     {
         List<LearningUnitDto> result = await _pathService.GetPathAsync(GetUserId());
@@ -31,6 +33,8 @@ public class PathController : ControllerBase
     }
 
     [HttpGet("{unitId:int}")]
+    [ProducesResponseType(typeof(LearningUnitDetailDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetUnitDetail(int unitId)
     {
         LearningUnitDetailDto? result = await _pathService.GetUnitDetailAsync(unitId, GetUserId());
@@ -40,6 +44,8 @@ public class PathController : ControllerBase
     }
 
     [HttpGet("{unitId:int}/test")]
+    [ProducesResponseType(typeof(UnitTestDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetUnitTest(int unitId)
     {
         UnitTestDto? result = await _pathService.GetUnitTestAsync(unitId, GetUserId());
@@ -49,6 +55,9 @@ public class PathController : ControllerBase
     }
 
     [HttpPost("{unitId:int}/test")]
+    [Consumes("application/json")]
+    [ProducesResponseType(typeof(UnitTestResultDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> SubmitTest(int unitId, [FromBody] UnitSubmitDto submitDto)
     {
         try

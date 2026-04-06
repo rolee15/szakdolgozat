@@ -1,5 +1,5 @@
 using System.Text;
-using KanjiKa.Api.Filters;
+using KanjiKa.Api.Extensions;
 using KanjiKa.Application.Interfaces;
 using KanjiKa.Application.Services;
 using KanjiKa.Data;
@@ -10,35 +10,15 @@ using KanjiKa.Domain.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options => {
-    options.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Title = "KanjiKa API",
-        Version = "v1",
-        Description = "REST API for the KanjiKa Japanese Hiragana/Katakana learning platform."
-    });
-
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
-        BearerFormat = "JWT",
-        In = ParameterLocation.Header,
-        Description = "Enter your JWT token (without the 'Bearer ' prefix)."
-    });
-
-    options.OperationFilter<AuthorizeOperationFilter>();
-});
+builder.Services.AddSwaggerConfiguration();
 builder.Services.AddControllers();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options => {
+    .AddJwtBearer(options =>
+    {
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
@@ -72,9 +52,10 @@ builder.Services.AddScoped<IPathRepository, PathRepository>();
 builder.Services.AddScoped<IPathService, PathService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 
-builder.Services.AddCors(options => {
+builder.Services.AddCors(options =>
+{
     options.AddPolicy("AllowReactApp",
-        configurePolicy: x => x
+        x => x
             .AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader());
@@ -91,12 +72,7 @@ else
 
 WebApplication app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwaggerConfiguration();
 
 app.UseCors("AllowReactApp");
 // Disabled because the self-signed certificate doesn't work in containers.

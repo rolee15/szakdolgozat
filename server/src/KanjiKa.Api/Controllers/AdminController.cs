@@ -10,6 +10,7 @@ namespace KanjiKa.Api.Controllers;
 [ApiController]
 [Route("api/admin")]
 [Authorize(Roles = "Admin")]
+[Produces("application/json")]
 public class AdminController : ControllerBase
 {
     private readonly IAdminService _adminService;
@@ -20,6 +21,7 @@ public class AdminController : ControllerBase
     }
 
     [HttpGet("users")]
+    [ProducesResponseType(typeof(PagedResult<AdminUserDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetUsers([FromQuery] int page = 1, [FromQuery] int pageSize = 20, [FromQuery] string? search = null)
     {
         PagedResult<AdminUserDto> result = await _adminService.GetUsersAsync(page, pageSize, search);
@@ -27,6 +29,8 @@ public class AdminController : ControllerBase
     }
 
     [HttpGet("users/{id}")]
+    [ProducesResponseType(typeof(AdminUserDetailDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetUserById(int id)
     {
         AdminUserDetailDto? result = await _adminService.GetUserByIdAsync(id);
@@ -36,6 +40,8 @@ public class AdminController : ControllerBase
     }
 
     [HttpDelete("users/{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> DeleteUser(int id)
     {
         int adminUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);

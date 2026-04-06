@@ -10,6 +10,7 @@ namespace KanjiKa.Api.Controllers;
 [ApiController]
 [Authorize]
 [Route("api/kanji")]
+[Produces("application/json")]
 public class KanjiController : ControllerBase
 {
     private readonly IKanjiService _kanjiService;
@@ -25,6 +26,8 @@ public class KanjiController : ControllerBase
     }
 
     [HttpGet("level/{jlptLevel:int}")]
+    [ProducesResponseType(typeof(List<KanjiDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetByLevel(int jlptLevel)
     {
         if (jlptLevel < 1 || jlptLevel > 5)
@@ -35,6 +38,8 @@ public class KanjiController : ControllerBase
     }
 
     [HttpGet("{character}")]
+    [ProducesResponseType(typeof(KanjiDetailDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetDetail(string character)
     {
         KanjiDetailDto? result = await _kanjiService.GetKanjiDetailAsync(character, GetUserId());
@@ -44,6 +49,7 @@ public class KanjiController : ControllerBase
     }
 
     [HttpGet]
+    [ProducesResponseType(typeof(PagedResult<KanjiDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetPaged(
         [FromQuery] int? jlptLevel,
         [FromQuery] int page = 1,
@@ -56,6 +62,7 @@ public class KanjiController : ControllerBase
     }
 
     [HttpGet("reviews/count")]
+    [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetDueReviewsCount()
     {
         int count = await _kanjiService.GetDueReviewsCountAsync(GetUserId());
@@ -63,6 +70,7 @@ public class KanjiController : ControllerBase
     }
 
     [HttpGet("reviews")]
+    [ProducesResponseType(typeof(List<KanjiReviewDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetDueReviews()
     {
         List<KanjiReviewDto> reviews = await _kanjiService.GetDueReviewsAsync(GetUserId());
@@ -70,6 +78,9 @@ public class KanjiController : ControllerBase
     }
 
     [HttpPost("reviews/check")]
+    [Consumes("application/json")]
+    [ProducesResponseType(typeof(KanjiReviewResultDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> CheckReview([FromBody] KanjiReviewAnswerDto answer)
     {
         try
@@ -84,6 +95,8 @@ public class KanjiController : ControllerBase
     }
 
     [HttpPost("learn/{kanjiId:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> LearnKanji(int kanjiId)
     {
         try

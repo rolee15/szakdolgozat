@@ -9,6 +9,7 @@ namespace KanjiKa.Api.Controllers;
 [ApiController]
 [Authorize]
 [Route("api/reading")]
+[Produces("application/json")]
 public class ReadingController : ControllerBase
 {
     private readonly IReadingService _readingService;
@@ -24,6 +25,7 @@ public class ReadingController : ControllerBase
     }
 
     [HttpGet]
+    [ProducesResponseType(typeof(List<ReadingPassageDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetPassages()
     {
         List<ReadingPassageDto> result = await _readingService.GetPassagesAsync(GetUserId());
@@ -31,6 +33,8 @@ public class ReadingController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
+    [ProducesResponseType(typeof(ReadingPassageDetailDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetPassageDetail(int id)
     {
         ReadingPassageDetailDto? result = await _readingService.GetPassageDetailAsync(id, GetUserId());
@@ -40,6 +44,9 @@ public class ReadingController : ControllerBase
     }
 
     [HttpPost("{id:int}/submit")]
+    [Consumes("application/json")]
+    [ProducesResponseType(typeof(ReadingResultDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> SubmitAnswers(int id, [FromBody] ReadingSubmitDto submitDto)
     {
         if (submitDto.PassageId != id)

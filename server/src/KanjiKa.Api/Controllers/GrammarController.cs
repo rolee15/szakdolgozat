@@ -9,6 +9,7 @@ namespace KanjiKa.Api.Controllers;
 [ApiController]
 [Authorize]
 [Route("api/grammar")]
+[Produces("application/json")]
 public class GrammarController : ControllerBase
 {
     private readonly IGrammarService _grammarService;
@@ -24,6 +25,7 @@ public class GrammarController : ControllerBase
     }
 
     [HttpGet]
+    [ProducesResponseType(typeof(List<GrammarPointDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetGrammarPoints()
     {
         List<GrammarPointDto> result = await _grammarService.GetGrammarPointsAsync(GetUserId());
@@ -31,6 +33,8 @@ public class GrammarController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
+    [ProducesResponseType(typeof(GrammarPointDetailDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetGrammarPointDetail(int id)
     {
         GrammarPointDetailDto? result = await _grammarService.GetGrammarPointDetailAsync(id, GetUserId());
@@ -40,6 +44,10 @@ public class GrammarController : ControllerBase
     }
 
     [HttpPost("{id:int}/exercises/check")]
+    [Consumes("application/json")]
+    [ProducesResponseType(typeof(GrammarExerciseResultDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CheckExercise(int id, [FromBody] GrammarExerciseAnswerDto answer)
     {
         try

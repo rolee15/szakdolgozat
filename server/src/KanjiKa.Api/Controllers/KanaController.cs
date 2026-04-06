@@ -10,6 +10,7 @@ namespace KanjiKa.Api.Controllers;
 [ApiController]
 [Authorize]
 [Route("api/characters/{type}")]
+[Produces("application/json")]
 public class KanaCharactersController : ControllerBase
 {
     private readonly IKanaService _kanaService;
@@ -25,6 +26,7 @@ public class KanaCharactersController : ControllerBase
     }
 
     [HttpGet("")]
+    [ProducesResponseType(typeof(IEnumerable<KanaCharacterDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<KanaCharacterDto>>> GetCharacters(string type)
     {
         var kanaType = Enum.Parse<KanaType>(type, true);
@@ -33,6 +35,7 @@ public class KanaCharactersController : ControllerBase
     }
 
     [HttpGet("{character}")]
+    [ProducesResponseType(typeof(KanaCharacterDetailDto), StatusCodes.Status200OK)]
     public async Task<ActionResult<KanaCharacterDetailDto>> GetCharacterDetail(string type, string character)
     {
         var kanaType = Enum.Parse<KanaType>(type, true);
@@ -41,6 +44,7 @@ public class KanaCharactersController : ControllerBase
     }
 
     [HttpGet("{character}/examples")]
+    [ProducesResponseType(typeof(IEnumerable<ExampleDto>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<string>>> GetExamples(string type, string character)
     {
         var kanaType = Enum.Parse<KanaType>(type, true);

@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using KanjiKa.Application.DTOs.User;
 using KanjiKa.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -9,6 +9,7 @@ namespace KanjiKa.Api.Controllers;
 
 [ApiController]
 [Route("api/users")]
+[Produces("application/json")]
 public class UsersController : ControllerBase
 {
     private readonly IUserService _userService;
@@ -19,6 +20,9 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost("login")]
+    [Consumes("application/json")]
+    [ProducesResponseType(typeof(LoginDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
         try
@@ -33,6 +37,9 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost("register")]
+    [Consumes("application/json")]
+    [ProducesResponseType(typeof(RegisterDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RegisterDto), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
         RegisterDto registerDto = await _userService.Register(request.Email, request.Password);
@@ -45,6 +52,8 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost("forgotPassword")]
+    [Consumes("application/json")]
+    [ProducesResponseType(typeof(ForgotPasswordDto), StatusCodes.Status200OK)]
     public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
     {
         ForgotPasswordDto forgotPasswordDto = await _userService.ForgotPassword(request.Email);
@@ -52,6 +61,9 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost("resetPassword")]
+    [Consumes("application/json")]
+    [ProducesResponseType(typeof(ResetPasswordDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResetPasswordDto), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
     {
         ResetPasswordDto resetPasswordDto = await _userService.ResetPassword(request.Email, request.ResetCode, request.NewPassword);
@@ -64,6 +76,8 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost("refreshToken")]
+    [Consumes("application/json")]
+    [ProducesResponseType(typeof(RefreshTokenDto), StatusCodes.Status200OK)]
     public async Task<IActionResult> RefreshToken([FromBody] string token, string refreshToken)
     {
         RefreshTokenDto refreshTokenDto = await _userService.RefreshToken(token, refreshToken);
@@ -72,6 +86,9 @@ public class UsersController : ControllerBase
 
     [Authorize]
     [HttpPost("changePassword")]
+    [Consumes("application/json")]
+    [ProducesResponseType(typeof(ChangePasswordDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ChangePasswordDto), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
     {
         int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
