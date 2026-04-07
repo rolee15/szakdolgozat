@@ -1,4 +1,5 @@
-import api from "@services/kanaService";
+import hiraganaService from "@/services/hiraganaService";
+import katakanaService from "@/services/katakanaService";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -12,16 +13,18 @@ const CharacterDetail = () => {
     const fetchData = async () => {
       if (!type || !character) return;
 
+      const api = type === "hiragana" ? hiraganaService : katakanaService;
+
       try {
         const [charDetail, exampleData] = await Promise.all([
-          api.getCharacterDetail(type, character),
-          api.getExamples(type, character)
+          api.getCharacterDetail(character),
+          api.getExamples(character),
         ]);
 
         setCharData(charDetail);
         setExamples(exampleData);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load character data');
+        setError(err instanceof Error ? err.message : "Failed to load character data");
       }
     };
 
@@ -29,11 +32,7 @@ const CharacterDetail = () => {
   }, [type, character]);
 
   if (error) {
-    return (
-      <div className="p-4 text-red-500">
-        Error: {error}
-      </div>
-    );
+    return <div className="p-4 text-red-500">Error: {error}</div>;
   }
 
   if (!charData) return <div className="p-4">Loading...</div>;
@@ -44,18 +43,13 @@ const CharacterDetail = () => {
         <div className="text-center mb-8">
           <div className="text-white text-8xl font-bold mb-4">{charData.character}</div>
           <div className="text-white text-2xl ">{charData.romanization}</div>
-          <div className="mt-4 rounded-full px-4 py-2 inline-block">
-            Proficiency: {charData.proficiency}%
-          </div>
+          <div className="mt-4 rounded-full px-4 py-2 inline-block">Proficiency: {charData.proficiency}%</div>
           {charData.srsStageName !== undefined && (
-            <div className="mt-2 rounded-full px-4 py-2 inline-block">
-              SRS Stage: {charData.srsStageName}
-            </div>
+            <div className="mt-2 rounded-full px-4 py-2 inline-block">SRS Stage: {charData.srsStageName}</div>
           )}
         </div>
 
         <div className="flex justify-center space-y-6">
-
           <section>
             <h2 className="text-center text-xl font-bold mb-3">Example Words</h2>
             <div className="py-4 grid grid-cols-1 gap-1">

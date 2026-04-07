@@ -8,7 +8,7 @@ vi.mock('@/services/apiClient', () => ({
   apiFetch: vi.fn(),
 }));
 
-import kanaService from '@/services/kanaService';
+import hiraganaService from '@/services/hiraganaService';
 import { apiFetch } from '@/services/apiClient';
 
 const mockApiFetch = apiFetch as ReturnType<typeof vi.fn>;
@@ -21,7 +21,7 @@ function mockNotOk() {
   mockApiFetch.mockResolvedValue({ ok: false, json: vi.fn() });
 }
 
-describe('kanaService', () => {
+describe('hiraganaService', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -31,14 +31,14 @@ describe('kanaService', () => {
   });
 
   describe('getCharacters', () => {
-    it('fetches characters by type and returns JSON', async () => {
+    it('fetches hiragana characters and returns JSON', async () => {
       const payload = [
         { id: 1, symbol: 'あ', romanization: 'a', type: 0 },
         { id: 2, symbol: 'い', romanization: 'i', type: 0 },
       ];
       mockOk(payload);
 
-      const result = await kanaService.getCharacters('hiragana');
+      const result = await hiraganaService.getCharacters();
 
       expect(result).toEqual(payload);
       expect(mockApiFetch).toHaveBeenCalledWith('http://api.test/characters/hiragana');
@@ -46,7 +46,7 @@ describe('kanaService', () => {
 
     it('throws on non-ok response', async () => {
       mockNotOk();
-      await expect(kanaService.getCharacters('katakana')).rejects.toThrow('Failed to fetch characters');
+      await expect(hiraganaService.getCharacters()).rejects.toThrow('Failed to fetch characters');
     });
   });
 
@@ -55,7 +55,7 @@ describe('kanaService', () => {
       const payload = { id: 1, symbol: 'あ', romanization: 'a', type: 0 };
       mockOk(payload);
 
-      const result = await kanaService.getCharacterDetail('hiragana', 'a');
+      const result = await hiraganaService.getCharacterDetail('a');
 
       expect(result).toEqual(payload);
       expect(mockApiFetch).toHaveBeenCalledWith('http://api.test/characters/hiragana/a');
@@ -63,7 +63,7 @@ describe('kanaService', () => {
 
     it('throws on non-ok response', async () => {
       mockNotOk();
-      await expect(kanaService.getCharacterDetail('hiragana', 'a')).rejects.toThrow('Failed to fetch character details');
+      await expect(hiraganaService.getCharacterDetail('a')).rejects.toThrow('Failed to fetch character details');
     });
   });
 
@@ -72,7 +72,7 @@ describe('kanaService', () => {
       const payload = [{ id: 1, text: 'ありがとう' }];
       mockOk(payload);
 
-      const result = await kanaService.getExamples('hiragana', 'a');
+      const result = await hiraganaService.getExamples('a');
 
       expect(result).toEqual(payload);
       expect(mockApiFetch).toHaveBeenCalledWith('http://api.test/characters/hiragana/a/examples');
@@ -80,7 +80,7 @@ describe('kanaService', () => {
 
     it('throws on non-ok response', async () => {
       mockNotOk();
-      await expect(kanaService.getExamples('hiragana', 'a')).rejects.toThrow('Failed to fetch character examples');
+      await expect(hiraganaService.getExamples('a')).rejects.toThrow('Failed to fetch character examples');
     });
   });
 });

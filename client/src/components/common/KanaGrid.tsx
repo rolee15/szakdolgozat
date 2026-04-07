@@ -1,4 +1,5 @@
-import api from "@services/kanaService";
+import hiraganaService from "@/services/hiraganaService";
+import katakanaService from "@/services/katakanaService";
 import { useEffect, useState } from "react";
 import KanaButton from "./KanaButton";
 
@@ -7,9 +8,10 @@ const KanaGrid = ({ type }: { type: "hiragana" | "katakana" }) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    const api = type === "hiragana" ? hiraganaService : katakanaService;
     const fetchCharacters = async () => {
       try {
-        const data = await api.getCharacters(type);
+        const data = await api.getCharacters();
         setCharacters(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load characters");

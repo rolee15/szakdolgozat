@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import kanaService from "@/services/kanaService";
+import hiraganaService from "@/services/hiraganaService";
+import katakanaService from "@/services/katakanaService";
 import kanjiService from "@/services/kanjiService";
 import lessonService from "@/services/lessonService";
 import styles from "./FlashCardPage.module.css";
@@ -16,34 +17,38 @@ const FlashCardPage = () => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [sessionDone, setSessionDone] = useState(false);
 
-  const { data: kanaCharacters, isLoading: isKanaLoading, isError: isKanaError } = useQuery<KanaCharacter[]>({
+  const {
+    data: kanaCharacters,
+    isLoading: isKanaLoading,
+    isError: isKanaError,
+  } = useQuery<KanaCharacter[]>({
     queryKey: ["flashcards", mode],
-    queryFn: () => kanaService.getCharacters(mode as "hiragana" | "katakana"),
+    queryFn: () => (mode === "hiragana" ? hiraganaService : katakanaService).getCharacters(),
     enabled: mode !== "kanji",
   });
 
-  const { data: kanjiReviews, isLoading: isKanjiLoading, isError: isKanjiError } = useQuery<KanjiReview[]>({
+  const {
+    data: kanjiReviews,
+    isLoading: isKanjiLoading,
+    isError: isKanjiError,
+  } = useQuery<KanjiReview[]>({
     queryKey: ["flashcards", "kanji"],
     queryFn: () => kanjiService.getKanjiReviews(),
     enabled: mode === "kanji",
   });
 
   const reviewMutation = useMutation<LessonReviewResult, Error, { question: string; answer: string }>({
-    mutationFn: ({ question, answer }) =>
-      lessonService.postLessonReviewCheck(question, answer),
+    mutationFn: ({ question, answer }) => lessonService.postLessonReviewCheck(question, answer),
   });
 
   const kanjiReviewMutation = useMutation<KanjiReviewResult, Error, { kanjiId: number; isCorrect: boolean }>({
-    mutationFn: ({ kanjiId, isCorrect }) =>
-      kanjiService.checkKanjiReview(kanjiId, isCorrect),
+    mutationFn: ({ kanjiId, isCorrect }) => kanjiService.checkKanjiReview(kanjiId, isCorrect),
   });
 
   const isLoading = mode === "kanji" ? isKanjiLoading : isKanaLoading;
   const isError = mode === "kanji" ? isKanjiError : isKanaError;
 
-  const cards: (KanaCharacter | KanjiReview)[] = mode === "kanji"
-    ? (kanjiReviews ?? [])
-    : (kanaCharacters ?? []);
+  const cards: (KanaCharacter | KanjiReview)[] = mode === "kanji" ? (kanjiReviews ?? []) : (kanaCharacters ?? []);
 
   const currentCard = cards[currentIndex];
   const total = cards.length;
@@ -71,15 +76,12 @@ const FlashCardPage = () => {
     if (!currentCard) return;
     if (mode === "kanji") {
       const kanjiCard = currentCard as KanjiReview;
-      kanjiReviewMutation.mutate(
-        { kanjiId: kanjiCard.kanjiId, isCorrect: true },
-        { onSettled: () => advance() }
-      );
+      kanjiReviewMutation.mutate({ kanjiId: kanjiCard.kanjiId, isCorrect: true }, { onSettled: () => advance() });
     } else {
       const kanaCard = currentCard as KanaCharacter;
       reviewMutation.mutate(
         { question: kanaCard.character, answer: kanaCard.romanization },
-        { onSettled: () => advance() }
+        { onSettled: () => advance() },
       );
     }
   };
@@ -88,16 +90,10 @@ const FlashCardPage = () => {
     if (!currentCard) return;
     if (mode === "kanji") {
       const kanjiCard = currentCard as KanjiReview;
-      kanjiReviewMutation.mutate(
-        { kanjiId: kanjiCard.kanjiId, isCorrect: false },
-        { onSettled: () => advance() }
-      );
+      kanjiReviewMutation.mutate({ kanjiId: kanjiCard.kanjiId, isCorrect: false }, { onSettled: () => advance() });
     } else {
       const kanaCard = currentCard as KanaCharacter;
-      reviewMutation.mutate(
-        { question: kanaCard.character, answer: "" },
-        { onSettled: () => advance() }
-      );
+      reviewMutation.mutate({ question: kanaCard.character, answer: "" }, { onSettled: () => advance() });
     }
   };
 
@@ -142,9 +138,7 @@ const FlashCardPage = () => {
               key={m}
               onClick={() => handleModeChange(m)}
               className={`px-5 py-2 rounded-lg font-medium capitalize transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 ${
-                mode === m
-                  ? "bg-indigo-500 text-white"
-                  : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                mode === m ? "bg-indigo-500 text-white" : "bg-gray-700 text-gray-300 hover:bg-gray-600"
               }`}
             >
               {m.charAt(0).toUpperCase() + m.slice(1)}
@@ -167,7 +161,9 @@ const FlashCardPage = () => {
     return (
       <div className="flex flex-col items-center justify-center gap-6 p-12">
         <h2 className="text-3xl font-bold text-white">Session complete!</h2>
-        <p className="text-gray-400">You reviewed all {total} {mode} cards.</p>
+        <p className="text-gray-400">
+          You reviewed all {total} {mode} cards.
+        </p>
         <button
           onClick={handleRestart}
           className="px-8 py-3 bg-indigo-500 text-white font-medium rounded-lg hover:bg-indigo-600 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2"
@@ -181,12 +177,11 @@ const FlashCardPage = () => {
   const isMutationPending = reviewMutation.isPending || kanjiReviewMutation.isPending;
 
   const cardFront = currentCard ? currentCard.character : undefined;
-  const cardBack = mode === "kanji"
-    ? (currentCard as KanjiReview | undefined)?.meaning
-    : (currentCard as KanaCharacter | undefined)?.romanization;
-  const cardLabel = mode === "kanji"
-    ? "kanji"
-    : (currentCard as KanaCharacter | undefined)?.type;
+  const cardBack =
+    mode === "kanji"
+      ? (currentCard as KanjiReview | undefined)?.meaning
+      : (currentCard as KanaCharacter | undefined)?.romanization;
+  const cardLabel = mode === "kanji" ? "kanji" : (currentCard as KanaCharacter | undefined)?.type;
 
   return (
     <div className="flex flex-col items-center gap-8 p-8">
@@ -199,9 +194,7 @@ const FlashCardPage = () => {
             key={m}
             onClick={() => handleModeChange(m)}
             className={`px-5 py-2 rounded-lg font-medium capitalize transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 ${
-              mode === m
-                ? "bg-indigo-500 text-white"
-                : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+              mode === m ? "bg-indigo-500 text-white" : "bg-gray-700 text-gray-300 hover:bg-gray-600"
             }`}
           >
             {m.charAt(0).toUpperCase() + m.slice(1)}
@@ -210,9 +203,7 @@ const FlashCardPage = () => {
         <button
           onClick={() => handleModeChange("kanji")}
           className={`px-5 py-2 rounded-lg font-medium capitalize transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 ${
-            mode === "kanji"
-              ? "bg-indigo-500 text-white"
-              : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+            mode === "kanji" ? "bg-indigo-500 text-white" : "bg-gray-700 text-gray-300 hover:bg-gray-600"
           }`}
         >
           Kanji
@@ -228,18 +219,12 @@ const FlashCardPage = () => {
       <div className={styles.scene} onClick={handleFlip} role="button" aria-label="Flip card">
         <div className={`${styles.card} ${isFlipped ? styles.flipped : ""}`}>
           <div className={`${styles.cardFace} ${styles.cardFront}`}>
-            <span className="text-8xl font-bold text-indigo-300 select-none">
-              {cardFront}
-            </span>
+            <span className="text-8xl font-bold text-indigo-300 select-none">{cardFront}</span>
             <span className="mt-4 text-sm text-indigo-400 select-none">Click to reveal</span>
           </div>
           <div className={`${styles.cardFace} ${styles.cardBack}`}>
-            <span className="text-4xl font-bold text-white select-none">
-              {cardBack}
-            </span>
-            <span className="mt-3 text-sm uppercase tracking-widest text-blue-400 select-none">
-              {cardLabel}
-            </span>
+            <span className="text-4xl font-bold text-white select-none">{cardBack}</span>
+            <span className="mt-3 text-sm uppercase tracking-widest text-blue-400 select-none">{cardLabel}</span>
           </div>
         </div>
       </div>

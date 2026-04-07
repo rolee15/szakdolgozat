@@ -3,7 +3,13 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import FlashCardPage from '@/pages/FlashCardPage'
 
-vi.mock('@/services/kanaService', () => ({
+vi.mock('@/services/hiraganaService', () => ({
+  default: {
+    getCharacters: vi.fn(),
+  },
+}))
+
+vi.mock('@/services/katakanaService', () => ({
   default: {
     getCharacters: vi.fn(),
   },
@@ -30,7 +36,8 @@ vi.mock('@/services/kanjiService', () => ({
   },
 }))
 
-import kanaService from '@/services/kanaService'
+import hiraganaService from '@/services/hiraganaService'
+import katakanaService from '@/services/katakanaService'
 import lessonService from '@/services/lessonService'
 import kanjiService from '@/services/kanjiService'
 
@@ -68,7 +75,7 @@ describe('FlashCardPage', () => {
   })
 
   it('renders_mode_selector_with_hiragana_and_katakana', async () => {
-    const svc = kanaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
+    const svc = hiraganaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
     svc.getCharacters.mockResolvedValue(hiraganaCards)
 
     renderPage()
@@ -78,7 +85,7 @@ describe('FlashCardPage', () => {
   })
 
   it('renders_kanji_button_as_enabled', async () => {
-    const svc = kanaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
+    const svc = hiraganaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
     svc.getCharacters.mockResolvedValue(hiraganaCards)
 
     renderPage()
@@ -91,7 +98,7 @@ describe('FlashCardPage', () => {
   })
 
   it('renders_progress_indicator', async () => {
-    const svc = kanaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
+    const svc = hiraganaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
     svc.getCharacters.mockResolvedValue(hiraganaCards)
 
     renderPage()
@@ -101,7 +108,7 @@ describe('FlashCardPage', () => {
   })
 
   it('flips_card_on_click', async () => {
-    const svc = kanaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
+    const svc = hiraganaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
     svc.getCharacters.mockResolvedValue(hiraganaCards)
 
     renderPage()
@@ -117,8 +124,27 @@ describe('FlashCardPage', () => {
     expect(screen.getByText('a')).toBeInTheDocument()
   })
 
+  it('flips_card_when_scene_is_clicked', async () => {
+    const svc = hiraganaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
+    svc.getCharacters.mockResolvedValue(hiraganaCards)
+
+    renderPage()
+
+    await screen.findByText('あ')
+
+    const scene = screen.getByRole('button', { name: /flip card/i })
+    fireEvent.click(scene)
+
+    // After click, the card should be flipped — romanization is now the back face content
+    expect(screen.getByText('a')).toBeInTheDocument()
+
+    // Click again to flip back
+    fireEvent.click(scene)
+    expect(screen.getByText('Click to reveal')).toBeInTheDocument()
+  })
+
   it('know_it_advances_to_next_card', async () => {
-    const svc = kanaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
+    const svc = hiraganaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
     const lessonSvc = lessonService as unknown as { postLessonReviewCheck: ReturnType<typeof vi.fn> }
     svc.getCharacters.mockResolvedValue(hiraganaCards)
     lessonSvc.postLessonReviewCheck.mockResolvedValue({ isCorrect: true, correctAnswer: 'a' })
@@ -133,7 +159,7 @@ describe('FlashCardPage', () => {
   })
 
   it('dont_know_it_advances_to_next_card', async () => {
-    const svc = kanaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
+    const svc = hiraganaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
     const lessonSvc = lessonService as unknown as { postLessonReviewCheck: ReturnType<typeof vi.fn> }
     svc.getCharacters.mockResolvedValue(hiraganaCards)
     lessonSvc.postLessonReviewCheck.mockResolvedValue({ isCorrect: false, correctAnswer: 'a' })
@@ -148,7 +174,7 @@ describe('FlashCardPage', () => {
   })
 
   it('shows_completion_screen_after_last_card', async () => {
-    const svc = kanaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
+    const svc = hiraganaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
     const lessonSvc = lessonService as unknown as { postLessonReviewCheck: ReturnType<typeof vi.fn> }
 
     // Use 2 cards so we can exhaust them quickly
@@ -172,7 +198,7 @@ describe('FlashCardPage', () => {
   })
 
   it('shows_loading_state', () => {
-    const svc = kanaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
+    const svc = hiraganaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
     svc.getCharacters.mockReturnValue(new Promise(() => {}))
 
     renderPage()
@@ -181,7 +207,7 @@ describe('FlashCardPage', () => {
   })
 
   it('shows_error_state_when_fetch_fails', async () => {
-    const svc = kanaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
+    const svc = hiraganaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
     svc.getCharacters.mockRejectedValue(new Error('Failed'))
 
     renderPage()
@@ -189,10 +215,11 @@ describe('FlashCardPage', () => {
     expect(await screen.findByText('Failed to load characters.')).toBeInTheDocument()
   })
 
-  it('switching_mode_resets_to_first_card', async () => {
-    const svc = kanaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
+  it('switching_mode_to_katakana_uses_katakanaService', async () => {
+    const hiraSvc = hiraganaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
+    const kataSvc = katakanaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
     const lessonSvc = lessonService as unknown as { postLessonReviewCheck: ReturnType<typeof vi.fn> }
-    svc.getCharacters.mockResolvedValue(hiraganaCards)
+    hiraSvc.getCharacters.mockResolvedValue(hiraganaCards)
     lessonSvc.postLessonReviewCheck.mockResolvedValue({ isCorrect: true, correctAnswer: 'a' })
 
     renderPage()
@@ -203,11 +230,11 @@ describe('FlashCardPage', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Know it' }))
     await screen.findByText('2 / 3')
 
-    // Switch mode — triggers new query, resets index; mock new result as well
+    // Switch to katakana mode
     const katakanaCards: KanaCharacter[] = [
       { character: 'ア', romanization: 'a', type: 'katakana', proficiency: 0 },
     ]
-    svc.getCharacters.mockResolvedValue(katakanaCards)
+    kataSvc.getCharacters.mockResolvedValue(katakanaCards)
 
     fireEvent.click(screen.getByRole('button', { name: 'Katakana' }))
 
@@ -215,7 +242,7 @@ describe('FlashCardPage', () => {
   })
 
   it('kanji_mode_shows_empty_state_when_no_reviews_due', async () => {
-    const svc = kanaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
+    const svc = hiraganaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
     const kanjiSvc = kanjiService as unknown as { getKanjiReviews: ReturnType<typeof vi.fn> }
     svc.getCharacters.mockResolvedValue(hiraganaCards)
     kanjiSvc.getKanjiReviews.mockResolvedValue([])
@@ -229,7 +256,7 @@ describe('FlashCardPage', () => {
   })
 
   it('kanji_mode_shows_character_and_meaning', async () => {
-    const svc = kanaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
+    const svc = hiraganaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
     const kanjiSvc = kanjiService as unknown as { getKanjiReviews: ReturnType<typeof vi.fn> }
     svc.getCharacters.mockResolvedValue(hiraganaCards)
     const kanjiCards: KanjiReview[] = [
@@ -248,7 +275,7 @@ describe('FlashCardPage', () => {
   })
 
   it('kanji_know_it_advances_to_next_card', async () => {
-    const svc = kanaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
+    const svc = hiraganaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
     const kanjiSvc = kanjiService as unknown as {
       getKanjiReviews: ReturnType<typeof vi.fn>
       checkKanjiReview: ReturnType<typeof vi.fn>
@@ -273,7 +300,7 @@ describe('FlashCardPage', () => {
   })
 
   it('kanji_dont_know_it_advances_to_next_card', async () => {
-    const svc = kanaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
+    const svc = hiraganaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
     const kanjiSvc = kanjiService as unknown as {
       getKanjiReviews: ReturnType<typeof vi.fn>
       checkKanjiReview: ReturnType<typeof vi.fn>
@@ -297,8 +324,36 @@ describe('FlashCardPage', () => {
     expect(await screen.findByText('2 / 2')).toBeInTheDocument()
   })
 
+  it('know_it_does_nothing_when_no_current_card', async () => {
+    const svc = hiraganaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
+    // Return empty cards so currentCard is undefined
+    svc.getCharacters.mockResolvedValue([])
+
+    renderPage()
+
+    // Wait for loading to finish (empty array resolves, shows "1 / 0" won't exist — just wait for buttons)
+    await screen.findByRole('button', { name: 'Hiragana' })
+
+    // Clicking Know it when there's no card should not crash
+    fireEvent.click(screen.getByRole('button', { name: 'Know it' }))
+    // No error thrown and buttons still present
+    expect(screen.getByRole('button', { name: 'Know it' })).toBeInTheDocument()
+  })
+
+  it('dont_know_it_does_nothing_when_no_current_card', async () => {
+    const svc = hiraganaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
+    svc.getCharacters.mockResolvedValue([])
+
+    renderPage()
+
+    await screen.findByRole('button', { name: 'Hiragana' })
+
+    fireEvent.click(screen.getByRole('button', { name: /don't know it/i }))
+    expect(screen.getByRole('button', { name: /don't know it/i })).toBeInTheDocument()
+  })
+
   it('restart_button_resets_session', async () => {
-    const svc = kanaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
+    const svc = hiraganaService as unknown as { getCharacters: ReturnType<typeof vi.fn> }
     const lessonSvc = lessonService as unknown as { postLessonReviewCheck: ReturnType<typeof vi.fn> }
 
     const oneCard: KanaCharacter[] = [hiraganaCards[0]]
