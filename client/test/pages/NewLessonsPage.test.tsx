@@ -54,4 +54,35 @@ describe('NewLessonsPage', () => {
       expect(navigateSpy).toHaveBeenCalledWith('/lessons')
     }))
   })
+
+  it('shows error message when fetch fails with an Error instance', async () => {
+    const svc = lessonService as unknown as { getLessons: ReturnType<typeof vi.fn>, postLearnLesson: ReturnType<typeof vi.fn> }
+    svc.getLessons.mockRejectedValue(new Error('network failure'))
+    svc.postLearnLesson.mockResolvedValue(undefined)
+
+    render(<NewLessonsPage />)
+
+    expect(await screen.findByText(/error: network failure/i)).toBeInTheDocument()
+  })
+
+  it('shows fallback error message when fetch fails with a non-Error value', async () => {
+    const svc = lessonService as unknown as { getLessons: ReturnType<typeof vi.fn>, postLearnLesson: ReturnType<typeof vi.fn> }
+    svc.getLessons.mockRejectedValue('some string error')
+    svc.postLearnLesson.mockResolvedValue(undefined)
+
+    render(<NewLessonsPage />)
+
+    expect(await screen.findByText(/error: failed to load new lessons/i)).toBeInTheDocument()
+  })
+
+  it('shows empty state message when there are no lessons to learn', async () => {
+    const svc = lessonService as unknown as { getLessons: ReturnType<typeof vi.fn>, postLearnLesson: ReturnType<typeof vi.fn> }
+    svc.getLessons.mockResolvedValue([])
+    svc.postLearnLesson.mockResolvedValue(undefined)
+
+    render(<NewLessonsPage />)
+
+    expect(await screen.findByText(/no more lessons to learn/i)).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /next/i })).not.toBeInTheDocument()
+  })
 })
