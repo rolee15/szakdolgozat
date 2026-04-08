@@ -60,3 +60,19 @@ EOF
 ## 5. Confirm
 
 Show the output of `git log --oneline -3` to confirm the commit landed.
+
+## Troubleshooting: GPG signing failure
+
+If `git commit` fails with `gpg: can't connect to the keyboxd` or `gpg-agent` not running, the GPG agent process has died. Fix it by running in a **Windows** terminal (PowerShell or cmd, not Git Bash):
+
+```powershell
+gpg-connect-agent reloadagent /bye
+```
+
+Or from Git Bash / WSL:
+```bash
+gpgconf --kill gpg-agent
+gpgconf --launch gpg-agent
+```
+
+After the agent is back, retry the commit normally. Do **not** use `--no-gpg-sign` unless the user explicitly allows it.
