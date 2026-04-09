@@ -42,6 +42,7 @@ const Navbar = () => {
                   <NavLink to="/lessons" className={navLinkClass}>Lessons</NavLink>
                   <NavLink to="/lessons/writing" className={navLinkClass}>Writing</NavLink>
                   <NavLink to="/flashcards" className={navLinkClass}>Flash Cards</NavLink>
+                  <NavLink to="/shiritori" className={navLinkClass}>Shiritori</NavLink>
                 </div>
               </span>
 
@@ -121,6 +122,7 @@ const Navbar = () => {
                 <NavLink to="/lessons" className={navLinkClass} onClick={() => setMobileOpen(false)}>Lessons</NavLink>
                 <NavLink to="/lessons/writing" className={navLinkClass} onClick={() => setMobileOpen(false)}>Writing</NavLink>
                 <NavLink to="/flashcards" className={navLinkClass} onClick={() => setMobileOpen(false)}>Flash Cards</NavLink>
+                <NavLink to="/shiritori" className={navLinkClass} onClick={() => setMobileOpen(false)}>Shiritori</NavLink>
               </div>
             </div>
             <div>
