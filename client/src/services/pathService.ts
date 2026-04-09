@@ -1,22 +1,21 @@
 import { apiFetch } from '@/services/apiClient';
-
-const API_BASE = import.meta.env.VITE_API_URL ?? 'https://localhost:7161/api';
+import { API_PATH_URL } from '@/services/routes';
 
 const pathService = {
   async getPath(): Promise<LearningUnit[]> {
-    const res = await apiFetch(`${API_BASE}/path`);
+    const res = await apiFetch(`${API_PATH_URL}`);
     if (!res.ok) throw new Error('Failed to fetch learning path');
     return res.json();
   },
 
   async getUnitDetail(id: number): Promise<LearningUnitDetail> {
-    const res = await apiFetch(`${API_BASE}/path/${id}`);
+    const res = await apiFetch(`${API_PATH_URL}/${id}`);
     if (!res.ok) throw new Error('Failed to fetch unit detail');
     return res.json();
   },
 
   async getUnitTest(id: number): Promise<UnitTest> {
-    const res = await apiFetch(`${API_BASE}/path/${id}/test`);
+    const res = await apiFetch(`${API_PATH_URL}/${id}/test`);
     if (!res.ok) throw new Error('Failed to fetch unit test');
     return res.json();
   },
@@ -25,7 +24,7 @@ const pathService = {
     id: number,
     answers: Record<number, string>,
   ): Promise<UnitTestResult> {
-    const res = await apiFetch(`${API_BASE}/path/${id}/test`, {
+    const res = await apiFetch(`${API_PATH_URL}/${id}/test`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ answers }),

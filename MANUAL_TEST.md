@@ -57,11 +57,26 @@ Precondition: dev DB running, backend started, frontend started (see CLAUDE.md f
 
 ## 2. Navigation
 
-- [ ] Navbar links work: Hiragana, Katakana, Lessons, Kanji, Flash Cards, Writing
+- [ ] Desktop navbar shows three groups: Study, Practice, Path
+- [ ] Study group contains: Hiragana, Katakana, Kanji, Grammar, Reading links
+- [ ] Practice group contains: Lessons, Writing, Flash Cards links
+- [ ] Path group contains: Learning Path link to `/path`
 - [ ] Admin link visible in navbar for admin users only
 - [ ] Admin link hidden for regular users
+- [ ] Mobile: hamburger button (☰) appears on small screens
+- [ ] Mobile: clicking hamburger opens dropdown nav with all links grouped by section
+- [ ] Mobile: clicking a nav link closes the mobile menu
 - [ ] Logo/brand link navigates to home or lessons
 - [ ] 404 page shown for unknown routes (e.g. `/nonexistent`)
+
+## 2a. Home Page Dashboard (`/`)
+
+- [ ] Three stat cards render: "Due Reviews", "New Lessons", "Path Progress"
+- [ ] Due Reviews card shows count and links to `/lessons/reviews`
+- [ ] New Lessons card shows count and links to `/lessons`
+- [ ] Path Progress card shows "X / Y units completed" and links to `/path`
+- [ ] Loading skeleton (pulsing placeholder) shown while data fetches
+- [ ] If an API call fails, card shows "–"
 
 ---
 
@@ -84,7 +99,7 @@ Precondition: dev DB running, backend started, frontend started (see CLAUDE.md f
 - [ ] Character symbol and romanization displayed
 - [ ] Example words listed (word, reading, meaning)
 - [ ] Proficiency percentage shown
-- [ ] SRS stage name shown (e.g. "Locked", "Apprentice 1")
+- [ ] SRS stage badge shown with correct color (pink = Apprentice, purple = Guru, blue = Master, cyan = Enlightened, amber = Burned, gray = Locked)
 - [ ] Back navigation works
 
 ---

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import kanjiService from '@/services/kanjiService';
+import SrsBadge from '@/components/common/SrsBadge';
 
 type JlptFilter = number | null;
 
@@ -13,14 +14,6 @@ const JLPT_LEVELS: { label: string; value: JlptFilter }[] = [
   { label: 'N2', value: 2 },
   { label: 'N1', value: 1 },
 ];
-
-const SRS_STAGE_COLORS: Record<string, string> = {
-  Apprentice: 'bg-pink-600',
-  Guru: 'bg-purple-600',
-  Master: 'bg-blue-600',
-  Enlightened: 'bg-indigo-600',
-  Burned: 'bg-gray-600',
-};
 
 const KanjiListPage = () => {
   const [selectedLevel, setSelectedLevel] = useState<JlptFilter>(null);
@@ -101,25 +94,20 @@ const KanjiListPage = () => {
           </p>
 
           <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-3">
-            {allKanji.map((kanji) => {
-              const stageColor = SRS_STAGE_COLORS[kanji.srsStage] ?? 'bg-gray-700';
-              return (
-                <button
-                  key={kanji.character}
-                  onClick={() => navigate(`/kanji/${encodeURIComponent(kanji.character)}`)}
-                  className="flex flex-col items-center gap-1 p-2 rounded border border-blue-500 hover:bg-blue-500 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  aria-label={`Kanji ${kanji.character}, meaning: ${kanji.meaning}`}
-                >
-                  <span className="text-3xl font-bold">{kanji.character}</span>
-                  <span className="text-xs text-gray-400 text-center leading-tight line-clamp-1">
-                    {kanji.meaning}
-                  </span>
-                  <span className={`text-xs px-1.5 py-0.5 rounded text-white font-medium ${stageColor}`}>
-                    {kanji.srsStage}
-                  </span>
-                </button>
-              );
-            })}
+            {allKanji.map((kanji) => (
+              <button
+                key={kanji.character}
+                onClick={() => navigate(`/kanji/${encodeURIComponent(kanji.character)}`)}
+                className="flex flex-col items-center gap-1 p-2 rounded border border-blue-500 hover:bg-blue-500 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"
+                aria-label={`Kanji ${kanji.character}, meaning: ${kanji.meaning}`}
+              >
+                <span className="text-3xl font-bold">{kanji.character}</span>
+                <span className="text-xs text-gray-400 text-center leading-tight line-clamp-1">
+                  {kanji.meaning}
+                </span>
+                <SrsBadge stage={kanji.srsStage} />
+              </button>
+            ))}
           </div>
 
           <div ref={sentinelRef} className="h-8" />

@@ -178,4 +178,70 @@ describe('WritingPracticePage', () => {
     expect(await screen.findByText('a')).toBeInTheDocument()
     expect(screen.queryByText(/writing practice complete/i)).not.toBeInTheDocument()
   })
+
+  it('keeps index within bounds after removing non-last correct item', async () => {
+    const svc = lessonService as unknown as {
+      getWritingReviews: ReturnType<typeof vi.fn>
+      postWritingReviewCheck: ReturnType<typeof vi.fn>
+    }
+    // 3 items; answer item 0 correctly; index 0 < updated.length(2) — no adjustment branch
+    svc.getWritingReviews.mockResolvedValue([
+      { characterId: 1, romanization: 'a', characterType: 'hiragana' },
+      { characterId: 2, romanization: 'i', characterType: 'hiragana' },
+      { characterId: 3, romanization: 'u', characterType: 'hiragana' },
+    ])
+    svc.postWritingReviewCheck.mockResolvedValue({ isCorrect: true, correctAnswer: 'あ' })
+
+    render(<WritingPracticePage />)
+
+    expect(await screen.findByText('a')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'SubmitMock' }))
+    fireEvent.click(await screen.findByRole('button', { name: /continue/i }))
+
+    // After removing item 0, item 1 ('i') is now at index 0
+    expect(await screen.findByText('i')).toBeInTheDocument()
+  })
+
+  it('shows error when postWritingReviewCheck fails', async () => {
+    const svc = lessonService as unknown as {
+      getWritingReviews: ReturnType<typeof vi.fn>
+      postWritingReviewCheck: ReturnType<typeof vi.fn>
+    }
+    svc.getWritingReviews.mockResolvedValue([
+      { characterId: 1, romanization: 'a', characterType: 'hiragana' },
+    ])
+    svc.postWritingReviewCheck.mockRejectedValue(new Error('Check error'))
+
+    render(<WritingPracticePage />)
+
+    fireEvent.click(await screen.findByRole('button', { name: 'SubmitMock' }))
+
+    expect(await screen.findByText(/error: check error/i)).toBeInTheDocument()
+  })
+
+  it('uses fallback message when non-Error thrown from getWritingReviews', async () => {
+    const svc = lessonService as unknown as { getWritingReviews: ReturnType<typeof vi.fn> }
+    svc.getWritingReviews.mockRejectedValue('string error')
+
+    render(<WritingPracticePage />)
+
+    expect(await screen.findByText(/failed to load writing reviews/i)).toBeInTheDocument()
+  })
+
+  it('uses fallback message when non-Error thrown from postWritingReviewCheck', async () => {
+    const svc = lessonService as unknown as {
+      getWritingReviews: ReturnType<typeof vi.fn>
+      postWritingReviewCheck: ReturnType<typeof vi.fn>
+    }
+    svc.getWritingReviews.mockResolvedValue([
+      { characterId: 1, romanization: 'a', characterType: 'hiragana' },
+    ])
+    svc.postWritingReviewCheck.mockRejectedValue('string error')
+
+    render(<WritingPracticePage />)
+
+    fireEvent.click(await screen.findByRole('button', { name: 'SubmitMock' }))
+
+    expect(await screen.findByText(/failed to check answer/i)).toBeInTheDocument()
+  })
 })

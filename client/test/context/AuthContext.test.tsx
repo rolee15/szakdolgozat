@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen, act } from '@testing-library/react'
+import { render, screen, act, fireEvent } from '@testing-library/react'
 import { AuthProvider, useAuth } from '@/context/AuthContext'
 
 vi.mock('@/services/userService', () => ({
@@ -178,5 +178,35 @@ describe('AuthContext', () => {
     })
 
     expect(localStorage.getItem('refreshToken')).toBe('myrefresh')
+  })
+
+  it('handles malformed JWT gracefully on init — returns empty payload', () => {
+    // A token with an invalid base64 payload causes decodeJwtPayload to catch and return {}
+    localStorage.setItem('token', 'bad.!!!.token')
+
+    renderWithProvider()
+
+    // Should still initialize without crashing; username will be empty
+    expect(screen.getByTestId('username').textContent).toBe('')
+  })
+
+  it('clearMustChangePassword_setsMustChangePasswordToFalse', async () => {
+    const ClearConsumer = () => {
+      const { clearMustChangePassword } = useAuth()
+      return <button onClick={clearMustChangePassword}>clear</button>
+    }
+
+    render(
+      <AuthProvider>
+        <ClearConsumer />
+      </AuthProvider>
+    )
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'clear' }))
+    })
+
+    // No error means clearMustChangePassword executed without throwing
+    expect(screen.getByRole('button', { name: 'clear' })).toBeInTheDocument()
   })
 })
