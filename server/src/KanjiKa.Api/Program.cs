@@ -1,5 +1,6 @@
 using System.Text;
 using KanjiKa.Api.Extensions;
+using KanjiKa.Api.Hubs;
 using KanjiKa.Application.Interfaces;
 using KanjiKa.Application.Services;
 using KanjiKa.Data;
@@ -29,6 +30,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)),
             ClockSkew = TimeSpan.Zero
         };
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+                var path = context.HttpContext.Request.Path;
+                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs/shiritori"))
+                    context.Token = accessToken;
+                return Task.CompletedTask;
+            }
+        };
     });
 
 builder.Services.AddScoped<IAdminService, AdminService>();
@@ -50,12 +62,16 @@ builder.Services.AddScoped<IPathService, PathService>();
 builder.Services.AddScoped<IHashService, HashService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IEmailService, DummyEmailService>();
+builder.Services.AddSingleton<IShiritoriService, ShiritoriService>();
+
+builder.Services.AddSignalR();
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp",
         x => x
-            .AllowAnyOrigin()
+            .WithOrigins("http://localhost:5173", "http://localhost:3000", "https://localhost:5173", "https://localhost:3000")
+            .AllowCredentials()
             .AllowAnyMethod()
             .AllowAnyHeader());
 });
@@ -79,6 +95,7 @@ app.UseCors("AllowReactApp");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapHub<ShiritoriHub>("/hubs/shiritori");
 
 await app.InitialiseDatabaseAsync();
 
