@@ -246,12 +246,14 @@ Multiple seeded test users with varied proficiency data so every feature is manu
 - [x] `UnitTestPage.tsx` — quiz, score, pass/fail
 - [x] `pathService.ts`, types, routes `/path`, `/path/:unitId`, `/path/:unitId/test`
 
-#### Day 6 (Apr 6) — Testing Catchup (~6h)
+#### Day 6 (Apr 6) — Testing Catchup (~6h) ✅
 
-- [ ] Backend: ~25-30 new unit tests (Grammar, Reading, Path, bug fixes, kanji proficiency)
-- [ ] Frontend: tests for all new pages
-- [ ] Verify: 94%+ frontend coverage, 82+ backend tests
-- [ ] Clean build: `npm run build` + `dotnet build --configuration Release`
+- [x] Backend: 198 unit tests (Grammar, Reading, Path, KanaService, KanjiService, UserService, LessonService, PathService, + DTOs + Entities)
+- [x] Frontend: tests for all new pages (45 test files, 294 tests)
+- [x] Verify: 97.22% frontend coverage (threshold: 94%), 198 backend tests (threshold: 82)
+- [x] Clean build: `npm run build` (0 errors) + `dotnet build --configuration Release` (0 warnings, 0 errors)
+- [x] Fixed `tsconfig.app.json`: removed deprecated `baseUrl`/`ignoreDeprecations`, fixed TS2698 spread types in 5 test files
+- [x] Fixed CS8618 nullable navigation properties in `Example.cs` and `LessionCompletion.cs`
 
 #### Day 7 (Apr 7) — UI Polish + Navigation (~5h)
 

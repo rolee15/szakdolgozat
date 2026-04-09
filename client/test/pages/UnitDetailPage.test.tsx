@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const navigateSpy = vi.fn();
 vi.mock('react-router-dom', async (orig) => {
-  const actual = await orig();
+  const actual = await orig() as Record<string, unknown>;
   return {
     ...actual,
     useNavigate: () => navigateSpy,
