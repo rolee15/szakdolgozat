@@ -13,10 +13,12 @@ namespace KanjiKa.Api.Controllers;
 public class UsersController : ControllerBase
 {
     private readonly IUserService _userService;
+    private readonly IUserSettingsService _userSettingsService;
 
-    public UsersController(IUserService userService)
+    public UsersController(IUserService userService, IUserSettingsService userSettingsService)
     {
         _userService = userService;
+        _userSettingsService = userSettingsService;
     }
 
     [HttpPost("login")]
@@ -99,5 +101,27 @@ public class UsersController : ControllerBase
         }
 
         return Ok(result);
+    }
+
+    [Authorize]
+    [HttpGet("settings")]
+    [ProducesResponseType(typeof(UserSettingsDto), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetSettings()
+    {
+        int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        UserSettingsDto settings = await _userSettingsService.GetSettingsAsync(userId);
+        return Ok(settings);
+    }
+
+    [Authorize]
+    [HttpPut("settings")]
+    [Consumes("application/json")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UpdateSettings([FromBody] UpdateUserSettingsDto dto)
+    {
+        int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        await _userSettingsService.UpdateSettingsAsync(userId, dto);
+        return NoContent();
     }
 }

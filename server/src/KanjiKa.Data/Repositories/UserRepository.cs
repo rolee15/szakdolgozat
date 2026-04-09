@@ -92,4 +92,21 @@ public class UserRepository : IUserRepository
     {
         return _db.SaveChangesAsync();
     }
+
+    public Task<UserSettings?> GetSettingsAsync(int userId)
+    {
+        return _db.UserSettings
+            .AsNoTracking()
+            .FirstOrDefaultAsync(s => s.UserId == userId);
+    }
+
+    public async Task SaveSettingsAsync(UserSettings settings)
+    {
+        if (settings.Id == 0)
+            _db.UserSettings.Add(settings);
+        else
+            _db.UserSettings.Update(settings);
+
+        await _db.SaveChangesAsync();
+    }
 }

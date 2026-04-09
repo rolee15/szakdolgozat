@@ -15,6 +15,7 @@ public class KanjiKaDbContext : DbContext
     public KanjiKaDbContext(DbContextOptions<KanjiKaDbContext> options) : base(options) { }
 
     public DbSet<User> Users { get; set; }
+    public DbSet<UserSettings> UserSettings { get; set; }
     public DbSet<Proficiency> Proficiencies { get; set; }
     public DbSet<LessonCompletion> LessonCompletions { get; set; }
     public DbSet<Character> Characters { get; set; }
@@ -54,6 +55,13 @@ public class KanjiKaDbContext : DbContext
             entity.HasMany(x => x.LessonCompletions)
                 .WithOne(lessonCompletion => lessonCompletion.User)
                 .HasForeignKey(lessonCompletion => lessonCompletion.UserId);
+            entity.HasOne(x => x.Settings)
+                .WithOne(s => s.User)
+                .HasForeignKey<UserSettings>(s => s.UserId);
+        });
+
+        modelBuilder.Entity<UserSettings>(entity => {
+            entity.HasKey(s => s.Id);
         });
 
         modelBuilder.Entity<Proficiency>(entity => {

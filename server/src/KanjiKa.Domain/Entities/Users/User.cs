@@ -24,4 +24,5 @@ public class User
 
     public List<Proficiency> Proficiencies { get; set; } = new();
     public List<LessonCompletion> LessonCompletions { get; set; } = new();
+    public UserSettings? Settings { get; set; }
 }

@@ -1,4 +1,4 @@
-import { API_USERS_URL } from "@/services/routes";
+import { API_USERS_URL, API_USERS_SETTINGS_URL } from "@/services/routes";
 
 const api = {
 
@@ -60,7 +60,31 @@ const api = {
             throw new Error(body.errorMessage ?? 'Failed to change password');
         }
         return response.json();
-    }
+    },
+
+    async getSettings(): Promise<UserSettings> {
+        const token = localStorage.getItem('token');
+        const response = await fetch(API_USERS_SETTINGS_URL, {
+            headers: {
+                ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            },
+        });
+        if (!response.ok) throw new Error('Failed to load settings');
+        return response.json();
+    },
+
+    async updateSettings(dto: UserSettings): Promise<void> {
+        const token = localStorage.getItem('token');
+        const response = await fetch(API_USERS_SETTINGS_URL, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            },
+            body: JSON.stringify(dto),
+        });
+        if (!response.ok) throw new Error('Failed to save settings');
+    },
 };
 
 export default api;

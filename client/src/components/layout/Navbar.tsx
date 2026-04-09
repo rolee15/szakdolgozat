@@ -60,6 +60,7 @@ const Navbar = () => {
               {isAuthenticated ? (
                 <>
                   <span className="text-gray-300 text-sm">{username}</span>
+                  <NavLink to="/settings" className={navLinkClass}>Settings</NavLink>
                   <button
                     onClick={handleLogout}
                     className="text-white hover:text-gray-300"
@@ -128,6 +129,9 @@ const Navbar = () => {
                 <NavLink to="/path" className={navLinkClass} onClick={() => setMobileOpen(false)}>Learning Path</NavLink>
               </div>
             </div>
+            {isAuthenticated && (
+              <NavLink to="/settings" className={navLinkClass} onClick={() => setMobileOpen(false)}>Settings</NavLink>
+            )}
             {isAdmin && (
               <NavLink to="/admin" className={navLinkClass} onClick={() => setMobileOpen(false)}>Admin</NavLink>
             )}

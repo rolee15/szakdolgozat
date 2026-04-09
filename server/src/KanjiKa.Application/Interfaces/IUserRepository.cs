@@ -23,4 +23,8 @@ public interface IUserRepository
     Task<bool> DeleteByIdAsync(int id);
 
     Task SaveChangesAsync();
+
+    Task<UserSettings?> GetSettingsAsync(int userId);
+
+    Task SaveSettingsAsync(UserSettings settings);
 }

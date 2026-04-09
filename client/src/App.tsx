@@ -17,6 +17,7 @@ import FlashCardPage from "./pages/FlashCardPage";
 import KanjiListPage from "./pages/KanjiListPage";
 import KanjiDetailPage from "./pages/KanjiDetailPage";
 import ChangePasswordPage from "./pages/ChangePasswordPage";
+import SettingsPage from "./pages/SettingsPage";
 import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
 import AdminUsersPage from "./pages/admin/AdminUsersPage";
 import AdminUserDetailPage from "./pages/admin/AdminUserDetailPage";
@@ -216,6 +217,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <UnitTestPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "settings",
+        element: (
+          <ProtectedRoute>
+            <SettingsPage />
           </ProtectedRoute>
         ),
       },

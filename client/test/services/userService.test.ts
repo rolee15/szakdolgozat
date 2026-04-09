@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 vi.mock('@/services/routes', () => ({
   API_USERS_URL: 'http://api.test/users',
+  API_USERS_SETTINGS_URL: 'http://api.test/users/settings',
 }));
 
 import userService from '@/services/userService';
@@ -132,6 +133,47 @@ describe('userService', () => {
     it('throws on non-ok response', async () => {
       mockFetchNotOk();
       await expect(userService.refreshToken('badtoken')).rejects.toThrow('Failed to refresh token');
+    });
+  });
+
+  describe('getSettings', () => {
+    it('fetches settings from the correct endpoint and returns JSON', async () => {
+      const payload = { dailyLessonLimit: 10, reviewBatchSize: 50, jlptLevel: 'N5' };
+      mockFetchOk(payload);
+
+      const result = await userService.getSettings();
+
+      expect(result).toEqual(payload);
+      const fetchMock = global.fetch as unknown as ReturnType<typeof vi.fn>;
+      const [url] = fetchMock.mock.calls[0] as [string, RequestInit];
+      expect(url).toBe('http://api.test/users/settings');
+    });
+
+    it('throws on non-ok response', async () => {
+      mockFetchNotOk();
+      await expect(userService.getSettings()).rejects.toThrow('Failed to load settings');
+    });
+  });
+
+  describe('updateSettings', () => {
+    it('sends PUT with correct body and resolves on success', async () => {
+      const notOkResponse = { ok: true, json: vi.fn() } as unknown as Response;
+      (globalThis as { fetch: typeof fetch }).fetch = vi.fn().mockResolvedValue(notOkResponse) as unknown as typeof fetch;
+
+      const dto = { dailyLessonLimit: 20, reviewBatchSize: 100, jlptLevel: 'N4' };
+      await userService.updateSettings(dto);
+
+      const fetchMock = global.fetch as unknown as ReturnType<typeof vi.fn>;
+      const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+      expect(url).toBe('http://api.test/users/settings');
+      expect(init?.method).toBe('PUT');
+      expect(init?.body).toBe(JSON.stringify(dto));
+    });
+
+    it('throws on non-ok response', async () => {
+      mockFetchNotOk();
+      const dto = { dailyLessonLimit: 5, reviewBatchSize: 20, jlptLevel: 'N3' };
+      await expect(userService.updateSettings(dto)).rejects.toThrow('Failed to save settings');
     });
   });
 });
