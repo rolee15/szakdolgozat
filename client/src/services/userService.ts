@@ -1,4 +1,4 @@
-import { API_USERS_URL, API_USERS_SETTINGS_URL } from "@/services/routes";
+import { API_USERS_URL, API_USERS_SETTINGS_URL, API_USERS_FORGOT_PASSWORD_URL, API_USERS_RESET_PASSWORD_URL } from "@/services/routes";
 
 const api = {
 
@@ -84,6 +84,24 @@ const api = {
             body: JSON.stringify(dto),
         });
         if (!response.ok) throw new Error('Failed to save settings');
+    },
+
+    async forgotPassword(email: string): Promise<void> {
+        const response = await fetch(API_USERS_FORGOT_PASSWORD_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email }),
+        });
+        if (!response.ok) throw new Error('Failed to send reset code');
+    },
+
+    async confirmResetPassword(email: string, code: string, newPassword: string): Promise<void> {
+        const response = await fetch(API_USERS_RESET_PASSWORD_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, code, newPassword }),
+        });
+        if (!response.ok) throw new Error('Invalid or expired reset code');
     },
 };
 

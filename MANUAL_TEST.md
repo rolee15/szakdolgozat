@@ -40,7 +40,12 @@ Precondition: dev DB running, backend started, frontend started (see CLAUDE.md f
 ### 1.4 Forgot Password
 
 - [ ] Navigate to `/forgot-password`
-- [ ] Page renders with email input (UI-only, no backend integration yet)
+- [ ] Page renders with email input and "Send reset code" button
+- [ ] Submit with valid email -> success message "コードをメールに送信しました" shown, step 2 form appears with reset code, new password, and confirm password fields
+- [ ] Submit with API failure in step 1 -> error message shown, stays on step 1
+- [ ] In step 2: enter correct code and matching passwords -> success message "パスワードがリセットされました" shown with link to login
+- [ ] In step 2: enter mismatched passwords -> validation error "Passwords do not match" shown, no API call made
+- [ ] In step 2: enter invalid/expired code -> error message shown
 
 ### 1.5 Forced Password Change
 
@@ -308,3 +313,26 @@ Precondition: dev DB running, backend started, frontend started (see CLAUDE.md f
 - [ ] Unit 15 is the Mixed N5 Review (grammar + reading)
 - [ ] Completing a unit unlocks the next unit
 - [ ] Unit tests use multiple-choice kana recognition questions
+
+---
+
+## 13. Shiritori (`/shiritori`)
+
+- [ ] Navigate to `/shiritori` -> game board loads, player can see the initial word
+- [ ] Submit a valid word starting with the last character of the previous word -> word accepted, computer responds
+- [ ] Submit a word that does not start with the correct character -> rejection message shown, player must try again
+- [ ] Submit a word ending in ん -> rejection message shown (ん-ending words are forbidden)
+- [ ] Computer selects a word ending in ん -> computer loses, player wins message shown
+- [ ] Player submits a word ending in ん and the game ends -> game over, computer wins message shown
+- [ ] Disconnect or abandon game (navigate away) -> game is abandoned, next visit starts fresh
+
+---
+
+## 14. User Settings (`/settings`)
+
+- [ ] Navigate to `/settings` -> current settings load (daily lesson limit, review batch size, JLPT level)
+- [ ] Change daily lesson limit and save -> updated value persisted, success feedback shown
+- [ ] Change review batch size and save -> updated value persisted, success feedback shown
+- [ ] Change JLPT level and save -> updated value persisted, success feedback shown
+- [ ] API failure on load -> error state shown, page does not crash
+- [ ] API failure on save -> error message shown, settings not lost

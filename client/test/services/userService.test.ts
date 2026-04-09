@@ -3,6 +3,8 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 vi.mock('@/services/routes', () => ({
   API_USERS_URL: 'http://api.test/users',
   API_USERS_SETTINGS_URL: 'http://api.test/users/settings',
+  API_USERS_FORGOT_PASSWORD_URL: 'http://api.test/users/forgot-password',
+  API_USERS_RESET_PASSWORD_URL: 'http://api.test/users/reset-password',
 }));
 
 import userService from '@/services/userService';
@@ -174,6 +176,54 @@ describe('userService', () => {
       mockFetchNotOk();
       const dto = { dailyLessonLimit: 5, reviewBatchSize: 20, jlptLevel: 'N3' };
       await expect(userService.updateSettings(dto)).rejects.toThrow('Failed to save settings');
+    });
+  });
+
+  describe('forgotPassword', () => {
+    it('posts to /forgot-password with email and resolves on success', async () => {
+      const okResponse = { ok: true, json: vi.fn() } as unknown as Response;
+      (globalThis as { fetch: typeof fetch }).fetch = vi.fn().mockResolvedValue(okResponse) as unknown as typeof fetch;
+
+      const email = 'user@example.com';
+      await userService.forgotPassword(email);
+
+      const fetchMock = global.fetch as unknown as ReturnType<typeof vi.fn>;
+      const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+      expect(url).toBe('http://api.test/users/forgot-password');
+      expect(init?.method).toBe('POST');
+      expect(init?.headers).toEqual({ 'Content-Type': 'application/json' });
+      expect(init?.body).toBe(JSON.stringify({ email }));
+    });
+
+    it('throws on non-ok response', async () => {
+      mockFetchNotOk();
+      await expect(userService.forgotPassword('user@example.com')).rejects.toThrow('Failed to send reset code');
+    });
+  });
+
+  describe('confirmResetPassword', () => {
+    it('posts to /reset-password with email, code, and newPassword and resolves on success', async () => {
+      const okResponse = { ok: true, json: vi.fn() } as unknown as Response;
+      (globalThis as { fetch: typeof fetch }).fetch = vi.fn().mockResolvedValue(okResponse) as unknown as typeof fetch;
+
+      const email = 'user@example.com';
+      const code = '123456';
+      const newPassword = 'newpass123';
+      await userService.confirmResetPassword(email, code, newPassword);
+
+      const fetchMock = global.fetch as unknown as ReturnType<typeof vi.fn>;
+      const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+      expect(url).toBe('http://api.test/users/reset-password');
+      expect(init?.method).toBe('POST');
+      expect(init?.headers).toEqual({ 'Content-Type': 'application/json' });
+      expect(init?.body).toBe(JSON.stringify({ email, code, newPassword }));
+    });
+
+    it('throws on non-ok response', async () => {
+      mockFetchNotOk();
+      await expect(
+        userService.confirmResetPassword('user@example.com', 'badcode', 'newpass123')
+      ).rejects.toThrow('Invalid or expired reset code');
     });
   });
 });

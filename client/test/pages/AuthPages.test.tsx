@@ -17,6 +17,13 @@ vi.mock('@/context/AuthContext', () => ({
   }),
 }))
 
+vi.mock('@/services/userService', () => ({
+  default: {
+    forgotPassword: vi.fn(),
+    confirmResetPassword: vi.fn(),
+  },
+}))
+
 describe('Auth pages', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -172,21 +179,15 @@ describe('Auth pages', () => {
   })
 
   describe('ForgotPasswordPage', () => {
-    it('renders form and allows submitting without crashing', async () => {
+    it('renders email input and send reset code button in step 1', () => {
       render(
         <MemoryRouter>
           <ForgotPasswordPage />
         </MemoryRouter>
       )
 
-      const emailInput = screen.getByRole('textbox') as HTMLInputElement
-      fireEvent.change(emailInput, { target: { value: 'x@y.z' } })
-
-      const button = screen.getByRole('button', { name: /reset password/i })
-      fireEvent.click(button)
-
-      expect(await screen.findByRole('button', { name: /reset password/i })).toBeInTheDocument()
-      expect(screen.queryByText(/an error occurred/i)).not.toBeInTheDocument()
+      expect(screen.getByLabelText(/email/i)).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /send reset code/i })).toBeInTheDocument()
     })
   })
 })
