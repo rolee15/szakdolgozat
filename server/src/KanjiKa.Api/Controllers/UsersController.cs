@@ -24,18 +24,10 @@ public class UsersController : ControllerBase
     [HttpPost("login")]
     [Consumes("application/json")]
     [ProducesResponseType(typeof(LoginDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        try
-        {
-            LoginDto loginDto = await _userService.Login(request.Email, request.Password);
-            return Ok(loginDto);
-        }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(ex.Message);
-        }
+        LoginDto loginDto = await _userService.Login(request.Email, request.Password);
+        return Ok(loginDto);
     }
 
     [HttpPost("register")]

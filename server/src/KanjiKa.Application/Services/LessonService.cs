@@ -8,7 +8,6 @@ namespace KanjiKa.Application.Services;
 
 public class LessonService : ILessonService
 {
-    // Move to user settings when implemented
     private const int LessonsPerDayCount = 15;
 
     private readonly ILessonRepository _repo;
@@ -101,12 +100,8 @@ public class LessonService : ILessonService
 
     public async Task<LessonReviewsCountDto> GetLessonReviewsCountAsync(int userId)
     {
-        List<Proficiency> dueReviews = await _repo.GetDueReviewsAsync(userId);
-
-        return new LessonReviewsCountDto
-        {
-            Count = dueReviews.Count
-        };
+        int count = await GetDueReviewsCountAsync(userId);
+        return new LessonReviewsCountDto { Count = count };
     }
 
     public async Task<IEnumerable<LessonReviewDto>> GetLessonReviewsAsync(int userId)
@@ -132,40 +127,20 @@ public class LessonService : ILessonService
         Proficiency proficiency = await _repo.GetProficiencyAsync(userId, character.Id)
                                   ?? await LearnLessonAsync(userId, character.Id);
 
-        if (answer.Answer == character.Romanization)
-        {
+        bool isCorrect = answer.Answer == character.Romanization;
+        if (isCorrect)
             proficiency.AnswerCorrectly();
-            await _repo.SaveChangesAsync();
-            return new LessonReviewAnswerResultDto
-            {
-                IsCorrect = true,
-                CorrectAnswer = character.Romanization,
-                SrsStage = (int)proficiency.SrsStage,
-                SrsStageName = SrsIntervals.GetStageName(proficiency.SrsStage),
-                NextReviewDate = proficiency.NextReviewDate
-            };
-        }
+        else
+            proficiency.AnswerIncorrectly();
 
-        proficiency.AnswerIncorrectly();
         await _repo.SaveChangesAsync();
-        return new LessonReviewAnswerResultDto
-        {
-            IsCorrect = false,
-            CorrectAnswer = character.Romanization,
-            SrsStage = (int)proficiency.SrsStage,
-            SrsStageName = SrsIntervals.GetStageName(proficiency.SrsStage),
-            NextReviewDate = proficiency.NextReviewDate
-        };
+        return BuildReviewResult(isCorrect, character.Romanization, proficiency);
     }
 
     public async Task<LessonReviewsCountDto> GetWritingReviewsCountAsync(int userId)
     {
-        List<Proficiency> dueReviews = await _repo.GetDueReviewsAsync(userId);
-
-        return new LessonReviewsCountDto
-        {
-            Count = dueReviews.Count
-        };
+        int count = await GetDueReviewsCountAsync(userId);
+        return new LessonReviewsCountDto { Count = count };
     }
 
     public async Task<IEnumerable<WritingReviewDto>> GetWritingReviewsAsync(int userId)
@@ -194,26 +169,28 @@ public class LessonService : ILessonService
         if (proficiency is null)
             throw new ArgumentException("No proficiency record found for this character.", nameof(answer));
 
-        if (answer.TypedCharacter == character.Symbol)
-        {
+        bool isCorrect = answer.TypedCharacter == character.Symbol;
+        if (isCorrect)
             proficiency.AnswerCorrectly();
-            await _repo.SaveChangesAsync();
-            return new LessonReviewAnswerResultDto
-            {
-                IsCorrect = true,
-                CorrectAnswer = character.Symbol,
-                SrsStage = (int)proficiency.SrsStage,
-                SrsStageName = SrsIntervals.GetStageName(proficiency.SrsStage),
-                NextReviewDate = proficiency.NextReviewDate
-            };
-        }
+        else
+            proficiency.AnswerIncorrectly();
 
-        proficiency.AnswerIncorrectly();
         await _repo.SaveChangesAsync();
+        return BuildReviewResult(isCorrect, character.Symbol, proficiency);
+    }
+
+    private async Task<int> GetDueReviewsCountAsync(int userId)
+    {
+        List<Proficiency> dueReviews = await _repo.GetDueReviewsAsync(userId);
+        return dueReviews.Count;
+    }
+
+    private static LessonReviewAnswerResultDto BuildReviewResult(bool isCorrect, string correctAnswer, Proficiency proficiency)
+    {
         return new LessonReviewAnswerResultDto
         {
-            IsCorrect = false,
-            CorrectAnswer = character.Symbol,
+            IsCorrect = isCorrect,
+            CorrectAnswer = correctAnswer,
             SrsStage = (int)proficiency.SrsStage,
             SrsStageName = SrsIntervals.GetStageName(proficiency.SrsStage),
             NextReviewDate = proficiency.NextReviewDate

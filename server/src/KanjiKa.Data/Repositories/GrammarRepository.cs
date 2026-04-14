@@ -50,14 +50,14 @@ public class GrammarRepository : IGrammarRepository
             .FirstOrDefaultAsync(gp => gp.UserId == userId && gp.GrammarPointId == grammarPointId);
     }
 
-    public async Task AddProficiencyAsync(GrammarProficiency proficiency)
+    public Task AddProficiencyAsync(GrammarProficiency proficiency)
     {
         _context.GrammarProficiencies.Add(proficiency);
-        await Task.CompletedTask;
+        return Task.CompletedTask;
     }
 
-    public async Task SaveChangesAsync()
+    public Task SaveChangesAsync()
     {
-        await _context.SaveChangesAsync();
+        return _context.SaveChangesAsync();
     }
 }

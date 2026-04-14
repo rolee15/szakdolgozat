@@ -20,14 +20,6 @@ const ShiritoriPage = () => {
     reset();
   };
 
-  const handleStartGame = () => {
-    startGame();
-  };
-
-  const handlePlayAgain = () => {
-    startGame();
-  };
-
   return (
     <div className="flex flex-col items-center gap-8 p-8 max-w-2xl mx-auto">
       <div className="flex items-center gap-2 self-start">
@@ -48,7 +40,7 @@ const ShiritoriPage = () => {
             1文字ずつ言葉を繋げよう！（ん で終わったら負け）
           </p>
           <button
-            onClick={handleStartGame}
+            onClick={startGame}
             className="px-8 py-3 bg-indigo-500 text-white font-medium rounded-lg hover:bg-indigo-600 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2"
           >
             ゲームを始める
@@ -109,7 +101,7 @@ const ShiritoriPage = () => {
                 </p>
               </div>
               <button
-                onClick={handlePlayAgain}
+                onClick={startGame}
                 className="px-8 py-3 bg-indigo-500 text-white font-medium rounded-lg hover:bg-indigo-600 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2"
               >
                 もう一度プレイ

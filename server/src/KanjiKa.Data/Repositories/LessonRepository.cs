@@ -24,6 +24,7 @@ public class LessonRepository : ILessonRepository
     {
         return await _db.Users
             .Include(u => u.Proficiencies)
+            .AsNoTracking()
             .FirstOrDefaultAsync(u => u.Id == userId);
     }
 

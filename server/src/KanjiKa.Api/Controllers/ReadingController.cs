@@ -49,8 +49,7 @@ public class ReadingController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> SubmitAnswers(int id, [FromBody] ReadingSubmitDto submitDto)
     {
-        if (submitDto.PassageId != id)
-            submitDto.PassageId = id;
+        submitDto.PassageId = id;
 
         try
         {

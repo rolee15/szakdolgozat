@@ -1,4 +1,5 @@
 import { API_USERS_URL, API_USERS_SETTINGS_URL, API_USERS_FORGOT_PASSWORD_URL, API_USERS_RESET_PASSWORD_URL } from "@/services/routes";
+import { apiFetch } from "@/services/apiClient";
 
 const api = {
 
@@ -46,13 +47,8 @@ const api = {
     },
 
     async changePassword(currentPassword: string, newPassword: string): Promise<{ isSuccess: boolean; errorMessage?: string }> {
-        const token = localStorage.getItem('token');
-        const response = await fetch(`${API_USERS_URL}/changePassword`, {
+        const response = await apiFetch(`${API_USERS_URL}/changePassword`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                ...(token ? { Authorization: `Bearer ${token}` } : {}),
-            },
             body: JSON.stringify({ currentPassword, newPassword }),
         });
         if (!response.ok) {
@@ -63,24 +59,14 @@ const api = {
     },
 
     async getSettings(): Promise<UserSettings> {
-        const token = localStorage.getItem('token');
-        const response = await fetch(API_USERS_SETTINGS_URL, {
-            headers: {
-                ...(token ? { Authorization: `Bearer ${token}` } : {}),
-            },
-        });
+        const response = await apiFetch(API_USERS_SETTINGS_URL);
         if (!response.ok) throw new Error('Failed to load settings');
         return response.json();
     },
 
     async updateSettings(dto: UserSettings): Promise<void> {
-        const token = localStorage.getItem('token');
-        const response = await fetch(API_USERS_SETTINGS_URL, {
+        const response = await apiFetch(API_USERS_SETTINGS_URL, {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                ...(token ? { Authorization: `Bearer ${token}` } : {}),
-            },
             body: JSON.stringify(dto),
         });
         if (!response.ok) throw new Error('Failed to save settings');

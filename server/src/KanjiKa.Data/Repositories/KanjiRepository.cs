@@ -68,14 +68,14 @@ public class KanjiRepository : IKanjiRepository
             .FirstOrDefaultAsync(kp => kp.UserId == userId && kp.KanjiId == kanjiId);
     }
 
-    public async Task AddProficiencyAsync(KanjiProficiency proficiency)
+    public Task AddProficiencyAsync(KanjiProficiency proficiency)
     {
         _context.KanjiProficiencies.Add(proficiency);
-        await Task.CompletedTask;
+        return Task.CompletedTask;
     }
 
-    public async Task SaveChangesAsync()
+    public Task SaveChangesAsync()
     {
-        await _context.SaveChangesAsync();
+        return _context.SaveChangesAsync();
     }
 }

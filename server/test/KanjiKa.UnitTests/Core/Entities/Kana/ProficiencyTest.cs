@@ -183,37 +183,35 @@ public class ProficiencyTest
     public void Proficiency_AnswerCorrectly_ShouldUpdateLastPracticed()
     {
         // Arrange
-        DateTimeOffset now = DateTimeOffset.UtcNow;
+        var fixedNow = new DateTimeOffset(2025, 1, 1, 12, 0, 0, TimeSpan.Zero);
         var proficiency = new Proficiency
         {
             SrsStage = SrsStage.Apprentice2,
-            LastPracticed = now
+            LastPracticed = fixedNow.AddHours(-1)
         };
 
         // Act
-        proficiency.AnswerCorrectly();
+        proficiency.AnswerCorrectly(fixedNow);
 
         // Assert
-        // TODO: Should inject a DateTimeOffsetProvider so the test can be controlled
-        Assert.True(proficiency.LastPracticed > now);
+        Assert.Equal(fixedNow, proficiency.LastPracticed);
     }
 
     [Fact]
     public void Proficiency_AnswerIncorrectly_ShouldUpdateLastPracticed()
     {
         // Arrange
-        DateTimeOffset now = DateTimeOffset.UtcNow;
+        var fixedNow = new DateTimeOffset(2025, 1, 1, 12, 0, 0, TimeSpan.Zero);
         var proficiency = new Proficiency
         {
             SrsStage = SrsStage.Guru2,
-            LastPracticed = now
+            LastPracticed = fixedNow.AddHours(-1)
         };
 
         // Act
-        proficiency.AnswerIncorrectly();
+        proficiency.AnswerIncorrectly(fixedNow);
 
         // Assert
-        // TODO: Should inject a DateTimeOffsetProvider so the test can be controlled
-        Assert.True(proficiency.LastPracticed > now);
+        Assert.Equal(fixedNow, proficiency.LastPracticed);
     }
 }

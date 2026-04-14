@@ -18,17 +18,17 @@ public class Proficiency
     // Computed for backward compatibility: maps SRS stage to 0-100 scale
     public int Level => SrsStage == SrsStage.Burned ? 100 : (int)SrsStage * 100 / 9;
 
-    public void AnswerCorrectly()
+    public void AnswerCorrectly(DateTimeOffset? now = null)
     {
         SrsStage = SrsIntervals.Advance(SrsStage);
         NextReviewDate = SrsIntervals.GetNextReviewDate(SrsStage);
-        LastPracticed = DateTimeOffset.UtcNow;
+        LastPracticed = now ?? DateTimeOffset.UtcNow;
     }
 
-    public void AnswerIncorrectly()
+    public void AnswerIncorrectly(DateTimeOffset? now = null)
     {
         SrsStage = SrsIntervals.Regress(SrsStage);
         NextReviewDate = SrsIntervals.GetNextReviewDate(SrsStage);
-        LastPracticed = DateTimeOffset.UtcNow;
+        LastPracticed = now ?? DateTimeOffset.UtcNow;
     }
 }

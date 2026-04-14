@@ -9,7 +9,6 @@ interface KanaButtonProps {
 
 const KanaButton: React.FC<KanaButtonProps> = ({ type, character, romanization, proficiency }) => {
   const validProficiency = Math.max(0, Math.min(100, proficiency));
-  const level = Math.floor(validProficiency / 20) + 1;
 
   const navigate = useNavigate();
 
@@ -17,7 +16,7 @@ const KanaButton: React.FC<KanaButtonProps> = ({ type, character, romanization, 
     <div className="relative flex flex-col items-center">
       <button
         className="w-20 h-20 rounded border border-blue-500 flex flex-col items-center justify-center text-2xl font-bold hover:bg-blue-500 hover:text-white transition-colors"
-        aria-label={`Kana ${character}, Proficiency Level ${level}`}
+        aria-label={`Kana ${character}, Proficiency Level ${Math.floor(validProficiency / 20) + 1}`}
         onClick={() => navigate(`/${type}/${character}`)}
       >
         <span className="text-2xl font-bold">{character}</span>

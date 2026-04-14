@@ -78,6 +78,34 @@ describe('KanaGrid', () => {
     expect(hiraganaApi.getCharacters as unknown as ReturnType<typeof vi.fn>).not.toHaveBeenCalled()
   })
 
+  it('renders spacers for empty grid positions (ya/wa rows)', async () => {
+    // Full set including ya-row and wa-row characters
+    const chars: KanaCharacter[] = [
+      { character: 'や', romanization: 'ya', type: 'hiragana', proficiency: 0 },
+      { character: 'ゆ', romanization: 'yu', type: 'hiragana', proficiency: 0 },
+      { character: 'よ', romanization: 'yo', type: 'hiragana', proficiency: 0 },
+      { character: 'わ', romanization: 'wa', type: 'hiragana', proficiency: 0 },
+      { character: 'を', romanization: 'wo', type: 'hiragana', proficiency: 0 },
+    ]
+    ;(hiraganaApi.getCharacters as unknown as ReturnType<typeof vi.fn>).mockResolvedValue(chars)
+
+    render(<KanaGrid type="hiragana" />)
+
+    await waitFor(() => {
+      expect(screen.getByText('や')).toBeInTheDocument()
+    })
+
+    // ya-row: 5 cells (ya, spacer, yu, spacer, yo) — only 3 buttons
+    // wa-row: 5 cells (wa, spacer, spacer, spacer, wo) — only 2 buttons
+    const buttons = screen.getAllByRole('button', { name: /Kana /i })
+    expect(buttons).toHaveLength(5)
+
+    // Spacers are aria-hidden divs; grid template has 16 rows × 5 = 80 cells total
+    // but only 5 characters → 75 spacers
+    const spacers = document.querySelectorAll('[aria-hidden="true"]')
+    expect(spacers.length).toBeGreaterThan(0)
+  })
+
   it('shows error message when fetch fails with an Error', async () => {
     ;(hiraganaApi.getCharacters as unknown as ReturnType<typeof vi.fn>).mockRejectedValue(new Error('Network down'))
 
