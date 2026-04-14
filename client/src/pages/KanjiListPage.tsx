@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import kanjiService from '@/services/kanjiService';
+import userService from '@/services/userService';
 import SrsBadge from '@/components/common/SrsBadge';
 
 type JlptFilter = number | null;
@@ -17,7 +18,25 @@ const JLPT_LEVELS: { label: string; value: JlptFilter }[] = [
 
 const KanjiListPage = () => {
   const [selectedLevel, setSelectedLevel] = useState<JlptFilter>(null);
+  const [levelInitialized, setLevelInitialized] = useState(false);
   const navigate = useNavigate();
+
+  const { data: settings, isError: settingsIsError } = useQuery({
+    queryKey: ['settings'],
+    queryFn: userService.getSettings,
+    staleTime: Infinity,
+  });
+
+  useEffect(() => {
+    if (levelInitialized) return;
+    if (settings !== undefined) {
+      const n = parseInt(settings.jlptLevel.slice(1), 10);
+      setSelectedLevel(isNaN(n) ? null : (n as JlptFilter));
+      setLevelInitialized(true);
+    } else if (settingsIsError) {
+      setLevelInitialized(true); // fall back to All
+    }
+  }, [settings, settingsIsError, levelInitialized]);
   const sentinelRef = useRef<HTMLDivElement>(null);
 
   const {
@@ -33,6 +52,7 @@ const KanjiListPage = () => {
     initialPageParam: 1,
     getNextPageParam: (lastPage) =>
       lastPage.hasNextPage ? lastPage.page + 1 : undefined,
+    enabled: levelInitialized,
   });
 
   const allKanji = data?.pages.flatMap((p) => p.items) ?? [];
@@ -63,7 +83,7 @@ const KanjiListPage = () => {
         {JLPT_LEVELS.map(({ label, value }) => (
           <button
             key={label}
-            onClick={() => setSelectedLevel(value)}
+            onClick={() => { setSelectedLevel(value); setLevelInitialized(true); }}
             className={`px-5 py-2 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 ${
               selectedLevel === value
                 ? 'bg-indigo-500 text-white'

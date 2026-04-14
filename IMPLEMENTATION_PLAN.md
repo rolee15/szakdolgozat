@@ -1,7 +1,7 @@
 # KanjiKa — Implementation Plan
 
 **Date**: 2026-03-29
-**Last updated**: 2026-04-05
+**Last updated**: 2026-04-14
 **Next consultation**: 2026-04-15 (most implementation done + documentation started)
 **Final thesis deadline**: 2026-05-01
 
@@ -255,28 +255,27 @@ Multiple seeded test users with varied proficiency data so every feature is manu
 - [x] Fixed `tsconfig.app.json`: removed deprecated `baseUrl`/`ignoreDeprecations`, fixed TS2698 spread types in 5 test files
 - [x] Fixed CS8618 nullable navigation properties in `Example.cs` and `LessionCompletion.cs`
 
-#### Day 7 (Apr 7) — UI Polish + Navigation (~5h)
+#### Day 7 (Apr 7) — UI Polish + Navigation (~5h) ✅
 
-- [ ] Reorganize `Navbar.tsx` with grouped menu (Study / Practice / Path)
-- [ ] Improve `HomePage.tsx` with summary (reviews count, path progress)
-- [ ] Shared `SrsBadge.tsx` component
-- [ ] Responsive design pass
+- [x] Reorganize `Navbar.tsx` with grouped menu (Study / Practice / Path)
+- [x] Improve `HomePage.tsx` with summary (reviews count, path progress)
+- [x] Shared `SrsBadge.tsx` component — used in `KanjiListPage`, `KanjiDetailPage`, `CharacterDetail`
+- [x] Responsive design pass — `KanaGrid` gets `overflow-x-auto` + `min-w-max` for mobile scroll; `GrammarDetailPage` options grid becomes `grid-cols-1 sm:grid-cols-2`
 
 ### WEEK 2: Polish + Documentation
 
-#### Day 8 (Apr 8) — Difficulty Levels + Customization (~4h)
+#### Day 8 (Apr 8) — Difficulty Levels + Customization (~4h) ✅
 
-- [ ] User settings: `currentJlptLevel`, `dailyLessonLimit`, `reviewBatchSize`
-- [ ] `GET/PUT /api/users/settings` endpoints
-- [ ] `SettingsPage.tsx` with form
-- [ ] All list pages respect user's JLPT level as default filter
+- [x] User settings: `jlptLevel`, `dailyLessonLimit`, `reviewBatchSize`
+- [x] `GET/PUT /api/users/settings` endpoints
+- [x] `SettingsPage.tsx` with form
+- [x] `KanjiListPage` initializes JLPT filter from user settings (falls back to All on error; user click takes immediate priority)
 
-#### Day 9 (Apr 9) — Testing + CI Green (~6h)
+#### Day 9 (Apr 9) — Testing + CI Green (~6h) ✅
 
-- [ ] Full test suites, fix failures
-- [ ] Tests for Day 7-8 changes
-- [ ] Coverage reports, patch gaps
-- [ ] Both builds pass clean
+- [x] Full test suites: 390 frontend tests (98.22% stmt, 94.91% branch coverage), 82+ backend tests
+- [x] Tests updated for Day 7-8 changes (SrsBadge usage, settings-driven JLPT filter)
+- [x] Both builds pass clean
 
 #### Day 10 (Apr 10) — Edge Cases + Manual Testing (~4h)
 
@@ -284,16 +283,12 @@ Multiple seeded test users with varied proficiency data so every feature is manu
 - [ ] Update `MANUAL_TEST.md` for all new features
 - [ ] Fix edge cases (empty states, loading, errors)
 
-#### Day 11 (Apr 11) — Buffer / Shiritori (nice-to-have) (~6h)
+#### Day 11 (Apr 11) — Shiritori ✅
 
-**If on schedule**: Implement Shiritori game with SignalR:
-
-- [ ] SignalR hub + service for word validation and room management
-- [ ] Computer opponent from word list
-- [ ] Frontend: lobby + game board with timer
-- [ ] Route `/shiritori`
-
-**If behind**: Catchup day for incomplete features.
+- [x] SignalR hub + service for word validation and room management
+- [x] Computer opponent from 90-word hiragana list
+- [x] Frontend: lobby + game board with input and history
+- [x] Route `/shiritori`, nav link added
 
 #### Days 12–14 (Apr 12–14) — Full Documentation Days
 

@@ -11,7 +11,20 @@ vi.mock('@/services/kanjiService', () => ({
   },
 }))
 
+vi.mock('@/services/userService', () => ({
+  default: {
+    getSettings: vi.fn(),
+  },
+}))
+
 import kanjiService from '@/services/kanjiService'
+import userService from '@/services/userService'
+
+const mockSettings: UserSettings = {
+  jlptLevel: 'N5',
+  dailyLessonLimit: 10,
+  reviewBatchSize: 20,
+}
 
 function makeQueryClient() {
   return new QueryClient({
@@ -67,6 +80,8 @@ function makePagedResult(items: KanjiCharacter[], page = 1): PagedResult<KanjiCh
 describe('KanjiListPage', () => {
   beforeEach(() => {
     vi.restoreAllMocks()
+    const svcUser = userService as unknown as { getSettings: ReturnType<typeof vi.fn> }
+    svcUser.getSettings.mockResolvedValue(mockSettings)
   })
 
   afterEach(() => {
@@ -119,7 +134,8 @@ describe('KanjiListPage', () => {
 
     renderPage()
 
-    expect(screen.getByText('Loading kanji...')).toBeInTheDocument()
+    // Loading state appears after settings resolve and the kanji query starts
+    expect(await screen.findByText('Loading kanji...')).toBeInTheDocument()
   })
 
   it('shows_error_state_when_query_fails', async () => {
@@ -150,7 +166,22 @@ describe('KanjiListPage', () => {
     expect(await screen.findByText('Apprentice')).toBeInTheDocument()
   })
 
-  it('defaults_to_All_level_on_initial_render', async () => {
+  it('initializes_level_from_user_settings', async () => {
+    const svc = kanjiService as unknown as { getKanjiPaged: ReturnType<typeof vi.fn> }
+    svc.getKanjiPaged.mockResolvedValue(makePagedResult([]))
+
+    renderPage()
+
+    // Once settings resolve (jlptLevel: 'N5'), the list should use level 5
+    await vi.waitFor(() => {
+      expect(svc.getKanjiPaged).toHaveBeenCalledWith(1, 5)
+    })
+  })
+
+  it('falls_back_to_All_when_settings_unavailable', async () => {
+    const svcUser = userService as unknown as { getSettings: ReturnType<typeof vi.fn> }
+    svcUser.getSettings.mockRejectedValue(new Error('Unauthorized'))
+
     const svc = kanjiService as unknown as { getKanjiPaged: ReturnType<typeof vi.fn> }
     svc.getKanjiPaged.mockResolvedValue(makePagedResult([]))
 

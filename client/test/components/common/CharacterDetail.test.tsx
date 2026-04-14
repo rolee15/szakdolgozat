@@ -105,7 +105,7 @@ describe('CharacterDetail', () => {
     })
   })
 
-  it('shows SRS stage name when srsStageName is defined', async () => {
+  it('shows SRS stage badge when srsStageName is defined', async () => {
     ;(hiraganaApi.getCharacterDetail as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
       character: 'あ',
       romanization: 'a',
@@ -119,7 +119,8 @@ describe('CharacterDetail', () => {
     render(<CharacterDetail />)
 
     await waitFor(() => {
-      expect(screen.getByText(/SRS Stage: Guru/i)).toBeInTheDocument()
+      expect(screen.getByText(/SRS Stage/i)).toBeInTheDocument()
+      expect(screen.getByText('Guru')).toBeInTheDocument()
     })
   })
 

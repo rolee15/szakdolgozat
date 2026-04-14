@@ -47,26 +47,28 @@ const KanaGrid = ({ type }: { type: "hiragana" | "katakana" }) => {
   return (
     <div className="max-w-4xl mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6">{type === "hiragana" ? "Hiragana" : "Katakana"} Characters</h1>
-      <div className="space-y-2">
-        {KANA_GRID.map((row, rowIndex) => (
-          <div key={rowIndex} className="flex justify-center space-x-2">
-            {row.map((romanization, colIndex) => {
-              const char = romanization ? charMap.get(romanization) : null;
-              if (!char) {
-                return <div key={colIndex} className="w-20 h-[88px]" aria-hidden="true" />;
-              }
-              return (
-                <KanaButton
-                  key={char.character}
-                  type={type}
-                  character={char.character}
-                  romanization={char.romanization}
-                  proficiency={char.proficiency}
-                />
-              );
-            })}
-          </div>
-        ))}
+      <div className="overflow-x-auto">
+        <div className="space-y-2 min-w-max mx-auto">
+          {KANA_GRID.map((row, rowIndex) => (
+            <div key={rowIndex} className="flex justify-center space-x-2">
+              {row.map((romanization, colIndex) => {
+                const char = romanization ? charMap.get(romanization) : null;
+                if (!char) {
+                  return <div key={colIndex} className="w-20 h-[88px]" aria-hidden="true" />;
+                }
+                return (
+                  <KanaButton
+                    key={char.character}
+                    type={type}
+                    character={char.character}
+                    romanization={char.romanization}
+                    proficiency={char.proficiency}
+                  />
+                );
+              })}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

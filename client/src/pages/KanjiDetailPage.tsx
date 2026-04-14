@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import kanjiService from '@/services/kanjiService';
+import SrsBadge from '@/components/common/SrsBadge';
 
 const KanjiDetailPage = () => {
   const { character } = useParams<{ character: string }>();
@@ -61,7 +62,9 @@ const KanjiDetailPage = () => {
         </div>
         <div className="bg-gray-800 rounded-lg p-4">
           <p className="text-sm text-gray-400 mb-1">SRS Stage</p>
-          <p className="text-lg font-medium">{kanji.srsStage}</p>
+          <div className="mt-1">
+            <SrsBadge stage={kanji.srsStage} />
+          </div>
         </div>
         <div className="bg-gray-800 rounded-lg p-4">
           <p className="text-sm text-gray-400 mb-1">Proficiency</p>

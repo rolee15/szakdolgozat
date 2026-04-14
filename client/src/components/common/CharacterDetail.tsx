@@ -2,6 +2,7 @@ import hiraganaService from "@/services/hiraganaService";
 import katakanaService from "@/services/katakanaService";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import SrsBadge from "@/components/common/SrsBadge";
 
 const CharacterDetail = () => {
   const { type, character } = useParams();
@@ -45,7 +46,10 @@ const CharacterDetail = () => {
           <div className="text-white text-2xl ">{charData.romanization}</div>
           <div className="mt-4 rounded-full px-4 py-2 inline-block">Proficiency: {charData.proficiency}%</div>
           {charData.srsStageName !== undefined && (
-            <div className="mt-2 rounded-full px-4 py-2 inline-block">SRS Stage: {charData.srsStageName}</div>
+            <div className="mt-2 flex items-center justify-center gap-2">
+              <span className="text-sm text-gray-400">SRS Stage:</span>
+              <SrsBadge stage={charData.srsStageName} />
+            </div>
           )}
         </div>
 
