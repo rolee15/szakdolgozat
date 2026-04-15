@@ -22,8 +22,6 @@
 | 9 | **Customizable** lessons/learning path | Partial | Day 8: settings page + data-driven architecture |
 | 10 | **Interesting and challenging** (motivation) | Partial | SRS + varied exercises |
 
-**Shiritori** (teacher's suggestion) — nice-to-have, Day 11 buffer if time permits.
-
 ---
 
 ## Content Sourcing Strategy
@@ -283,13 +281,6 @@ Multiple seeded test users with varied proficiency data so every feature is manu
 - [ ] Update `MANUAL_TEST.md` for all new features
 - [ ] Fix edge cases (empty states, loading, errors)
 
-#### Day 11 (Apr 11) — Shiritori ✅
-
-- [x] SignalR hub + service for word validation and room management
-- [x] Computer opponent from 90-word hiragana list
-- [x] Frontend: lobby + game board with input and history
-- [x] Route `/shiritori`, nav link added
-
 #### Days 12–14 (Apr 12–14) — Full Documentation Days
 
 Polish, fill gaps, final review pass. Send to consultant by Apr 13 for review before Apr 15 meeting.
@@ -326,7 +317,7 @@ Form requirements will be provided later — use a working structure that can be
 | 8 (Apr 8) | Customization | User documentation: setup guide, feature walkthrough |
 | 9 (Apr 9) | Testing + CI | Add screenshots to user documentation |
 | 10 (Apr 10) | Manual testing | Design decisions chapter, conclusion |
-| 11 (Apr 11) | Buffer/Shiritori | References, appendix, final review pass |
+| 11 (Apr 11) | Buffer | References, appendix, final review pass |
 | 12-14 | Full documentation | Polish, fill gaps, review, **send to consultant by Apr 13** |
 
 ---
@@ -336,7 +327,7 @@ Form requirements will be provided later — use a working structure that can be
 1. Reduce reading passages from 6 to 2-3
 2. Grammar: explanations only, defer interactive exercises
 3. Settings/customization page (mention as "architecture supports it" in thesis)
-4. Shiritori — already optional, skip entirely if needed
+4. Settings/customization detail — mention "architecture supports it" in thesis
 
 **Cannot cut**: Writing practice, grammar content, reading comprehension, learning path with tests, documentation start.
 

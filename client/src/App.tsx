@@ -27,7 +27,6 @@ import GrammarDetailPage from "@/pages/GrammarDetailPage";
 import ReadingListPage from "@/pages/ReadingListPage";
 import ReadingDetailPage from "@/pages/ReadingDetailPage";
 import LearningPathPage from "@/pages/LearningPathPage";
-import ShiritoriPage from "@/pages/ShiritoriPage";
 import UnitDetailPage from "@/pages/UnitDetailPage";
 import UnitTestPage from "@/pages/UnitTestPage";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
@@ -218,14 +217,6 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <UnitTestPage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "shiritori",
-        element: (
-          <ProtectedRoute>
-            <ShiritoriPage />
           </ProtectedRoute>
         ),
       },

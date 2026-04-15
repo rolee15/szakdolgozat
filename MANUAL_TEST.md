@@ -316,19 +316,7 @@ Precondition: dev DB running, backend started, frontend started (see CLAUDE.md f
 
 ---
 
-## 13. Shiritori (`/shiritori`)
-
-- [ ] Navigate to `/shiritori` -> game board loads, player can see the initial word
-- [ ] Submit a valid word starting with the last character of the previous word -> word accepted, computer responds
-- [ ] Submit a word that does not start with the correct character -> rejection message shown, player must try again
-- [ ] Submit a word ending in ん -> rejection message shown (ん-ending words are forbidden)
-- [ ] Computer selects a word ending in ん -> computer loses, player wins message shown
-- [ ] Player submits a word ending in ん and the game ends -> game over, computer wins message shown
-- [ ] Disconnect or abandon game (navigate away) -> game is abandoned, next visit starts fresh
-
----
-
-## 14. User Settings (`/settings`)
+## 13. User Settings (`/settings`)
 
 - [ ] Navigate to `/settings` -> current settings load (daily lesson limit, review batch size, JLPT level)
 - [ ] Change daily lesson limit and save -> updated value persisted, success feedback shown
