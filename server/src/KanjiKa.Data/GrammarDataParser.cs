@@ -1,11 +1,11 @@
 // [7] T. Coil, "Hanabira.org: Japanese Grammar and Vocabulary Learning Resource" — https://github.com/tristcoil/hanabira.org (accessed 2026-04-04)
 using System.Reflection;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using KanjiKa.Domain.Entities.Grammar;
 
 namespace KanjiKa.Data;
 
+// Todo: Optimize, and make it readable and robust
 public static class GrammarDataParser
 {
     private static readonly JsonSerializerOptions JsonOptions = new()

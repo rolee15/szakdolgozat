@@ -6,6 +6,7 @@ using KanjiKa.Domain.Entities.Kanji;
 
 namespace KanjiKa.Data;
 
+// Todo: Optimize, and make it readable and robust
 public static class Kanjidic2Parser
 {
     private static readonly Dictionary<int, int> JlptMap = new()
