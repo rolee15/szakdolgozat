@@ -26,8 +26,11 @@ const WritingInput: React.FC<WritingInputProps> = ({ characterType, onSubmit, di
   };
 
   const submit = () => {
-    onSubmit(value.trim());
+    const answer = (inputRef.current?.value ?? value).trim();
+    if (!answer) return;
+    onSubmit(answer);
     setValue("");
+    if (inputRef.current) inputRef.current.value = "";
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
