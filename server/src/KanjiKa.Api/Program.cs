@@ -49,7 +49,7 @@ builder.Services.AddScoped<IPathRepository, PathRepository>();
 builder.Services.AddScoped<IPathService, PathService>();
 builder.Services.AddScoped<IHashService, HashService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<IEmailService, DummyEmailService>();
+builder.Services.AddScoped<IEmailService, SmtpEmailService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp",

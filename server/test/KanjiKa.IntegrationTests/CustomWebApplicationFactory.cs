@@ -1,11 +1,13 @@
 ﻿using System.Data.Common;
 using KanjiKa.Api;
+using KanjiKa.Application.Interfaces;
 using KanjiKa.Data;
 using KanjiKa.Data.Seeders;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Npgsql;
 using Respawn;
 using Testcontainers.PostgreSql;
@@ -19,6 +21,7 @@ public sealed class CustomWebApplicationFactory : WebApplicationFactory<IApiMark
     private Respawner _respawner = null!;
 
     public HttpClient HttpClient { get; private set; } = null!;
+    public FakeEmailService FakeEmail { get; } = new();
 
     // Do not change the order of initialization!
     public async Task InitializeAsync()
@@ -63,12 +66,17 @@ public sealed class CustomWebApplicationFactory : WebApplicationFactory<IApiMark
         await _respawner.ResetAsync(_dbConnection);
     }
 
+    public void ResetEmails() => FakeEmail.SentEmails.Clear();
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureServices(services => {
             services.Remove(services.SingleOrDefault(service => service.ServiceType == typeof(DbContextOptions<KanjiKaDbContext>))!);
             services.Remove(services.SingleOrDefault(service => service.ServiceType == typeof(KanjiKaDbContext))!);
             services.AddDbContext<KanjiKaDbContext>(options => options.UseNpgsql(_dbContainer.GetConnectionString()));
+
+            services.RemoveAll<IEmailService>();
+            services.AddSingleton<IEmailService>(FakeEmail);
         });
     }
 }

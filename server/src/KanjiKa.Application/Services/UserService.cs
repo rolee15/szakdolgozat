@@ -81,6 +81,15 @@ public class UserService : IUserService
         await _repo.AddAsync(newUser);
         await _repo.SaveChangesAsync();
 
+        try
+        {
+            await _emailService.SendEmail(username, "Welcome to KanjiKa", "Your account has been created. Start learning today!");
+        }
+        catch
+        {
+            // email delivery is best-effort; a failed send must not break registration
+        }
+
         (string token, string refreshToken) = _tokenService.GenerateToken(newUser.Id, newUser.Username, UserRole.User);
         int expiryDays = int.Parse(_config["Jwt:RefreshTokenExpirationDays"] ?? "7");
         await _repo.UpdateRefreshTokenAsync(newUser.Id, refreshToken, DateTimeOffset.UtcNow.AddDays(expiryDays));
@@ -104,7 +113,14 @@ public class UserService : IUserService
             user.PasswordResetExpiry = DateTimeOffset.UtcNow.AddMinutes(15);
             await _repo.UpdateAsync(user);
             await _repo.SaveChangesAsync();
-            await _emailService.SendEmail(email, "Forgot Password", $"Reset code: {code}");
+            try
+            {
+                await _emailService.SendEmail(email, "Forgot Password", $"Reset code: {code}");
+            }
+            catch
+            {
+                // email delivery is best-effort
+            }
         }
 
         return new ForgotPasswordDto();

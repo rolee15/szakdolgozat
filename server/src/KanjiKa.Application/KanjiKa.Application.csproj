@@ -10,6 +10,7 @@
         <ProjectReference Include="..\KanjiKa.Domain\KanjiKa.Domain.csproj"/>
     </ItemGroup>
     <ItemGroup>
+        <PackageReference Include="MailKit" Version="4.11.0"/>
         <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0"/>
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.17.0"/>
     </ItemGroup>

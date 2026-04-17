@@ -18,6 +18,18 @@ services:
     networks:
       - kanjika_dev_network
 
+  maildev:
+    image: maildev/maildev
+    container_name: kanjika-dev-maildev
+    profiles:
+      - dev
+    restart: always
+    ports:
+      - "1025:1025"
+      - "1080:1080"
+    networks:
+      - kanjika_dev_network
+
 
 volumes:
   postgres_data:
