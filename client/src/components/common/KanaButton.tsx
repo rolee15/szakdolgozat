@@ -19,7 +19,13 @@ const KanaButton: React.FC<KanaButtonProps> = ({ type, character, romanization, 
         aria-label={`Kana ${character}, Proficiency Level ${Math.floor(validProficiency / 20) + 1}`}
         onClick={() => navigate(`/${type}/${character}`)}
       >
-        <span className="text-2xl font-bold">{character}</span>
+        {character.length === 1
+          ? <span className="text-2xl font-bold">{character}</span>
+          : <span className="font-bold whitespace-nowrap inline-flex items-end leading-none">
+              <span className="text-2xl">{character[0]}</span>
+              <span className="text-sm">{character.slice(1)}</span>
+            </span>
+        }
         <span className="text-sm text-gray-400">{romanization}</span>
       </button>
 
