@@ -48,18 +48,19 @@ dotnet test --collect:"XPlat Code Coverage"  # Run all xUnit tests
 
 ## Architecture
 
-### Backend — Clean Architecture (3 layers)
+### Backend — Clean Architecture (4 layers)
 ```
 server/src/
-├── KanjiKa.Api/    # Controllers, Program.cs, DI composition root
-├── KanjiKa.Core/   # Domain entities, interfaces, DTOs (no dependencies)
-└── KanjiKa.Data/   # EF Core DbContext (KanjiKaDbContext), repositories
+├── KanjiKa.Api/         # Controllers, Program.cs, DI composition root
+├── KanjiKa.Application/ # DTOs, interfaces, service implementations
+├── KanjiKa.Domain/      # Domain entities, core interfaces (no dependencies)
+└── KanjiKa.Data/        # EF Core DbContext (KanjiKaDbContext), repositories
 server/test/
 ├── KanjiKa.UnitTests/
 └── KanjiKa.IntegrationTests/
 ```
 
-Controllers (`KanaController`, `LessonsController`, `UsersController`) call services from `KanjiKa.Core` which are implemented in `KanjiKa.Api` and `KanjiKa.Data`. DB columns use snake_case via `EFCore.NamingConventions`.
+Controllers (`HiraganaController`, `KatakanaController`, `LessonsController`, `UsersController`, `GrammarController`, `KanjiController`, `ReadingController`, `PathController`, `AdminController`) call services defined in `KanjiKa.Application` (interfaces) and implemented there or in `KanjiKa.Data`. DB columns use snake_case via `EFCore.NamingConventions`.
 
 **DB schema**: `Users`, `Characters` (kana with hiragana/katakana type), `Examples`, `Proficiencies` (User + Character composite key), `LessonCompletions` (User + Character composite key).
 
@@ -77,7 +78,7 @@ client/test/         # Vitest tests mirroring src/ structure
 API base URL is set via `VITE_API_URL` env var (dev: `https://localhost:7161/api`). The frontend uses TanStack React Query for data fetching and React Hook Form for forms.
 
 ### Authentication
-JWT-based auth is implemented in the backend (`ITokenService`, `IHashService`) but **token validation is currently disabled** in the frontend (`App.tsx`). The frontend also uses a hardcoded user ID (`'1'`) in `kanaService.ts` instead of the authenticated user's ID.
+JWT-based auth is fully implemented end-to-end. Backend uses `ITokenService` (JWT) and `IHashService` (bcrypt). Frontend validates tokens via auth context in `App.tsx`, uses `ProtectedRoute` for guarded routes, and reads the authenticated user's ID from context — no hardcoded IDs remain.
 
 ## Key Config Files
 - `client/.env.development` / `.env.production` — Vite env vars
@@ -85,7 +86,7 @@ JWT-based auth is implemented in the backend (`ITokenService`, `IHashService`) b
 - `server/src/KanjiKa.Api/appsettings.Production.json` — DB connection string (port 5432)
 - `docker-compose.dev.yaml` — Dev database only (port 5433)
 - `docker-compose.yaml` — Full production stack (port 5432)
-- `.github/workflows/build.yml` — CI runs on Windows, expects all 82+ backend tests to pass and 94%+ frontend coverage
+- `.github/workflows/build.yml` — CI runs on Windows, expects all 217+ backend unit tests to pass and 94%+ frontend coverage
 
 ## Ports
 | Service | Dev | Prod |
