@@ -18,15 +18,15 @@ services:
     networks:
       - kanjika_dev_network
 
-  maildev:
-    image: maildev/maildev
-    container_name: kanjika-dev-maildev
+  mailpit:
+    image: axllent/mailpit
+    container_name: kanjika-dev-mailpit
     profiles:
       - dev
     restart: always
     ports:
       - "1025:1025"
-      - "1080:1080"
+      - "8025:8025"
     networks:
       - kanjika_dev_network
 
