@@ -100,8 +100,7 @@ describe('KanaGrid', () => {
     const buttons = screen.getAllByRole('button', { name: /Kana /i })
     expect(buttons).toHaveLength(5)
 
-    // Spacers are aria-hidden divs; grid template has 16 rows × 5 = 80 cells total
-    // but only 5 characters → 75 spacers
+    // Spacers are aria-hidden divs
     const spacers = document.querySelectorAll('[aria-hidden="true"]')
     expect(spacers.length).toBeGreaterThan(0)
   })
@@ -124,5 +123,52 @@ describe('KanaGrid', () => {
     await waitFor(() => {
       expect(screen.getByText(/Error: Failed to load characters/i)).toBeInTheDocument()
     })
+  })
+
+  it('renders all six section headings', async () => {
+    ;(hiraganaApi.getCharacters as unknown as ReturnType<typeof vi.fn>).mockResolvedValue([])
+
+    render(<KanaGrid type="hiragana" />)
+
+    await waitFor(() => {
+      expect(screen.getByText('Basic')).toBeInTheDocument()
+      expect(screen.getByText('Dakuten ゛')).toBeInTheDocument()
+      expect(screen.getByText('Handakuten ゜')).toBeInTheDocument()
+      expect(screen.getByText('Yoon')).toBeInTheDocument()
+      expect(screen.getByText('Yoon + Dakuten ゛')).toBeInTheDocument()
+      expect(screen.getByText('Yoon + Handakuten ゜')).toBeInTheDocument()
+    })
+  })
+
+  it('renders yoon characters as buttons when present in charMap', async () => {
+    const chars: KanaCharacter[] = [
+      { character: 'きゃ', romanization: 'kya', type: 'hiragana', proficiency: 0 },
+      { character: 'きゅ', romanization: 'kyu', type: 'hiragana', proficiency: 0 },
+      { character: 'きょ', romanization: 'kyo', type: 'hiragana', proficiency: 0 },
+    ]
+    ;(hiraganaApi.getCharacters as unknown as ReturnType<typeof vi.fn>).mockResolvedValue(chars)
+
+    render(<KanaGrid type="hiragana" />)
+
+    await waitFor(() => {
+      expect(screen.getByText('きゃ')).toBeInTheDocument()
+      expect(screen.getByText('きゅ')).toBeInTheDocument()
+      expect(screen.getByText('きょ')).toBeInTheDocument()
+    })
+  })
+
+  it('renders spacers for yoon romanizations absent from charMap', async () => {
+    // Return no characters so all yoon cells fall back to spacers
+    ;(hiraganaApi.getCharacters as unknown as ReturnType<typeof vi.fn>).mockResolvedValue([])
+
+    render(<KanaGrid type="hiragana" />)
+
+    await waitFor(() => {
+      expect(screen.getByText('Yoon')).toBeInTheDocument()
+    })
+
+    // With no data, every cell in every grid is a spacer
+    const spacers = document.querySelectorAll('[aria-hidden="true"]')
+    expect(spacers.length).toBeGreaterThan(0)
   })
 })

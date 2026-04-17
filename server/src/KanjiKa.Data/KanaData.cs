@@ -1120,7 +1120,533 @@ public static class KanaData
                     }
                 ]
             },
-            //TODO Add yoon characters
+            new Character
+            {
+                Symbol = "きゃ",
+                Romanization = "kya",
+                Type = KanaType.Hiragana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "きゃく",
+                        Romanization = "kyaku",
+                        Meaning = "guest"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "きゅ",
+                Romanization = "kyu",
+                Type = KanaType.Hiragana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "きゅうり",
+                        Romanization = "kyuuri",
+                        Meaning = "cucumber"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "きょ",
+                Romanization = "kyo",
+                Type = KanaType.Hiragana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "きょう",
+                        Romanization = "kyou",
+                        Meaning = "today"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "しゃ",
+                Romanization = "sha",
+                Type = KanaType.Hiragana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "しゃしん",
+                        Romanization = "shashin",
+                        Meaning = "photo"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "しゅ",
+                Romanization = "shu",
+                Type = KanaType.Hiragana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "しゅみ",
+                        Romanization = "shumi",
+                        Meaning = "hobby"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "しょ",
+                Romanization = "sho",
+                Type = KanaType.Hiragana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "しょうがっこう",
+                        Romanization = "shougakkou",
+                        Meaning = "elementary school"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "ちゃ",
+                Romanization = "cha",
+                Type = KanaType.Hiragana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "おちゃ",
+                        Romanization = "ocha",
+                        Meaning = "tea"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "ちゅ",
+                Romanization = "chu",
+                Type = KanaType.Hiragana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "ちゅうごく",
+                        Romanization = "chuugoku",
+                        Meaning = "China"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "ちょ",
+                Romanization = "cho",
+                Type = KanaType.Hiragana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "ちょきん",
+                        Romanization = "chokin",
+                        Meaning = "savings"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "にゃ",
+                Romanization = "nya",
+                Type = KanaType.Hiragana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "にゃんこ",
+                        Romanization = "nyanko",
+                        Meaning = "kitty"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "にゅ",
+                Romanization = "nyu",
+                Type = KanaType.Hiragana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "にゅうがく",
+                        Romanization = "nyuugaku",
+                        Meaning = "school entrance"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "にょ",
+                Romanization = "nyo",
+                Type = KanaType.Hiragana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "にょうぼう",
+                        Romanization = "nyoubou",
+                        Meaning = "wife"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "ひゃ",
+                Romanization = "hya",
+                Type = KanaType.Hiragana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "ひゃく",
+                        Romanization = "hyaku",
+                        Meaning = "hundred"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "ひゅ",
+                Romanization = "hyu",
+                Type = KanaType.Hiragana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "ひゅうが",
+                        Romanization = "hyuuga",
+                        Meaning = "Hyuga (name)"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "ひょ",
+                Romanization = "hyo",
+                Type = KanaType.Hiragana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "ひょう",
+                        Romanization = "hyou",
+                        Meaning = "leopard"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "みゃ",
+                Romanization = "mya",
+                Type = KanaType.Hiragana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "みゃく",
+                        Romanization = "myaku",
+                        Meaning = "pulse"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "みゅ",
+                Romanization = "myu",
+                Type = KanaType.Hiragana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "みゅーじっく",
+                        Romanization = "myuujikku",
+                        Meaning = "music"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "みょ",
+                Romanization = "myo",
+                Type = KanaType.Hiragana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "みょうじ",
+                        Romanization = "myouji",
+                        Meaning = "surname"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "りゃ",
+                Romanization = "rya",
+                Type = KanaType.Hiragana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "りゃくご",
+                        Romanization = "ryakugo",
+                        Meaning = "abbreviation"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "りゅ",
+                Romanization = "ryu",
+                Type = KanaType.Hiragana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "りゅう",
+                        Romanization = "ryuu",
+                        Meaning = "dragon"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "りょ",
+                Romanization = "ryo",
+                Type = KanaType.Hiragana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "りょこう",
+                        Romanization = "ryokou",
+                        Meaning = "travel"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "ぎゃ",
+                Romanization = "gya",
+                Type = KanaType.Hiragana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "ぎゃく",
+                        Romanization = "gyaku",
+                        Meaning = "reverse"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "ぎゅ",
+                Romanization = "gyu",
+                Type = KanaType.Hiragana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "ぎゅうにく",
+                        Romanization = "gyuuniku",
+                        Meaning = "beef"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "ぎょ",
+                Romanization = "gyo",
+                Type = KanaType.Hiragana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "ぎょうれつ",
+                        Romanization = "gyouretsu",
+                        Meaning = "queue"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "じゃ",
+                Romanization = "ja",
+                Type = KanaType.Hiragana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "じゃがいも",
+                        Romanization = "jagaimo",
+                        Meaning = "potato"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "じゅ",
+                Romanization = "ju",
+                Type = KanaType.Hiragana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "じゅぎょう",
+                        Romanization = "jugyou",
+                        Meaning = "class"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "じょ",
+                Romanization = "jo",
+                Type = KanaType.Hiragana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "じょうず",
+                        Romanization = "jouzu",
+                        Meaning = "skilled"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "びゃ",
+                Romanization = "bya",
+                Type = KanaType.Hiragana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "びゃくや",
+                        Romanization = "byakuya",
+                        Meaning = "white night"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "びゅ",
+                Romanization = "byu",
+                Type = KanaType.Hiragana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "びゅんびゅん",
+                        Romanization = "byunbyun",
+                        Meaning = "whooshing sound"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "びょ",
+                Romanization = "byo",
+                Type = KanaType.Hiragana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "びょうき",
+                        Romanization = "byouki",
+                        Meaning = "illness"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "ぴゃ",
+                Romanization = "pya",
+                Type = KanaType.Hiragana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "ぴゃー",
+                        Romanization = "pyaa",
+                        Meaning = "exclamation"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "ぴゅ",
+                Romanization = "pyu",
+                Type = KanaType.Hiragana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "ぴゅー",
+                        Romanization = "pyuu",
+                        Meaning = "whistling sound"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "ぴょ",
+                Romanization = "pyo",
+                Type = KanaType.Hiragana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "ぴょんぴょん",
+                        Romanization = "pyonpyon",
+                        Meaning = "hop hop"
+                    }
+                ]
+            },
 
 
             new Character
@@ -2223,6 +2749,534 @@ public static class KanaData
                         Word = "ポケモン",
                         Romanization = "pokemon",
                         Meaning = "Pokemon"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "キャ",
+                Romanization = "kya",
+                Type = KanaType.Katakana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "キャンプ",
+                        Romanization = "kyanpu",
+                        Meaning = "camping"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "キュ",
+                Romanization = "kyu",
+                Type = KanaType.Katakana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "キュウリ",
+                        Romanization = "kyuuri",
+                        Meaning = "cucumber"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "キョ",
+                Romanization = "kyo",
+                Type = KanaType.Katakana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "キョウ",
+                        Romanization = "kyou",
+                        Meaning = "today"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "シャ",
+                Romanization = "sha",
+                Type = KanaType.Katakana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "シャツ",
+                        Romanization = "shatsu",
+                        Meaning = "shirt"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "シュ",
+                Romanization = "shu",
+                Type = KanaType.Katakana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "シュウマイ",
+                        Romanization = "shuumai",
+                        Meaning = "shumai dumpling"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "ショ",
+                Romanization = "sho",
+                Type = KanaType.Katakana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "ショッピング",
+                        Romanization = "shoppingu",
+                        Meaning = "shopping"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "チャ",
+                Romanization = "cha",
+                Type = KanaType.Katakana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "チャンス",
+                        Romanization = "chansu",
+                        Meaning = "chance"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "チュ",
+                Romanization = "chu",
+                Type = KanaType.Katakana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "チュートリアル",
+                        Romanization = "chuutoriaru",
+                        Meaning = "tutorial"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "チョ",
+                Romanization = "cho",
+                Type = KanaType.Katakana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "チョコレート",
+                        Romanization = "chokoreeto",
+                        Meaning = "chocolate"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "ニャ",
+                Romanization = "nya",
+                Type = KanaType.Katakana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "ニャンコ",
+                        Romanization = "nyanko",
+                        Meaning = "kitty"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "ニュ",
+                Romanization = "nyu",
+                Type = KanaType.Katakana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "ニュース",
+                        Romanization = "nyuusu",
+                        Meaning = "news"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "ニョ",
+                Romanization = "nyo",
+                Type = KanaType.Katakana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "ニョッキ",
+                        Romanization = "nyokki",
+                        Meaning = "gnocchi"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "ヒャ",
+                Romanization = "hya",
+                Type = KanaType.Katakana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "ヒャク",
+                        Romanization = "hyaku",
+                        Meaning = "hundred"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "ヒュ",
+                Romanization = "hyu",
+                Type = KanaType.Katakana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "ヒューマン",
+                        Romanization = "hyuuman",
+                        Meaning = "human"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "ヒョ",
+                Romanization = "hyo",
+                Type = KanaType.Katakana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "ヒョウ",
+                        Romanization = "hyou",
+                        Meaning = "leopard"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "ミャ",
+                Romanization = "mya",
+                Type = KanaType.Katakana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "ミャンマー",
+                        Romanization = "myanmaa",
+                        Meaning = "Myanmar"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "ミュ",
+                Romanization = "myu",
+                Type = KanaType.Katakana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "ミュージック",
+                        Romanization = "myuujikku",
+                        Meaning = "music"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "ミョ",
+                Romanization = "myo",
+                Type = KanaType.Katakana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "ミョウガ",
+                        Romanization = "myouga",
+                        Meaning = "Japanese ginger"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "リャ",
+                Romanization = "rya",
+                Type = KanaType.Katakana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "リャクゴ",
+                        Romanization = "ryakugo",
+                        Meaning = "abbreviation"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "リュ",
+                Romanization = "ryu",
+                Type = KanaType.Katakana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "リュック",
+                        Romanization = "ryukku",
+                        Meaning = "backpack"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "リョ",
+                Romanization = "ryo",
+                Type = KanaType.Katakana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "リョコウ",
+                        Romanization = "ryokou",
+                        Meaning = "travel"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "ギャ",
+                Romanization = "gya",
+                Type = KanaType.Katakana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "ギャグ",
+                        Romanization = "gyagu",
+                        Meaning = "gag/joke"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "ギュ",
+                Romanization = "gyu",
+                Type = KanaType.Katakana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "ギュウニク",
+                        Romanization = "gyuuniku",
+                        Meaning = "beef"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "ギョ",
+                Romanization = "gyo",
+                Type = KanaType.Katakana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "ギョウザ",
+                        Romanization = "gyouza",
+                        Meaning = "gyoza"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "ジャ",
+                Romanization = "ja",
+                Type = KanaType.Katakana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "ジャム",
+                        Romanization = "jamu",
+                        Meaning = "jam"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "ジュ",
+                Romanization = "ju",
+                Type = KanaType.Katakana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "ジュース",
+                        Romanization = "juusu",
+                        Meaning = "juice"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "ジョ",
+                Romanization = "jo",
+                Type = KanaType.Katakana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "ジョギング",
+                        Romanization = "jogingu",
+                        Meaning = "jogging"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "ビャ",
+                Romanization = "bya",
+                Type = KanaType.Katakana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "ビャクヤ",
+                        Romanization = "byakuya",
+                        Meaning = "white night"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "ビュ",
+                Romanization = "byu",
+                Type = KanaType.Katakana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "ビュッフェ",
+                        Romanization = "byuffe",
+                        Meaning = "buffet"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "ビョ",
+                Romanization = "byo",
+                Type = KanaType.Katakana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "ビョウイン",
+                        Romanization = "byouin",
+                        Meaning = "hospital"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "ピャ",
+                Romanization = "pya",
+                Type = KanaType.Katakana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "ピャー",
+                        Romanization = "pyaa",
+                        Meaning = "exclamation"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "ピュ",
+                Romanization = "pyu",
+                Type = KanaType.Katakana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "ピュア",
+                        Romanization = "pyua",
+                        Meaning = "pure"
+                    }
+                ]
+            },
+
+            new Character
+            {
+                Symbol = "ピョ",
+                Romanization = "pyo",
+                Type = KanaType.Katakana,
+                Examples =
+                [
+                    new Example
+                    {
+                        Word = "ピョンピョン",
+                        Romanization = "pyonpyon",
+                        Meaning = "hop hop"
                     }
                 ]
             }
