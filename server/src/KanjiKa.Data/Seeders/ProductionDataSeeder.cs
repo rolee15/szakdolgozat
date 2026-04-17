@@ -696,7 +696,8 @@ public class ProductionDataSeeder : IDataSeeder
             PasswordHash = hash,
             PasswordSalt = salt,
             Role = UserRole.Admin,
-            MustChangePassword = true
+            MustChangePassword = true,
+            IsActive = true
         };
         await Context.Users.AddAsync(admin);
         await Context.SaveChangesAsync();

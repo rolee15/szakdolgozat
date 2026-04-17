@@ -1,4 +1,4 @@
-import { API_USERS_URL, API_USERS_SETTINGS_URL, API_USERS_FORGOT_PASSWORD_URL, API_USERS_RESET_PASSWORD_URL } from "@/services/routes";
+import { API_USERS_URL, API_USERS_SETTINGS_URL, API_USERS_FORGOT_PASSWORD_URL, API_USERS_RESET_PASSWORD_URL, API_USERS_ACTIVATE_URL } from "@/services/routes";
 import { apiFetch } from "@/services/apiClient";
 
 const api = {
@@ -88,6 +88,13 @@ const api = {
             body: JSON.stringify({ email, code, newPassword }),
         });
         if (!response.ok) throw new Error('Invalid or expired reset code');
+    },
+
+    async activateAccount(token: string): Promise<{ success: boolean; message: string }> {
+        const response = await fetch(`${API_USERS_ACTIVATE_URL}?token=${encodeURIComponent(token)}`, {
+            method: 'POST',
+        });
+        return response.json();
     },
 };
 

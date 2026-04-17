@@ -11,4 +11,10 @@ public class FakeEmailService : IEmailService
         SentEmails.Add((email, subject, body));
         return Task.CompletedTask;
     }
+
+    public Task SendActivationEmailAsync(string to, string username, string activationLink)
+    {
+        SentEmails.Add((to, "Activate your KanjiKa account", activationLink));
+        return Task.CompletedTask;
+    }
 }

@@ -49,6 +49,10 @@ public class KanjiKaDbContext : DbContext
                 .HasDefaultValue(UserRole.User);
             entity.Property(u => u.MustChangePassword)
                 .HasDefaultValue(false);
+            entity.Property(u => u.IsActive)
+                .HasDefaultValue(false);
+            entity.HasIndex(u => u.ActivationToken)
+                .HasFilter("activation_token IS NOT NULL");
             entity.HasMany(x => x.Proficiencies)
                 .WithOne(proficiency => proficiency.User)
                 .HasForeignKey(proficiency => proficiency.UserId);

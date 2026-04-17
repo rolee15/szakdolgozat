@@ -5,6 +5,7 @@ vi.mock('@/services/routes', () => ({
   API_USERS_SETTINGS_URL: 'http://api.test/users/settings',
   API_USERS_FORGOT_PASSWORD_URL: 'http://api.test/users/forgot-password',
   API_USERS_RESET_PASSWORD_URL: 'http://api.test/users/reset-password',
+  API_USERS_ACTIVATE_URL: 'http://api.test/users/activate',
 }));
 
 import userService from '@/services/userService';
@@ -224,6 +225,30 @@ describe('userService', () => {
       await expect(
         userService.confirmResetPassword('user@example.com', 'badcode', 'newpass123')
       ).rejects.toThrow('Invalid or expired reset code');
+    });
+  });
+
+  describe('activateAccount', () => {
+    it('calls correct URL with encoded token', async () => {
+      const payload = { success: true, message: 'Account activated.' };
+      mockFetchOk(payload);
+
+      const token = 'test token/with special+chars';
+      await userService.activateAccount(token);
+
+      const fetchMock = global.fetch as unknown as ReturnType<typeof vi.fn>;
+      const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+      expect(url).toBe(`http://api.test/users/activate?token=${encodeURIComponent(token)}`);
+      expect(init?.method).toBe('POST');
+    });
+
+    it('returns parsed JSON response', async () => {
+      const payload = { success: true, message: 'Account activated.' };
+      mockFetchOk(payload);
+
+      const result = await userService.activateAccount('sometoken');
+
+      expect(result).toEqual(payload);
     });
   });
 });

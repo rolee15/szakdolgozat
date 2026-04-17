@@ -15,4 +15,6 @@ public interface IUserService
     Task<RefreshTokenDto> RefreshToken(string token, string refreshToken);
 
     Task<ChangePasswordDto> ChangePassword(int userId, string currentPassword, string newPassword);
+
+    Task<ActivateDto> ActivateAccount(string token);
 }

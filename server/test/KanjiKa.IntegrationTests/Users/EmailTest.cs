@@ -16,7 +16,7 @@ public class EmailTest(CustomWebApplicationFactory factory) : IAsyncLifetime
     public async Task DisposeAsync() => await Task.CompletedTask;
 
     [Fact(Skip = "Integration tests are temporarily disabled until TestContainers is ready")]
-    public async Task Register_SendsWelcomeEmail()
+    public async Task Register_SendsActivationEmail_ContainingActivationLink()
     {
         // Arrange
         var request = new { Email = "newuser@example.com", Password = "Test1234!" };
@@ -26,9 +26,25 @@ public class EmailTest(CustomWebApplicationFactory factory) : IAsyncLifetime
 
         // Assert
         Assert.Single(factory.FakeEmail.SentEmails);
-        var (email, subject, _) = factory.FakeEmail.SentEmails[0];
-        Assert.Equal("newuser@example.com", email);
-        Assert.Contains("Welcome", subject);
+        var (_, _, body) = factory.FakeEmail.SentEmails[0];
+        Assert.Contains("/activate?token=", body);
+    }
+
+    [Fact(Skip = "Integration tests are temporarily disabled until TestContainers is ready")]
+    public async Task Login_BeforeActivation_Returns401()
+    {
+        // Arrange — register a user but do not activate
+        var request = new { Email = "inactive@example.com", Password = "Test1234!" };
+        await factory.HttpClient.PostAsJsonAsync("/api/users/register", request);
+
+        // Act
+        var loginRequest = new { Email = "inactive@example.com", Password = "Test1234!" };
+        var response = await factory.HttpClient.PostAsJsonAsync("/api/users/login", loginRequest);
+
+        // Assert — login returns 200 with IsSuccess = false (inactive user)
+        var body = await response.Content.ReadFromJsonAsync<dynamic>();
+        Assert.Equal(System.Net.HttpStatusCode.OK, response.StatusCode);
+        Assert.False((bool)body!.isSuccess);
     }
 
     [Fact(Skip = "Integration tests are temporarily disabled until TestContainers is ready")]

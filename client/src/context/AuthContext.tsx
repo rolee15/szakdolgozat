@@ -74,19 +74,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const register = async (email: string, password: string) => {
     const dto = await userService.register(email, password);
-    if (!dto.isSuccess || !dto.token) throw new Error(dto.errorMessage ?? 'Registration failed');
-    const payload = decodeJwtPayload(dto.token);
-    const newState: AuthState = {
-      token: dto.token,
-      refreshToken: dto.refreshToken ?? null,
-      userId: dto.userId ?? (payload.sub ? parseInt(payload.sub) : null),
-      username: payload.unique_name ?? email,
-      role: extractRole(payload),
-      mustChangePassword: false,
-    };
-    localStorage.setItem('token', dto.token);
-    if (dto.refreshToken) localStorage.setItem('refreshToken', dto.refreshToken);
-    setState(newState);
+    if (!dto.success) throw new Error(dto.message ?? 'Registration failed');
   };
 
   const logout = () => {

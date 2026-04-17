@@ -8,6 +8,8 @@ public interface IUserRepository
 
     Task<User?> GetByRefreshTokenAsync(string refreshToken);
 
+    Task<User?> GetByActivationTokenAsync(string token);
+
     Task<User?> GetByIdAsync(int id);
 
     Task<User?> GetByIdWithStatsAsync(int id);

@@ -1,7 +1,9 @@
+using System.Security.Cryptography;
 using KanjiKa.Application.DTOs.User;
 using KanjiKa.Application.Interfaces;
 using KanjiKa.Domain.Entities.Users;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 
 namespace KanjiKa.Application.Services;
 
@@ -44,6 +46,15 @@ public class UserService : IUserService
             };
         }
 
+        if (!user.IsActive)
+        {
+            return new LoginDto
+            {
+                IsSuccess = false,
+                ErrorMessage = "Account not activated. Please check your email for the activation link."
+            };
+        }
+
         (string token, string refreshToken) = _tokenService.GenerateToken(user.Id, user.Username, user.Role, user.MustChangePassword);
         int expiryDays = int.Parse(_config["Jwt:RefreshTokenExpirationDays"] ?? "7");
         await _repo.UpdateRefreshTokenAsync(user.Id, refreshToken, DateTimeOffset.UtcNow.AddDays(expiryDays));
@@ -63,44 +74,71 @@ public class UserService : IUserService
         User? user = await _repo.GetByUsernameAsync(username);
         if (user != null)
         {
-            return new RegisterDto
-            {
-                IsSuccess = false,
-                ErrorMessage = "Username already exists"
-            };
+            return new RegisterDto(false, "Username already exists.");
         }
 
         (byte[] passwordHash, byte[] passwordSalt) = _hashService.Hash(password);
+
+        var tokenBytes = RandomNumberGenerator.GetBytes(32);
+        var activationToken = Base64UrlEncoder.Encode(tokenBytes);
+
         var newUser = new User
         {
             Username = username,
             PasswordHash = passwordHash,
-            PasswordSalt = passwordSalt
+            PasswordSalt = passwordSalt,
+            IsActive = false,
+            ActivationToken = activationToken,
+            ActivationTokenExpiry = DateTime.UtcNow.AddHours(24)
         };
 
         await _repo.AddAsync(newUser);
         await _repo.SaveChangesAsync();
 
+        string frontendBaseUrl = _config["App:FrontendBaseUrl"] ?? "http://localhost:5173";
+        string activationLink = $"{frontendBaseUrl}/activate?token={activationToken}";
+
         try
         {
-            await _emailService.SendEmail(username, "Welcome to KanjiKa", "Your account has been created. Start learning today!");
+            await _emailService.SendActivationEmailAsync(newUser.Username, newUser.Username, activationLink);
         }
         catch
         {
             // email delivery is best-effort; a failed send must not break registration
         }
 
-        (string token, string refreshToken) = _tokenService.GenerateToken(newUser.Id, newUser.Username, UserRole.User);
-        int expiryDays = int.Parse(_config["Jwt:RefreshTokenExpirationDays"] ?? "7");
-        await _repo.UpdateRefreshTokenAsync(newUser.Id, refreshToken, DateTimeOffset.UtcNow.AddDays(expiryDays));
+        return new RegisterDto(true, "Registration successful. Please check your email to activate your account.");
+    }
 
-        return new RegisterDto
+    public async Task<ActivateDto> ActivateAccount(string token)
+    {
+        if (string.IsNullOrWhiteSpace(token))
         {
-            IsSuccess = true,
-            Token = token,
-            RefreshToken = refreshToken,
-            UserId = newUser.Id
-        };
+            return new ActivateDto(false, "Invalid activation link.");
+        }
+
+        User? user = await _repo.GetByActivationTokenAsync(token);
+        if (user == null)
+        {
+            return new ActivateDto(false, "Invalid or already-used activation link.");
+        }
+
+        if (user.ActivationTokenExpiry < DateTime.UtcNow)
+        {
+            return new ActivateDto(false, "Activation link has expired. Please register again.");
+        }
+
+        if (user.IsActive)
+        {
+            return new ActivateDto(true, "Account already activated.");
+        }
+
+        user.IsActive = true;
+        user.ActivationToken = null;
+        user.ActivationTokenExpiry = null;
+        await _repo.SaveChangesAsync();
+
+        return new ActivateDto(true, "Account activated. You can now log in.");
     }
 
     public async Task<ForgotPasswordDto> ForgotPassword(string email)

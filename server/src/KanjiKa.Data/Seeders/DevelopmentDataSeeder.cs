@@ -181,7 +181,8 @@ public class DevelopmentDataSeeder : ProductionDataSeeder
             Username = username,
             PasswordHash = hash,
             PasswordSalt = salt,
-            Role = UserRole.User
+            Role = UserRole.User,
+            IsActive = true
         };
     }
 }

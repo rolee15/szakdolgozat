@@ -37,12 +37,24 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
         RegisterDto registerDto = await _userService.Register(request.Email, request.Password);
-        if (!registerDto.IsSuccess)
+        if (!registerDto.Success)
         {
             return BadRequest(registerDto);
         }
 
         return Ok(registerDto);
+    }
+
+    [AllowAnonymous]
+    [HttpPost("activate")]
+    [ProducesResponseType(typeof(ActivateDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ActivateDto), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Activate([FromQuery] string token)
+    {
+        if (string.IsNullOrWhiteSpace(token))
+            return BadRequest(new ActivateDto(false, "Token is required."));
+        var result = await _userService.ActivateAccount(token);
+        return Ok(result);
     }
 
     [HttpPost("forgotPassword")]

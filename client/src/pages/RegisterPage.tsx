@@ -1,16 +1,16 @@
 import { FormEvent, useMemo, useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 
 const RegisterPage = () => {
   const { register } = useAuth();
-  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [touched, setTouched] = useState<{ email?: boolean; password?: boolean; confirmPassword?: boolean }>({});
   const [serverError, setServerError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const emailError = useMemo(() => {
     if (!touched.email) return "";
@@ -63,13 +63,25 @@ const RegisterPage = () => {
     setIsSubmitting(true);
     try {
       await register(email, password);
-      navigate("/lessons", { replace: true });
+      setSuccessMessage("Registration successful. Please check your email to activate your account.");
     } catch (err) {
       setServerError(err instanceof Error ? err.message : "Registration failed");
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  if (successMessage) {
+    return (
+      <div className="mx-auto my-24 max-w-md p-4">
+        <h1 className="text-2xl font-semibold mb-6">Check your email</h1>
+        <p className="mb-4">{successMessage}</p>
+        <NavLink to="/login" className="text-blue-500">
+          Go to login
+        </NavLink>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto my-24 max-w-md p-4">

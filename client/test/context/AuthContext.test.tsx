@@ -127,10 +127,9 @@ describe('AuthContext', () => {
     expect(localStorage.getItem('refreshToken')).toBeNull()
   })
 
-  it('register_success_storesTokenAndSetsAuthenticated', async () => {
+  it('register_success_doesNotSetAuthenticatedState', async () => {
     const svc = userService as unknown as { register: ReturnType<typeof vi.fn> }
-    const jwt = makeTestJwt(99, 'newuser')
-    svc.register.mockResolvedValue({ isSuccess: true, token: jwt, userId: 99 })
+    svc.register.mockResolvedValue({ success: true, message: 'Registration successful. Please check your email.' })
 
     renderWithProvider()
 
@@ -138,9 +137,76 @@ describe('AuthContext', () => {
       screen.getByRole('button', { name: 'register' }).click()
     })
 
-    expect(screen.getByTestId('is-authenticated').textContent).toBe('true')
-    expect(screen.getByTestId('username').textContent).toBe('newuser')
-    expect(localStorage.getItem('token')).toBe(jwt)
+    expect(screen.getByTestId('is-authenticated').textContent).toBe('false')
+    expect(localStorage.getItem('token')).toBeNull()
+  })
+
+  it('register_failure_throwsError', async () => {
+    const svc = userService as unknown as { register: ReturnType<typeof vi.fn> }
+    svc.register.mockResolvedValue({ success: false, message: 'Email already in use' })
+
+    let caughtError: unknown
+    const ErrorCapture = () => {
+      const { register } = useAuth()
+      return (
+        <button
+          onClick={() =>
+            register('a@b.com', 'password').catch((e) => {
+              caughtError = e
+            })
+          }
+        >
+          register
+        </button>
+      )
+    }
+
+    render(
+      <AuthProvider>
+        <ErrorCapture />
+      </AuthProvider>
+    )
+
+    await act(async () => {
+      screen.getByRole('button', { name: 'register' }).click()
+    })
+
+    expect(caughtError).toBeInstanceOf(Error)
+    expect((caughtError as Error).message).toBe('Email already in use')
+  })
+
+  it('register_failure_usesDefaultMessage_whenMessageIsAbsent', async () => {
+    const svc = userService as unknown as { register: ReturnType<typeof vi.fn> }
+    svc.register.mockResolvedValue({ success: false, message: null })
+
+    let caughtError: unknown
+    const ErrorCapture = () => {
+      const { register } = useAuth()
+      return (
+        <button
+          onClick={() =>
+            register('a@b.com', 'password').catch((e) => {
+              caughtError = e
+            })
+          }
+        >
+          register
+        </button>
+      )
+    }
+
+    render(
+      <AuthProvider>
+        <ErrorCapture />
+      </AuthProvider>
+    )
+
+    await act(async () => {
+      screen.getByRole('button', { name: 'register' }).click()
+    })
+
+    expect(caughtError).toBeInstanceOf(Error)
+    expect((caughtError as Error).message).toBe('Registration failed')
   })
 
   it('initializesFromLocalStorage_whenTokenExists', () => {

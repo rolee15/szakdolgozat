@@ -176,6 +176,24 @@ describe('Auth pages', () => {
 
       expect(await screen.findByRole('alert')).toHaveTextContent(/registration failed/i)
     })
+
+    it('shows check-your-email message on successful registration and does not call auth login', async () => {
+      mockRegister.mockResolvedValue(undefined)
+
+      render(
+        <MemoryRouter>
+          <RegisterPage />
+        </MemoryRouter>
+      )
+
+      fireEvent.change(screen.getByLabelText(/^email/i), { target: { value: 'a@b.c' } })
+      fireEvent.change(screen.getByLabelText(/^password$/i), { target: { value: 'password123' } })
+      fireEvent.change(screen.getByLabelText(/confirm password/i), { target: { value: 'password123' } })
+      fireEvent.submit(screen.getByRole('button', { name: /^register$/i }).closest('form') as HTMLFormElement)
+
+      expect(await screen.findByText(/please check your email to activate/i)).toBeInTheDocument()
+      expect(mockLogin).not.toHaveBeenCalled()
+    })
   })
 
   describe('ForgotPasswordPage', () => {

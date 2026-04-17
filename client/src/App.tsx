@@ -29,6 +29,7 @@ import ReadingDetailPage from "@/pages/ReadingDetailPage";
 import LearningPathPage from "@/pages/LearningPathPage";
 import UnitDetailPage from "@/pages/UnitDetailPage";
 import UnitTestPage from "@/pages/UnitTestPage";
+import ActivatePage from "@/pages/ActivatePage";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 
 const queryClient = new QueryClient();
@@ -75,6 +76,10 @@ const router = createBrowserRouter([
       {
         path: "forgot-password",
         element: <ForgotPasswordPage />,
+      },
+      {
+        path: "activate",
+        element: <ActivatePage />,
       },
       {
         path: "change-password",
