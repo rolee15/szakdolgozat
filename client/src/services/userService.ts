@@ -36,11 +36,11 @@ const api = {
         return response.json();
     },
 
-    async refreshToken(token: string): Promise<RefreshTokenDto> {
+    async refreshToken(token: string, refreshToken: string): Promise<RefreshTokenDto> {
         const response = await fetch(`${API_USERS_URL}/refreshToken`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ token }),
+            body: JSON.stringify({ token, refreshToken }),
         });
         if (!response.ok) throw new Error('Failed to refresh token');
         return response.json();

@@ -4,6 +4,7 @@ using KanjiKa.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using RefreshTokenRequest = KanjiKa.Application.DTOs.User.RefreshTokenRequest;
 
 namespace KanjiKa.Api.Controllers;
 
@@ -84,9 +85,9 @@ public class UsersController : ControllerBase
     [HttpPost("refreshToken")]
     [Consumes("application/json")]
     [ProducesResponseType(typeof(RefreshTokenDto), StatusCodes.Status200OK)]
-    public async Task<IActionResult> RefreshToken([FromBody] string token, string refreshToken)
+    public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
     {
-        RefreshTokenDto refreshTokenDto = await _userService.RefreshToken(token, refreshToken);
+        RefreshTokenDto refreshTokenDto = await _userService.RefreshToken(request.Token, request.RefreshToken);
         return Ok(refreshTokenDto);
     }
 
