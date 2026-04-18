@@ -15,41 +15,29 @@ public class AdminServiceTest
     public async Task GetUsers_ReturnsMappedPagedResult()
     {
         // Arrange
-        var users = new List<User>
+        var summaries = new List<UserSummary>
         {
             new()
             {
                 Id = 1,
                 Username = "alice",
-                PasswordHash = [1],
-                PasswordSalt = [2],
                 Role = UserRole.User,
                 MustChangePassword = false,
-                Proficiencies = new List<Proficiency> { new() { CharacterId = 10 } },
-                LessonCompletions = new List<LessonCompletion>
-                {
-                    new()
-                    {
-                        CharacterId = 10,
-                        Character = new Character { Id = 10, Symbol = "あ", Romanization = "a" },
-                        User = null!
-                    }
-                }
+                ProficiencyCount = 1,
+                LessonCompletionCount = 1
             },
             new()
             {
                 Id = 2,
                 Username = "bob",
-                PasswordHash = [3],
-                PasswordSalt = [4],
                 Role = UserRole.Admin,
                 MustChangePassword = true,
-                Proficiencies = [],
-                LessonCompletions = []
+                ProficiencyCount = 0,
+                LessonCompletionCount = 0
             }
         };
         var repo = new Mock<IUserRepository>();
-        repo.Setup(r => r.GetUsersPagedAsync(1, 10, null)).ReturnsAsync((users, 2));
+        repo.Setup(r => r.GetUsersPagedAsync(1, 10, null)).ReturnsAsync((summaries, 2));
 
         var service = new AdminService(repo.Object);
 
@@ -84,7 +72,7 @@ public class AdminServiceTest
     {
         // Arrange
         var repo = new Mock<IUserRepository>();
-        repo.Setup(r => r.GetUsersPagedAsync(1, 10, "nomatch")).ReturnsAsync((new List<User>(), 0));
+        repo.Setup(r => r.GetUsersPagedAsync(1, 10, "nomatch")).ReturnsAsync((new List<UserSummary>(), 0));
 
         var service = new AdminService(repo.Object);
 

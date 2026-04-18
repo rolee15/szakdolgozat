@@ -16,7 +16,7 @@ public class AdminService : IAdminService
 
     public async Task<PagedResult<AdminUserDto>> GetUsersAsync(int page, int pageSize, string? search)
     {
-        (List<User> users, int totalCount) = await _repo.GetUsersPagedAsync(page, pageSize, search);
+        (List<UserSummary> users, int totalCount) = await _repo.GetUsersPagedAsync(page, pageSize, search);
 
         return new PagedResult<AdminUserDto>
         {
@@ -26,8 +26,8 @@ public class AdminService : IAdminService
                 Username = u.Username,
                 Role = u.Role,
                 MustChangePassword = u.MustChangePassword,
-                ProficiencyCount = u.Proficiencies.Count,
-                LessonCompletionCount = u.LessonCompletions.Count
+                ProficiencyCount = u.ProficiencyCount,
+                LessonCompletionCount = u.LessonCompletionCount
             }).ToList(),
             TotalCount = totalCount,
             Page = page,

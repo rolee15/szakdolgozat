@@ -14,7 +14,7 @@ public interface IUserRepository
 
     Task<User?> GetByIdWithStatsAsync(int id);
 
-    Task<(List<User> Users, int TotalCount)> GetUsersPagedAsync(int page, int pageSize, string? search);
+    Task<(List<UserSummary> Users, int TotalCount)> GetUsersPagedAsync(int page, int pageSize, string? search);
 
     Task AddAsync(User user);
 

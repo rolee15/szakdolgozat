@@ -42,7 +42,7 @@ public class UserRepository : IUserRepository
             .FirstOrDefaultAsync(u => u.Id == id);
     }
 
-    public async Task<(List<User> Users, int TotalCount)> GetUsersPagedAsync(int page, int pageSize, string? search)
+    public async Task<(List<UserSummary> Users, int TotalCount)> GetUsersPagedAsync(int page, int pageSize, string? search)
     {
         IQueryable<User> query = _db.Users.AsQueryable();
 
@@ -52,12 +52,19 @@ public class UserRepository : IUserRepository
         }
 
         int totalCount = await query.CountAsync();
-        List<User> users = await query
-            .Include(u => u.Proficiencies)
-            .Include(u => u.LessonCompletions)
+        List<UserSummary> users = await query
             .OrderBy(u => u.Id)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
+            .Select(u => new UserSummary
+            {
+                Id = u.Id,
+                Username = u.Username,
+                Role = u.Role,
+                MustChangePassword = u.MustChangePassword,
+                ProficiencyCount = u.Proficiencies.Count(),
+                LessonCompletionCount = u.LessonCompletions.Count()
+            })
             .ToListAsync();
 
         return (users, totalCount);
