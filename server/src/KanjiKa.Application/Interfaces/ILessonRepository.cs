@@ -12,7 +12,7 @@ public interface ILessonRepository
 
     Task<int> CountLessonsCompletedTodayAsync(int userId);
 
-    Task<List<Character>> GetNewCharactersAsync(List<Proficiency> proficiencies);
+    Task<List<Character>> GetNewCharactersAsync(List<KanaProficiency> proficiencies);
 
     Task<int> CountNewCharactersAsync(List<int> learnedCharacterIds);
 
@@ -20,15 +20,15 @@ public interface ILessonRepository
 
     Task<Character?> GetCharacterBySymbolAsync(string symbol);
 
-    Task<Proficiency?> GetProficiencyAsync(int userId, int characterId);
+    Task<KanaProficiency?> GetProficiencyAsync(int userId, int characterId);
 
-    Task AddProficiencyAsync(Proficiency proficiency);
+    Task AddProficiencyAsync(KanaProficiency proficiency);
 
     Task AddLessonCompletionAsync(LessonCompletion completion);
 
     Task<List<LessonCompletion>> GetLessonCompletionsByUserAsync(int userId);
 
-    Task<List<Proficiency>> GetDueReviewsAsync(int userId);
+    Task<List<KanaProficiency>> GetDueReviewsAsync(int userId);
 
     Task SaveChangesAsync();
 }

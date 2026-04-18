@@ -1,5 +1,6 @@
 using KanjiKa.Application.DTOs.Kana;
 using KanjiKa.Application.Interfaces;
+using KanjiKa.Domain.Entities.Common;
 using KanjiKa.Domain.Entities.Kana;
 using KanjiKa.Domain.Entities.Users;
 
@@ -42,7 +43,7 @@ public class KanaService : IKanaService
             throw new ArgumentException($"User with id {userId} not found");
         }
 
-        Proficiency? userProficiency = user.Proficiencies
+        KanaProficiency? userProficiency = user.KanaProficiencies
             .FirstOrDefault(p => p.CharacterId == kanaCharacter.Id);
         int level = userProficiency?.Level ?? 0;
         SrsStage srsStage = userProficiency?.SrsStage ?? SrsStage.Locked;
@@ -80,7 +81,7 @@ public class KanaService : IKanaService
             Character = c.Symbol,
             Romanization = c.Romanization,
             Type = c.Type,
-            Proficiency = user.Proficiencies
+            Proficiency = user.KanaProficiencies
                 .FirstOrDefault(p => p.CharacterId == c.Id)?
                 .Level ?? 0
         };

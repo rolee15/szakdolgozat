@@ -97,7 +97,7 @@ public class ReadingService : IReadingService
             Score = score,
             AttemptCount = (existing?.AttemptCount ?? 0) + 1,
             IsPassed = isPassed,
-            LastAttemptAt = DateTimeOffset.UtcNow
+            LastPracticedAt = DateTimeOffset.UtcNow
         };
 
         await _readingRepository.UpsertProficiencyAsync(proficiency);

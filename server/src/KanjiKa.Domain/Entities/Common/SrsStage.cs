@@ -1,4 +1,4 @@
-namespace KanjiKa.Domain.Entities.Kana;
+namespace KanjiKa.Domain.Entities.Common;
 
 public enum SrsStage
 {

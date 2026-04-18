@@ -1,34 +1,32 @@
 using KanjiKa.Domain.Entities.Users;
 
-namespace KanjiKa.Domain.Entities.Kana;
+namespace KanjiKa.Domain.Entities.Common;
 
-public class Proficiency
+public abstract class Proficiency<TContent> where TContent : class
 {
-    public int Id { get; init; }
-    public int UserId { get; init; }
-    public User? User { get; init; }
-    public int CharacterId { get; init; }
-    public Character? Character { get; init; }
+    public int Id { get; set; }
+    public int UserId { get; set; }
+    public User? User { get; set; }
+    public TContent? Content { get; set; }
 
     public SrsStage SrsStage { get; set; } = SrsStage.Apprentice1;
     public DateTimeOffset? NextReviewDate { get; set; }
     public DateTimeOffset LearnedAt { get; init; } = DateTimeOffset.UtcNow;
-    public DateTimeOffset LastPracticed { get; set; } = DateTimeOffset.UtcNow;
+    public DateTimeOffset LastPracticedAt { get; set; } = DateTimeOffset.UtcNow;
 
-    // Computed for backward compatibility: maps SRS stage to 0-100 scale
     public int Level => SrsStage == SrsStage.Burned ? 100 : (int)SrsStage * 100 / 9;
 
     public void AnswerCorrectly(DateTimeOffset? now = null)
     {
         SrsStage = SrsIntervals.Advance(SrsStage);
         NextReviewDate = SrsIntervals.GetNextReviewDate(SrsStage);
-        LastPracticed = now ?? DateTimeOffset.UtcNow;
+        LastPracticedAt = now ?? DateTimeOffset.UtcNow;
     }
 
     public void AnswerIncorrectly(DateTimeOffset? now = null)
     {
         SrsStage = SrsIntervals.Regress(SrsStage);
         NextReviewDate = SrsIntervals.GetNextReviewDate(SrsStage);
-        LastPracticed = now ?? DateTimeOffset.UtcNow;
+        LastPracticedAt = now ?? DateTimeOffset.UtcNow;
     }
 }

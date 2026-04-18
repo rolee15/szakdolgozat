@@ -1,7 +1,7 @@
 using KanjiKa.Application.DTOs;
 using KanjiKa.Application.DTOs.Kanji;
 using KanjiKa.Application.Interfaces;
-using KanjiKa.Domain.Entities.Kana;
+using KanjiKa.Domain.Entities.Common;
 using KanjiKa.Domain.Entities.Kanji;
 
 namespace KanjiKa.Application.Services;

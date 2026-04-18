@@ -51,7 +51,7 @@ public class ReadingRepository : IReadingRepository
             existing.Score = proficiency.Score;
             existing.AttemptCount = proficiency.AttemptCount;
             existing.IsPassed = proficiency.IsPassed;
-            existing.LastAttemptAt = proficiency.LastAttemptAt;
+            existing.LastPracticedAt = proficiency.LastPracticedAt;
         }
     }
 

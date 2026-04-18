@@ -1,6 +1,7 @@
 using KanjiKa.Application.Services;
 using KanjiKa.Application.DTOs.Kana;
 using KanjiKa.Application.Interfaces;
+using KanjiKa.Domain.Entities.Common;
 using KanjiKa.Domain.Entities.Kana;
 using KanjiKa.Domain.Entities.Users;
 using Moq;
@@ -65,7 +66,7 @@ public class KanaServiceTest
         var repo = new Mock<IKanaRepository>();
         User user = MakeUser();
         Character character = MakeCharacter(1, "あ", "a", KanaType.Hiragana);
-        user.Proficiencies.Add(new Proficiency { CharacterId = 1, SrsStage = SrsStage.Guru1 });
+        user.KanaProficiencies.Add(new KanaProficiency { CharacterId = 1, SrsStage = SrsStage.Guru1 });
 
         repo.Setup(r => r.GetUserWithProficienciesAsync(1)).ReturnsAsync(user);
         repo.Setup(r => r.GetCharactersByType(KanaType.Hiragana)).Returns([character]);
@@ -75,7 +76,7 @@ public class KanaServiceTest
         IEnumerable<KanaDto> result = await service.GetKanaCharacters(KanaType.Hiragana, 1);
 
         KanaDto dto = result.Single();
-        Assert.Equal(new Proficiency { SrsStage = SrsStage.Guru1 }.Level, dto.Proficiency);
+        Assert.Equal(new KanaProficiency { SrsStage = SrsStage.Guru1 }.Level, dto.Proficiency);
     }
 
     [Fact]
@@ -154,7 +155,7 @@ public class KanaServiceTest
         var repo = new Mock<IKanaRepository>();
         Character character = MakeCharacter(1, "あ", "a", KanaType.Hiragana);
         User user = MakeUser();
-        user.Proficiencies.Add(new Proficiency { CharacterId = 1, SrsStage = SrsStage.Master });
+        user.KanaProficiencies.Add(new KanaProficiency { CharacterId = 1, SrsStage = SrsStage.Master });
         repo.Setup(r => r.GetCharacterBySymbolAndTypeAsync("あ", KanaType.Hiragana))
             .ReturnsAsync(character);
         repo.Setup(r => r.GetUserWithProficienciesAsync(1)).ReturnsAsync(user);

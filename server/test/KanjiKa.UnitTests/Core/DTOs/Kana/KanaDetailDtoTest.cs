@@ -1,4 +1,5 @@
 using KanjiKa.Application.DTOs.Kana;
+using KanjiKa.Domain.Entities.Common;
 using KanjiKa.Domain.Entities.Kana;
 
 namespace KanjiKa.UnitTests.Core.DTOs.Kana;

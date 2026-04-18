@@ -1,4 +1,4 @@
-﻿using KanjiKa.Domain.Entities.Kana;
+using KanjiKa.Domain.Entities.Kana;
 using KanjiKa.Domain.Entities.Learning;
 using KanjiKa.Domain.Entities.Users;
 
@@ -17,7 +17,7 @@ public class UserTest
             Username = "testUser",
             PasswordHash = hashBytes,
             PasswordSalt = saltBytes,
-            Proficiencies = new List<Proficiency>(),
+            KanaProficiencies = new List<KanaProficiency>(),
             LessonCompletions = new List<LessonCompletion>()
         };
 
@@ -26,8 +26,8 @@ public class UserTest
             () => Assert.Equal("testUser", user.Username),
             () => Assert.Equal(hashBytes, user.PasswordHash),
             () => Assert.Equal(saltBytes, user.PasswordSalt),
-            () => Assert.NotNull(user.Proficiencies),
-            () => Assert.Empty(user.Proficiencies),
+            () => Assert.NotNull(user.KanaProficiencies),
+            () => Assert.Empty(user.KanaProficiencies),
             () => Assert.NotNull(user.LessonCompletions),
             () => Assert.Empty(user.LessonCompletions)
         );

@@ -1,6 +1,7 @@
 using KanjiKa.Application.Services;
 using KanjiKa.Application.DTOs;
 using KanjiKa.Application.DTOs.Admin;
+using KanjiKa.Domain.Entities.Common;
 using KanjiKa.Domain.Entities.Kana;
 using KanjiKa.Domain.Entities.Learning;
 using KanjiKa.Domain.Entities.Users;
@@ -117,14 +118,14 @@ public class AdminServiceTest
             PasswordSalt = [6],
             Role = UserRole.User,
             MustChangePassword = false,
-            Proficiencies = new List<Proficiency>
+            KanaProficiencies = new List<KanaProficiency>
             {
                 new()
                 {
                     CharacterId = 7,
                     Character = character,
                     LearnedAt = learnedAt,
-                    LastPracticed = lastPracticed
+                    LastPracticedAt = lastPracticed
                 }
             },
             LessonCompletions = new List<LessonCompletion>

@@ -37,7 +37,7 @@ public class UserRepository : IUserRepository
     public Task<User?> GetByIdWithStatsAsync(int id)
     {
         return _db.Users
-            .Include(u => u.Proficiencies).ThenInclude(p => p.Character)
+            .Include(u => u.KanaProficiencies).ThenInclude(p => p.Character)
             .Include(u => u.LessonCompletions).ThenInclude(lc => lc.Character)
             .FirstOrDefaultAsync(u => u.Id == id);
     }
@@ -62,7 +62,7 @@ public class UserRepository : IUserRepository
                 Username = u.Username,
                 Role = u.Role,
                 MustChangePassword = u.MustChangePassword,
-                ProficiencyCount = u.Proficiencies.Count(),
+                ProficiencyCount = u.KanaProficiencies.Count(),
                 LessonCompletionCount = u.LessonCompletions.Count()
             })
             .ToListAsync();
