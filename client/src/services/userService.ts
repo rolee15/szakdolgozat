@@ -26,16 +26,6 @@ const api = {
         return response.json();
     },
 
-    async resetPassword(email: string): Promise<ResetPasswordDto> {
-        const response = await fetch(`${API_USERS_URL}/resetPassword`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email }),
-        });
-        if (!response.ok) throw new Error('Failed to send reset password email');
-        return response.json();
-    },
-
     async refreshToken(token: string, refreshToken: string): Promise<RefreshTokenDto> {
         const response = await fetch(`${API_USERS_URL}/refreshToken`, {
             method: 'POST',

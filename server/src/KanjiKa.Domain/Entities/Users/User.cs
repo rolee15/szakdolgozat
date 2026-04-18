@@ -24,7 +24,7 @@ public class User
 
     public bool IsActive { get; set; } = false;
     public string? ActivationToken { get; set; }
-    public DateTime? ActivationTokenExpiry { get; set; }
+    public DateTimeOffset? ActivationTokenExpiry { get; set; }
 
     public List<Proficiency> Proficiencies { get; set; } = new();
     public List<LessonCompletion> LessonCompletions { get; set; } = new();

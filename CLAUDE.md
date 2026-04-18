@@ -78,7 +78,7 @@ client/test/         # Vitest tests mirroring src/ structure
 API base URL is set via `VITE_API_URL` env var (dev: `https://localhost:7161/api`). The frontend uses TanStack React Query for data fetching and React Hook Form for forms.
 
 ### Authentication
-JWT-based auth is fully implemented end-to-end. Backend uses `ITokenService` (JWT) and `IHashService` (bcrypt). Frontend validates tokens via auth context in `App.tsx`, uses `ProtectedRoute` for guarded routes, and reads the authenticated user's ID from context — no hardcoded IDs remain.
+JWT-based auth is fully implemented end-to-end. Backend uses `ITokenService` (JWT) and `IHashService` (PBKDF2-SHA512). Frontend validates tokens via auth context in `App.tsx`, uses `ProtectedRoute` for guarded routes, and reads the authenticated user's ID from context — no hardcoded IDs remain.
 
 ## Key Config Files
 - `client/.env.development` / `.env.production` — Vite env vars

@@ -92,7 +92,7 @@ public class UserService : IUserService
             PasswordSalt = passwordSalt,
             IsActive = false,
             ActivationToken = activationToken,
-            ActivationTokenExpiry = DateTime.UtcNow.AddHours(24)
+            ActivationTokenExpiry = DateTimeOffset.UtcNow.AddHours(24)
         };
 
         await _repo.AddAsync(newUser);
@@ -109,7 +109,7 @@ public class UserService : IUserService
 
         try
         {
-            await _emailService.SendActivationEmailAsync(newUser.Username, newUser.Username, activationLink);
+            await _emailService.SendActivationEmailAsync(newUser.Username, "KanjiKa User", activationLink);
         }
         catch (Exception ex)
         {
