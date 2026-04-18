@@ -55,12 +55,10 @@ jobs:
           dotnet sonarscanner begin `
             /k:"rolee15_szakdolgozat" `
             /o:"rolee15" `
-            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" `
+            /d:sonar.token="$env:SONAR_TOKEN" `
             /d:sonar.host.url="https://sonarcloud.io" `
             /d:sonar.javascript.lcov.reportPaths="client/coverage/lcov.info" `
             /d:sonar.cs.opencover.reportsPaths="server/TestResults/**/coverage.opencover.xml" `
-            /d:sonar.sources="client/src,server/src" `
-            /d:sonar.tests="client/test,server/test" `
             /d:sonar.test.inclusions="client/test/**/*.*,server/test/**/*.*" `
             /d:sonar.exclusions="**/node_modules/**,**/dist/**,**/build/**,client/coverage/**,client/public/**,server/TestResults/**,server/docs/**,docs/**"
 
@@ -82,7 +80,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+        run: dotnet sonarscanner end /d:sonar.token="$env:SONAR_TOKEN"
 
       # ---------- Publish test results ----------
       - name: Publish .NET test results
