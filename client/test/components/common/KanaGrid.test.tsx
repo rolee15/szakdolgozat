@@ -150,10 +150,12 @@ describe('KanaGrid', () => {
 
     render(<KanaGrid type="hiragana" />)
 
+    // KanaButton splits 2-char strings across two spans, so getByText won't find the full
+    // combined string. Use the aria-label instead.
     await waitFor(() => {
-      expect(screen.getByText('きゃ')).toBeInTheDocument()
-      expect(screen.getByText('きゅ')).toBeInTheDocument()
-      expect(screen.getByText('きょ')).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /Kana きゃ/ })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /Kana きゅ/ })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /Kana きょ/ })).toBeInTheDocument()
     })
   })
 
