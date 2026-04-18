@@ -193,6 +193,8 @@ public class UserService : IUserService
         user.PasswordSalt = passwordSalt;
         user.PasswordResetCode = null;
         user.PasswordResetExpiry = null;
+        user.RefreshToken = null;
+        user.RefreshTokenExpiry = null;
         await _repo.UpdateAsync(user);
         await _repo.SaveChangesAsync();
 
@@ -243,6 +245,8 @@ public class UserService : IUserService
         user.PasswordHash = passwordHash;
         user.PasswordSalt = passwordSalt;
         user.MustChangePassword = false;
+        user.RefreshToken = null;
+        user.RefreshTokenExpiry = null;
         await _repo.UpdateAsync(user);
         await _repo.SaveChangesAsync();
 
