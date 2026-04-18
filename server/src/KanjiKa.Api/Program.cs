@@ -50,11 +50,14 @@ builder.Services.AddScoped<IPathService, PathService>();
 builder.Services.AddScoped<IHashService, HashService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IEmailService, SmtpEmailService>();
+string[] corsOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
+    ?? ["http://localhost:5173", "http://localhost:3000", "https://localhost:5173", "https://localhost:3000"];
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp",
         x => x
-            .WithOrigins("http://localhost:5173", "http://localhost:3000", "https://localhost:5173", "https://localhost:3000")
+            .WithOrigins(corsOrigins)
             .AllowCredentials()
             .AllowAnyMethod()
             .AllowAnyHeader());
