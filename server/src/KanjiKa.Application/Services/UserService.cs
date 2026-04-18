@@ -175,16 +175,8 @@ public class UserService : IUserService
     public async Task<ResetPasswordDto> ResetPassword(string username, string resetCode, string newPassword)
     {
         User? user = await _repo.GetByUsernameAsync(username);
-        if (user == null)
-        {
-            return new ResetPasswordDto
-            {
-                IsSuccess = false,
-                ErrorMessage = "User not found"
-            };
-        }
-
-        if (user.PasswordResetCode == null
+        if (user == null
+            || user.PasswordResetCode == null
             || !string.Equals(user.PasswordResetCode, resetCode, StringComparison.OrdinalIgnoreCase)
             || user.PasswordResetExpiry == null
             || user.PasswordResetExpiry < DateTimeOffset.UtcNow)
@@ -192,7 +184,7 @@ public class UserService : IUserService
             return new ResetPasswordDto
             {
                 IsSuccess = false,
-                ErrorMessage = "Invalid reset code"
+                ErrorMessage = "Invalid or expired reset code"
             };
         }
 
