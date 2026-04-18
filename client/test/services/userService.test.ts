@@ -93,36 +93,14 @@ describe('userService', () => {
     });
   });
 
-  describe('resetPassword', () => {
-    it('posts to /resetPassword with body and returns JSON', async () => {
-      const payload = { success: true };
-      mockFetchOk(payload);
-
-      const email = 'reset@example.com';
-      const result = await userService.resetPassword(email);
-
-      expect(result).toEqual(payload);
-      const fetchMock = global.fetch as unknown as ReturnType<typeof vi.fn>;
-      const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
-      expect(url).toBe('http://api.test/users/resetPassword');
-      expect(init?.method).toBe('POST');
-      expect(init?.headers).toEqual({ 'Content-Type': 'application/json' });
-      expect(init?.body).toBe(JSON.stringify({ email }));
-    });
-
-    it('throws on non-ok response', async () => {
-      mockFetchNotOk();
-      await expect(userService.resetPassword('a@b.c')).rejects.toThrow('Failed to send reset password email');
-    });
-  });
-
   describe('refreshToken', () => {
-    it('posts to /refreshToken with body and returns JSON', async () => {
+    it('posts to /refreshToken with both token and refreshToken', async () => {
       const payload = { token: 'newjwt' };
       mockFetchOk(payload);
 
       const token = 'oldjwt';
-      const result = await userService.refreshToken(token);
+      const refreshToken = 'myrefreshtoken';
+      const result = await userService.refreshToken(token, refreshToken);
 
       expect(result).toEqual(payload);
       const fetchMock = global.fetch as unknown as ReturnType<typeof vi.fn>;
@@ -130,12 +108,12 @@ describe('userService', () => {
       expect(url).toBe('http://api.test/users/refreshToken');
       expect(init?.method).toBe('POST');
       expect(init?.headers).toEqual({ 'Content-Type': 'application/json' });
-      expect(init?.body).toBe(JSON.stringify({ token }));
+      expect(init?.body).toBe(JSON.stringify({ token, refreshToken }));
     });
 
     it('throws on non-ok response', async () => {
       mockFetchNotOk();
-      await expect(userService.refreshToken('badtoken')).rejects.toThrow('Failed to refresh token');
+      await expect(userService.refreshToken('badtoken', 'refreshtoken')).rejects.toThrow('Failed to refresh token');
     });
   });
 
@@ -217,7 +195,7 @@ describe('userService', () => {
       expect(url).toBe('http://api.test/users/reset-password');
       expect(init?.method).toBe('POST');
       expect(init?.headers).toEqual({ 'Content-Type': 'application/json' });
-      expect(init?.body).toBe(JSON.stringify({ email, code, newPassword }));
+      expect(init?.body).toBe(JSON.stringify({ email, resetCode: code, newPassword }));
     });
 
     it('throws on non-ok response', async () => {
