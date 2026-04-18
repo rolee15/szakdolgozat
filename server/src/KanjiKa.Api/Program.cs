@@ -1,6 +1,7 @@
 using System.Text;
 using KanjiKa.Api.Extensions;
 using KanjiKa.Application.Interfaces;
+using KanjiKa.Application.Options;
 using KanjiKa.Application.Services;
 using KanjiKa.Data;
 using KanjiKa.Data.Repositories;
@@ -10,6 +11,16 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddOptions<AuthOptions>()
+    .Bind(builder.Configuration.GetSection(AuthOptions.SectionName))
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
+
+builder.Services.AddOptions<AppOptions>()
+    .Bind(builder.Configuration.GetSection(AppOptions.SectionName))
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
 
 builder.Services.AddSwaggerConfiguration();
 builder.Services.AddControllers();

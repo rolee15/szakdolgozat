@@ -1,8 +1,9 @@
 using KanjiKa.Application.Services;
 using KanjiKa.Application.DTOs.User;
+using KanjiKa.Application.Options;
 using KanjiKa.Domain.Entities.Users;
 using KanjiKa.Application.Interfaces;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Moq;
 using static KanjiKa.Domain.Entities.Users.UserRole;
 
@@ -10,17 +11,11 @@ namespace KanjiKa.UnitTests.Api.Services;
 
 public class UserServiceTest
 {
-    private static IConfiguration BuildConfig(string? frontendBaseUrl = "http://localhost:5173")
-    {
-        var settings = new Dictionary<string, string?>
-        {
-            ["Jwt:RefreshTokenExpirationDays"] = "7",
-            ["App:FrontendBaseUrl"] = frontendBaseUrl
-        };
-        return new ConfigurationBuilder()
-            .AddInMemoryCollection(settings)
-            .Build();
-    }
+    private static IOptions<AuthOptions> BuildAuthOptions(int refreshDays = 7) =>
+        Options.Create(new AuthOptions { RefreshTokenExpirationDays = refreshDays });
+
+    private static IOptions<AppOptions> BuildAppOptions(string frontendBaseUrl = "http://localhost:5173") =>
+        Options.Create(new AppOptions { FrontendBaseUrl = frontendBaseUrl });
 
     // -------------------------------------------------------------------------
     // Login tests
@@ -35,7 +30,7 @@ public class UserServiceTest
         var email = new Mock<IEmailService>();
         repo.Setup(r => r.GetByUsernameAsync("u")).ReturnsAsync((User?)null);
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildAuthOptions(), BuildAppOptions());
         LoginDto result = await service.Login("u", "p");
 
         Assert.False(result.IsSuccess);
@@ -53,7 +48,7 @@ public class UserServiceTest
         repo.Setup(r => r.GetByUsernameAsync("u")).ReturnsAsync(user);
         hash.Setup(h => h.Verify("p", user.PasswordHash, user.PasswordSalt)).Returns(false);
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildAuthOptions(), BuildAppOptions());
         LoginDto result = await service.Login("u", "p");
 
         Assert.False(result.IsSuccess);
@@ -71,7 +66,7 @@ public class UserServiceTest
         repo.Setup(r => r.GetByUsernameAsync("u")).ReturnsAsync(user);
         hash.Setup(h => h.Verify("p", user.PasswordHash, user.PasswordSalt)).Returns(true);
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildAuthOptions(), BuildAppOptions());
         LoginDto result = await service.Login("u", "p");
 
         Assert.False(result.IsSuccess);
@@ -92,7 +87,7 @@ public class UserServiceTest
         token.Setup(t => t.GenerateToken(1, "u", UserRole.User, false)).Returns(("tkn", "rtkn"));
         repo.Setup(r => r.UpdateRefreshTokenAsync(1, "rtkn", It.IsAny<DateTimeOffset>())).Returns(Task.CompletedTask);
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildAuthOptions(), BuildAppOptions());
         LoginDto result = await service.Login("u", "p");
 
         Assert.True(result.IsSuccess);
@@ -116,7 +111,7 @@ public class UserServiceTest
             .Returns(Task.CompletedTask)
             .Verifiable();
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildAuthOptions(), BuildAppOptions());
         await service.Login("u", "p");
 
         repo.Verify(r => r.UpdateRefreshTokenAsync(7, "ref", It.IsAny<DateTimeOffset>()), Times.Once);
@@ -136,7 +131,7 @@ public class UserServiceTest
         var email = new Mock<IEmailService>();
         repo.Setup(r => r.GetByUsernameAsync("u")).ReturnsAsync(existing);
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildAuthOptions(), BuildAppOptions());
         RegisterDto result = await service.Register("u", "p");
 
         Assert.False(result.Success);
@@ -162,7 +157,7 @@ public class UserServiceTest
             .Callback<User>(u => capturedUser = u)
             .Returns(Task.CompletedTask);
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildAuthOptions(), BuildAppOptions());
         await service.Register("u", "p");
 
         Assert.NotNull(capturedUser);
@@ -187,7 +182,7 @@ public class UserServiceTest
             .Returns(Task.CompletedTask);
         repo.Setup(r => r.SaveChangesAsync()).Returns(Task.CompletedTask);
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildAuthOptions(), BuildAppOptions());
         await service.Register("u", "p");
 
         Assert.NotNull(capturedUser);
@@ -212,7 +207,7 @@ public class UserServiceTest
             .Returns(Task.CompletedTask)
             .Verifiable();
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildAuthOptions(), BuildAppOptions());
         await service.Register("u", "p");
 
         email.Verify(e => e.SendActivationEmailAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
@@ -232,7 +227,7 @@ public class UserServiceTest
         email.Setup(e => e.SendActivationEmailAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
             .Returns(Task.CompletedTask);
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildAuthOptions(), BuildAppOptions());
         RegisterDto result = await service.Register("u", "p");
 
         Assert.True(result.Success);
@@ -254,7 +249,7 @@ public class UserServiceTest
         email.Setup(e => e.SendActivationEmailAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
             .ThrowsAsync(new Exception("SMTP failure"));
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildAuthOptions(), BuildAppOptions());
         RegisterDto result = await service.Register("u", "p");
 
         Assert.True(result.Success);
@@ -272,7 +267,7 @@ public class UserServiceTest
         var token = new Mock<ITokenService>();
         var email = new Mock<IEmailService>();
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildAuthOptions(), BuildAppOptions());
         ActivateDto result = await service.ActivateAccount(string.Empty);
 
         Assert.False(result.Success);
@@ -288,7 +283,7 @@ public class UserServiceTest
         var email = new Mock<IEmailService>();
         repo.Setup(r => r.GetByActivationTokenAsync("badtoken")).ReturnsAsync((User?)null);
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildAuthOptions(), BuildAppOptions());
         ActivateDto result = await service.ActivateAccount("badtoken");
 
         Assert.False(result.Success);
@@ -314,7 +309,7 @@ public class UserServiceTest
         var email = new Mock<IEmailService>();
         repo.Setup(r => r.GetByActivationTokenAsync("expiredtoken")).ReturnsAsync(user);
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildAuthOptions(), BuildAppOptions());
         ActivateDto result = await service.ActivateAccount("expiredtoken");
 
         Assert.False(result.Success);
@@ -340,7 +335,7 @@ public class UserServiceTest
         var email = new Mock<IEmailService>();
         repo.Setup(r => r.GetByActivationTokenAsync("validtoken")).ReturnsAsync(user);
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildAuthOptions(), BuildAppOptions());
         ActivateDto result = await service.ActivateAccount("validtoken");
 
         Assert.True(result.Success);
@@ -366,7 +361,7 @@ public class UserServiceTest
         repo.Setup(r => r.GetByActivationTokenAsync("goodtoken")).ReturnsAsync(user);
         repo.Setup(r => r.SaveChangesAsync()).Returns(Task.CompletedTask).Verifiable();
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildAuthOptions(), BuildAppOptions());
         ActivateDto result = await service.ActivateAccount("goodtoken");
 
         Assert.True(result.Success);
@@ -393,7 +388,7 @@ public class UserServiceTest
         repo.Setup(r => r.SaveChangesAsync()).Returns(Task.CompletedTask);
         email.Setup(e => e.SendEmail("e@x.com", It.IsAny<string>(), It.IsAny<string>())).Returns(Task.CompletedTask).Verifiable();
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildAuthOptions(), BuildAppOptions());
         ForgotPasswordDto result = await service.ForgotPassword("e@x.com");
 
         Assert.NotNull(result);
@@ -409,7 +404,7 @@ public class UserServiceTest
         var email = new Mock<IEmailService>();
         repo.Setup(r => r.GetByUsernameAsync(It.IsAny<string>())).ReturnsAsync((User?)null);
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildAuthOptions(), BuildAppOptions());
         ForgotPasswordDto result = await service.ForgotPassword("unknown@x.com");
 
         Assert.NotNull(result);
@@ -429,7 +424,7 @@ public class UserServiceTest
         var email = new Mock<IEmailService>();
         repo.Setup(r => r.GetByUsernameAsync("u")).ReturnsAsync((User?)null);
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildAuthOptions(), BuildAppOptions());
         ResetPasswordDto result = await service.ResetPassword("u", "12345", "new");
 
         Assert.False(result.IsSuccess);
@@ -445,7 +440,7 @@ public class UserServiceTest
         var email = new Mock<IEmailService>();
         repo.Setup(r => r.GetByUsernameAsync("u")).ReturnsAsync(user);
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildAuthOptions(), BuildAppOptions());
         ResetPasswordDto result = await service.ResetPassword("u", "99999", "new");
 
         Assert.False(result.IsSuccess);
@@ -472,7 +467,7 @@ public class UserServiceTest
         repo.Setup(r => r.UpdateAsync(user)).Returns(Task.CompletedTask).Verifiable();
         repo.Setup(r => r.SaveChangesAsync()).Returns(Task.CompletedTask).Verifiable();
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildAuthOptions(), BuildAppOptions());
         ResetPasswordDto result = await service.ResetPassword("u", "12345", "new");
 
         Assert.True(result.IsSuccess);
@@ -506,7 +501,7 @@ public class UserServiceTest
         token.Setup(t => t.GenerateToken(1, "u", UserRole.User, false)).Returns(("newtoken", "newrefresh"));
         repo.Setup(r => r.UpdateRefreshTokenAsync(1, "newrefresh", It.IsAny<DateTimeOffset>())).Returns(Task.CompletedTask);
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildAuthOptions(), BuildAppOptions());
         RefreshTokenDto result = await service.RefreshToken("old", "refresh");
 
         Assert.Equal("newtoken", result.Token);
@@ -521,7 +516,7 @@ public class UserServiceTest
         var email = new Mock<IEmailService>();
         repo.Setup(r => r.GetByRefreshTokenAsync(It.IsAny<string>())).ReturnsAsync((User?)null);
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildAuthOptions(), BuildAppOptions());
         RefreshTokenDto result = await service.RefreshToken("old", "invalid");
 
         Assert.Equal(string.Empty, result.Token);
@@ -545,7 +540,7 @@ public class UserServiceTest
         var email = new Mock<IEmailService>();
         repo.Setup(r => r.GetByRefreshTokenAsync("expired")).ReturnsAsync(user);
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildAuthOptions(), BuildAppOptions());
         RefreshTokenDto result = await service.RefreshToken("old", "expired");
 
         Assert.Equal(string.Empty, result.Token);
@@ -564,7 +559,7 @@ public class UserServiceTest
         var email = new Mock<IEmailService>();
         repo.Setup(r => r.GetByIdAsync(99)).ReturnsAsync((User?)null);
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildAuthOptions(), BuildAppOptions());
         ChangePasswordDto result = await service.ChangePassword(99, "current", "new");
 
         Assert.False(result.IsSuccess);
@@ -582,7 +577,7 @@ public class UserServiceTest
         repo.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(user);
         hash.Setup(h => h.Verify("wrong", user.PasswordHash, user.PasswordSalt)).Returns(false);
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildAuthOptions(), BuildAppOptions());
         ChangePasswordDto result = await service.ChangePassword(1, "wrong", "new");
 
         Assert.False(result.IsSuccess);
@@ -603,7 +598,7 @@ public class UserServiceTest
         repo.Setup(r => r.UpdateAsync(user)).Returns(Task.CompletedTask);
         repo.Setup(r => r.SaveChangesAsync()).Returns(Task.CompletedTask);
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildAuthOptions(), BuildAppOptions());
         ChangePasswordDto result = await service.ChangePassword(1, "current", "new");
 
         Assert.True(result.IsSuccess);
@@ -626,7 +621,7 @@ public class UserServiceTest
         repo.Setup(r => r.UpdateAsync(user)).Returns(Task.CompletedTask).Verifiable();
         repo.Setup(r => r.SaveChangesAsync()).Returns(Task.CompletedTask).Verifiable();
 
-        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildConfig());
+        var service = new UserService(repo.Object, hash.Object, token.Object, email.Object, BuildAuthOptions(), BuildAppOptions());
         await service.ChangePassword(2, "current", "new");
 
         repo.Verify(r => r.UpdateAsync(user), Times.Once);

@@ -1,9 +1,10 @@
 using System.Security.Cryptography;
 using KanjiKa.Application.DTOs.User;
 using KanjiKa.Application.Interfaces;
+using KanjiKa.Application.Options;
 using KanjiKa.Domain.Entities.Users;
 using KanjiKa.Domain.Exceptions;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace KanjiKa.Application.Services;
@@ -14,15 +15,17 @@ public class UserService : IUserService
     private readonly IHashService _hashService;
     private readonly IUserRepository _repo;
     private readonly ITokenService _tokenService;
-    private readonly IConfiguration _config;
+    private readonly AuthOptions _auth;
+    private readonly AppOptions _app;
 
-    public UserService(IUserRepository repo, IHashService hashService, ITokenService tokenService, IEmailService emailService, IConfiguration config)
+    public UserService(IUserRepository repo, IHashService hashService, ITokenService tokenService, IEmailService emailService, IOptions<AuthOptions> auth, IOptions<AppOptions> app)
     {
         _repo = repo;
         _hashService = hashService;
         _tokenService = tokenService;
         _emailService = emailService;
-        _config = config;
+        _auth = auth.Value;
+        _app = app.Value;
     }
 
     public async Task<LoginDto> Login(string username, string password)
@@ -57,8 +60,7 @@ public class UserService : IUserService
         }
 
         (string token, string refreshToken) = _tokenService.GenerateToken(user.Id, user.Username, user.Role, user.MustChangePassword);
-        int expiryDays = int.Parse(_config["Jwt:RefreshTokenExpirationDays"] ?? "7");
-        await _repo.UpdateRefreshTokenAsync(user.Id, refreshToken, DateTimeOffset.UtcNow.AddDays(expiryDays));
+        await _repo.UpdateRefreshTokenAsync(user.Id, refreshToken, DateTimeOffset.UtcNow.AddDays(_auth.RefreshTokenExpirationDays));
 
         return new LoginDto
         {
@@ -103,16 +105,16 @@ public class UserService : IUserService
             return new RegisterDto(false, "Username already exists.");
         }
 
-        string frontendBaseUrl = _config["App:FrontendBaseUrl"] ?? "http://localhost:5173";
-        string activationLink = $"{frontendBaseUrl}/activate?token={activationToken}";
+        string activationLink = $"{_app.FrontendBaseUrl}/activate?token={activationToken}";
 
         try
         {
             await _emailService.SendActivationEmailAsync(newUser.Username, newUser.Username, activationLink);
         }
-        catch
+        catch (Exception ex)
         {
             // email delivery is best-effort; a failed send must not break registration
+            Console.Error.WriteLine($"[UserService] Failed to send activation email to {username}: {ex.Message}");
         }
 
         return new RegisterDto(true, "Registration successful. Please check your email to activate your account.");
@@ -131,7 +133,7 @@ public class UserService : IUserService
             return new ActivateDto(false, "Invalid or already-used activation link.");
         }
 
-        if (user.ActivationTokenExpiry < DateTime.UtcNow)
+        if (user.ActivationTokenExpiry < DateTimeOffset.UtcNow)
         {
             return new ActivateDto(false, "Activation link has expired. Please register again.");
         }
@@ -163,9 +165,10 @@ public class UserService : IUserService
             {
                 await _emailService.SendEmail(email, "Forgot Password", $"Reset code: {code}");
             }
-            catch
+            catch (Exception ex)
             {
                 // email delivery is best-effort
+                Console.Error.WriteLine($"[UserService] Failed to send reset code to {email}: {ex.Message}");
             }
         }
 
@@ -213,8 +216,7 @@ public class UserService : IUserService
         }
 
         (string newToken, string newRefreshToken) = _tokenService.GenerateToken(user.Id, user.Username, user.Role, user.MustChangePassword);
-        int expiryDays = int.Parse(_config["Jwt:RefreshTokenExpirationDays"] ?? "7");
-        await _repo.UpdateRefreshTokenAsync(user.Id, newRefreshToken, DateTimeOffset.UtcNow.AddDays(expiryDays));
+        await _repo.UpdateRefreshTokenAsync(user.Id, newRefreshToken, DateTimeOffset.UtcNow.AddDays(_auth.RefreshTokenExpirationDays));
 
         return new RefreshTokenDto { Token = newToken };
     }
