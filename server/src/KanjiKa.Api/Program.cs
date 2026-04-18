@@ -7,6 +7,7 @@ using KanjiKa.Data;
 using KanjiKa.Data.Repositories;
 using KanjiKa.Data.Seeders;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -87,6 +88,10 @@ WebApplication app = builder.Build();
 
 app.UseSwaggerConfiguration();
 
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 app.UseCors("AllowReactApp");
 // Disabled because the self-signed certificate doesn't work in containers.
 //app.UseHttpsRedirection();
