@@ -37,7 +37,7 @@ public class UsersController : ControllerBase
     [HttpPost("login")]
     [Consumes("application/json")]
     [ProducesResponseType(typeof(LoginDto), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Login([FromBody] LoginRequest request)
+    public async Task<IActionResult> Login([FromBody] KanjiKaLoginRequest request)
     {
         LoginDto loginDto = await _userService.Login(request.Email, request.Password);
         return Ok(loginDto);
@@ -48,7 +48,7 @@ public class UsersController : ControllerBase
     [Consumes("application/json")]
     [ProducesResponseType(typeof(RegisterDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RegisterDto), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+    public async Task<IActionResult> Register([FromBody] KanjiKaRegisterRequest request)
     {
         RegisterDto registerDto = await _userService.Register(request.Email, request.Password);
         if (!registerDto.Success)
