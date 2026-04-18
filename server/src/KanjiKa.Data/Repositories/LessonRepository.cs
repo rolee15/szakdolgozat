@@ -1,4 +1,5 @@
-﻿using KanjiKa.Domain.Entities.Kana;
+using KanjiKa.Domain.Entities.Common;
+using KanjiKa.Domain.Entities.Kana;
 using KanjiKa.Domain.Entities.Learning;
 using KanjiKa.Domain.Entities.Users;
 using KanjiKa.Application.Interfaces;
@@ -23,7 +24,7 @@ public class LessonRepository : ILessonRepository
     public async Task<User?> GetUserWithProficienciesAsync(int userId)
     {
         return await _db.Users
-            .Include(u => u.Proficiencies)
+            .Include(u => u.KanaProficiencies)
             .AsNoTracking()
             .FirstOrDefaultAsync(u => u.Id == userId);
     }
@@ -34,7 +35,7 @@ public class LessonRepository : ILessonRepository
         return await _db.LessonCompletions.CountAsync(lc => lc.UserId == userId && lc.CompletionDate.Date == today.Date);
     }
 
-    public async Task<List<Character>> GetNewCharactersAsync(List<Proficiency> proficiencies)
+    public async Task<List<Character>> GetNewCharactersAsync(List<KanaProficiency> proficiencies)
     {
         if (proficiencies.Count == 0)
             return await _db.Characters.ToListAsync();
@@ -65,14 +66,14 @@ public class LessonRepository : ILessonRepository
         return await _db.Characters.FirstOrDefaultAsync(c => c.Symbol == symbol);
     }
 
-    public async Task<Proficiency?> GetProficiencyAsync(int userId, int characterId)
+    public async Task<KanaProficiency?> GetProficiencyAsync(int userId, int characterId)
     {
-        return await _db.Proficiencies.FirstOrDefaultAsync(p => p.UserId == userId && p.CharacterId == characterId);
+        return await _db.KanaProficiencies.FirstOrDefaultAsync(p => p.UserId == userId && p.CharacterId == characterId);
     }
 
-    public async Task AddProficiencyAsync(Proficiency proficiency)
+    public async Task AddProficiencyAsync(KanaProficiency proficiency)
     {
-        await _db.Proficiencies.AddAsync(proficiency);
+        await _db.KanaProficiencies.AddAsync(proficiency);
     }
 
     public async Task AddLessonCompletionAsync(LessonCompletion completion)
@@ -87,10 +88,10 @@ public class LessonRepository : ILessonRepository
             .Where(lc => lc.UserId == userId).ToListAsync();
     }
 
-    public async Task<List<Proficiency>> GetDueReviewsAsync(int userId)
+    public async Task<List<KanaProficiency>> GetDueReviewsAsync(int userId)
     {
         DateTimeOffset now = DateTimeOffset.UtcNow;
-        return await _db.Proficiencies
+        return await _db.KanaProficiencies
             .Include(p => p.Character)
             .Where(p => p.UserId == userId
                         && p.NextReviewDate != null

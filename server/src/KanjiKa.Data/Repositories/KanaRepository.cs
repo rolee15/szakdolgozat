@@ -17,7 +17,7 @@ public class KanaRepository : IKanaRepository
     public async Task<User?> GetUserWithProficienciesAsync(int userId)
     {
         return await _db.Users
-            .Include(x => x.Proficiencies)
+            .Include(x => x.KanaProficiencies)
             .AsNoTracking()
             .FirstOrDefaultAsync(u => u.Id == userId);
     }

@@ -9,7 +9,7 @@ public interface ILessonService
 
     Task<IEnumerable<LessonDto>> GetLessonsAsync(int userId, int pageIndex, int pageSize);
 
-    Task<Proficiency> LearnLessonAsync(int userId, int characterId);
+    Task<KanaProficiency> LearnLessonAsync(int userId, int characterId);
 
     Task<LessonReviewsCountDto> GetLessonReviewsCountAsync(int userId);
 

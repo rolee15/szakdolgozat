@@ -1,3 +1,4 @@
+using KanjiKa.Domain.Entities.Common;
 using KanjiKa.Domain.Entities.Grammar;
 using KanjiKa.Domain.Entities.Kana;
 using KanjiKa.Domain.Entities.Kanji;
@@ -53,9 +54,9 @@ public class DevelopmentDataSeeder : ProductionDataSeeder
             SrsStage.Apprentice4, SrsStage.Guru1
         };
         List<Character> midCharacters = characters.Take(30).ToList();
-        List<Proficiency> midProficiencies = midCharacters.Select((c, i) => {
+        List<KanaProficiency> midProficiencies = midCharacters.Select((c, i) => {
             SrsStage stage = midStages[i % midStages.Length];
-            return new Proficiency
+            return new KanaProficiency
             {
                 UserId = midLearner.Id,
                 CharacterId = c.Id,
@@ -69,7 +70,7 @@ public class DevelopmentDataSeeder : ProductionDataSeeder
             CharacterId = c.Id,
             CompletionDate = DateTimeOffset.UtcNow
         }).ToList();
-        await Context.Proficiencies.AddRangeAsync(midProficiencies);
+        await Context.KanaProficiencies.AddRangeAsync(midProficiencies);
         await Context.LessonCompletions.AddRangeAsync(midLessons);
         await Context.SaveChangesAsync();
 
@@ -78,7 +79,7 @@ public class DevelopmentDataSeeder : ProductionDataSeeder
         await Context.Users.AddAsync(advanced);
         await Context.SaveChangesAsync();
 
-        List<Proficiency> advancedProficiencies = characters.Select(c => new Proficiency
+        List<KanaProficiency> advancedProficiencies = characters.Select(c => new KanaProficiency
         {
             UserId = advanced.Id,
             CharacterId = c.Id,
@@ -91,7 +92,7 @@ public class DevelopmentDataSeeder : ProductionDataSeeder
             CharacterId = c.Id,
             CompletionDate = DateTimeOffset.UtcNow
         }).ToList();
-        await Context.Proficiencies.AddRangeAsync(advancedProficiencies);
+        await Context.KanaProficiencies.AddRangeAsync(advancedProficiencies);
         await Context.LessonCompletions.AddRangeAsync(advancedLessons);
         await Context.SaveChangesAsync();
 
@@ -104,7 +105,7 @@ public class DevelopmentDataSeeder : ProductionDataSeeder
         List<Character> reviewerCharacters = characters.Take(40).ToList();
         List<Kanji> reviewerKanjis = kanjis.Take(10).ToList();
 
-        List<Proficiency> reviewerProficiencies = reviewerCharacters.Select(c => new Proficiency
+        List<KanaProficiency> reviewerProficiencies = reviewerCharacters.Select(c => new KanaProficiency
         {
             UserId = reviewer.Id,
             CharacterId = c.Id,
@@ -125,7 +126,7 @@ public class DevelopmentDataSeeder : ProductionDataSeeder
             NextReviewDate = reviewerDueDate
         }).ToList();
 
-        await Context.Proficiencies.AddRangeAsync(reviewerProficiencies);
+        await Context.KanaProficiencies.AddRangeAsync(reviewerProficiencies);
         await Context.LessonCompletions.AddRangeAsync(reviewerLessons);
         await Context.KanjiProficiencies.AddRangeAsync(reviewerKanjiProficiencies);
         await Context.SaveChangesAsync();

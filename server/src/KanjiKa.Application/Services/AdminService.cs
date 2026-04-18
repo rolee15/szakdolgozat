@@ -46,14 +46,14 @@ public class AdminService : IAdminService
             Username = user.Username,
             Role = user.Role,
             MustChangePassword = user.MustChangePassword,
-            ProficiencyCount = user.Proficiencies.Count,
+            ProficiencyCount = user.KanaProficiencies.Count,
             LessonCompletionCount = user.LessonCompletions.Count,
-            Proficiencies = user.Proficiencies.Select(p => new ProficiencySummaryDto
+            Proficiencies = user.KanaProficiencies.Select(p => new ProficiencySummaryDto
             {
                 CharacterId = p.CharacterId,
                 CharacterSymbol = p.Character?.Symbol ?? "",
                 LearnedAt = p.LearnedAt,
-                LastPracticed = p.LastPracticed
+                LastPracticed = p.LastPracticedAt
             }).ToList(),
             LessonCompletions = user.LessonCompletions.Select(lc => new LessonCompletionSummaryDto
             {

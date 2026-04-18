@@ -1,3 +1,4 @@
+using KanjiKa.Domain.Entities.Common;
 using KanjiKa.Domain.Entities.Kana;
 using KanjiKa.Domain.Entities.Learning;
 using KanjiKa.Domain.Entities.Users;
@@ -38,7 +39,7 @@ public class ProficiencyTest
         user.LessonCompletions.Add(lessonCompletion);
 
         // Act
-        var proficiency = new Proficiency
+        var proficiency = new KanaProficiency
         {
             Id = 1,
             UserId = userId,
@@ -47,7 +48,7 @@ public class ProficiencyTest
             Character = character,
             SrsStage = SrsStage.Guru1,
             LearnedAt = now,
-            LastPracticed = now
+            LastPracticedAt = now
         };
 
         // Assert
@@ -59,7 +60,7 @@ public class ProficiencyTest
             () => Assert.Equal(character, proficiency.Character),
             () => Assert.Equal(SrsStage.Guru1, proficiency.SrsStage),
             () => Assert.Equal(now, proficiency.LearnedAt),
-            () => Assert.Equal(now, proficiency.LastPracticed)
+            () => Assert.Equal(now, proficiency.LastPracticedAt)
         );
     }
 
@@ -67,7 +68,7 @@ public class ProficiencyTest
     public void AnswerCorrectly_AdvancesStage()
     {
         // Arrange
-        var proficiency = new Proficiency { SrsStage = SrsStage.Apprentice1 };
+        var proficiency = new KanaProficiency { SrsStage = SrsStage.Apprentice1 };
 
         // Act
         proficiency.AnswerCorrectly();
@@ -80,7 +81,7 @@ public class ProficiencyTest
     public void AnswerCorrectly_FromBurned_StaysAtBurned()
     {
         // Arrange
-        var proficiency = new Proficiency { SrsStage = SrsStage.Burned };
+        var proficiency = new KanaProficiency { SrsStage = SrsStage.Burned };
 
         // Act
         proficiency.AnswerCorrectly();
@@ -93,7 +94,7 @@ public class ProficiencyTest
     public void AnswerCorrectly_SetsNextReviewDate()
     {
         // Arrange
-        var proficiency = new Proficiency { SrsStage = SrsStage.Apprentice1 };
+        var proficiency = new KanaProficiency { SrsStage = SrsStage.Apprentice1 };
 
         // Act
         proficiency.AnswerCorrectly();
@@ -107,7 +108,7 @@ public class ProficiencyTest
     {
         // Arrange
         // Guru1 = 5, regress by 2 → stage 3 = Apprentice3
-        var proficiency = new Proficiency { SrsStage = SrsStage.Guru1 };
+        var proficiency = new KanaProficiency { SrsStage = SrsStage.Guru1 };
 
         // Act
         proficiency.AnswerIncorrectly();
@@ -120,7 +121,7 @@ public class ProficiencyTest
     public void AnswerIncorrectly_CannotGoBelowApprentice1()
     {
         // Arrange
-        var proficiency = new Proficiency { SrsStage = SrsStage.Apprentice1 };
+        var proficiency = new KanaProficiency { SrsStage = SrsStage.Apprentice1 };
 
         // Act
         proficiency.AnswerIncorrectly();
@@ -133,7 +134,7 @@ public class ProficiencyTest
     public void AnswerIncorrectly_SetsNextReviewDate()
     {
         // Arrange
-        var proficiency = new Proficiency { SrsStage = SrsStage.Guru2 };
+        var proficiency = new KanaProficiency { SrsStage = SrsStage.Guru2 };
 
         // Act
         proficiency.AnswerIncorrectly();
@@ -146,7 +147,7 @@ public class ProficiencyTest
     public void Level_MapsCorrectly_ForApprentice1()
     {
         // Arrange
-        var proficiency = new Proficiency { SrsStage = SrsStage.Apprentice1 };
+        var proficiency = new KanaProficiency { SrsStage = SrsStage.Apprentice1 };
 
         // Act
         int level = proficiency.Level;
@@ -160,7 +161,7 @@ public class ProficiencyTest
     public void Level_Is100_WhenBurned()
     {
         // Arrange
-        var proficiency = new Proficiency { SrsStage = SrsStage.Burned };
+        var proficiency = new KanaProficiency { SrsStage = SrsStage.Burned };
 
         // Act
         int level = proficiency.Level;
@@ -173,7 +174,7 @@ public class ProficiencyTest
     public void Proficiency_Level_ShouldLockedReturnZero()
     {
         // Arrange
-        var proficiency = new Proficiency { SrsStage = SrsStage.Locked };
+        var proficiency = new KanaProficiency { SrsStage = SrsStage.Locked };
 
         // Act + Assert
         Assert.Equal(0, proficiency.Level);
@@ -184,17 +185,17 @@ public class ProficiencyTest
     {
         // Arrange
         var fixedNow = new DateTimeOffset(2025, 1, 1, 12, 0, 0, TimeSpan.Zero);
-        var proficiency = new Proficiency
+        var proficiency = new KanaProficiency
         {
             SrsStage = SrsStage.Apprentice2,
-            LastPracticed = fixedNow.AddHours(-1)
+            LastPracticedAt = fixedNow.AddHours(-1)
         };
 
         // Act
         proficiency.AnswerCorrectly(fixedNow);
 
         // Assert
-        Assert.Equal(fixedNow, proficiency.LastPracticed);
+        Assert.Equal(fixedNow, proficiency.LastPracticedAt);
     }
 
     [Fact]
@@ -202,16 +203,16 @@ public class ProficiencyTest
     {
         // Arrange
         var fixedNow = new DateTimeOffset(2025, 1, 1, 12, 0, 0, TimeSpan.Zero);
-        var proficiency = new Proficiency
+        var proficiency = new KanaProficiency
         {
             SrsStage = SrsStage.Guru2,
-            LastPracticed = fixedNow.AddHours(-1)
+            LastPracticedAt = fixedNow.AddHours(-1)
         };
 
         // Act
         proficiency.AnswerIncorrectly(fixedNow);
 
         // Assert
-        Assert.Equal(fixedNow, proficiency.LastPracticed);
+        Assert.Equal(fixedNow, proficiency.LastPracticedAt);
     }
 }

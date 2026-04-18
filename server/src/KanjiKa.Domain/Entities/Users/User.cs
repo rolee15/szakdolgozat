@@ -26,7 +26,7 @@ public class User
     public string? ActivationToken { get; set; }
     public DateTimeOffset? ActivationTokenExpiry { get; set; }
 
-    public List<Proficiency> Proficiencies { get; set; } = new();
+    public List<KanaProficiency> KanaProficiencies { get; set; } = new();
     public List<LessonCompletion> LessonCompletions { get; set; } = new();
     public UserSettings? Settings { get; set; }
 }

@@ -1,5 +1,6 @@
 using KanjiKa.Application.Services;
 using KanjiKa.Application.DTOs.Learning;
+using KanjiKa.Domain.Entities.Common;
 using KanjiKa.Domain.Entities.Kana;
 using KanjiKa.Domain.Entities.Learning;
 using KanjiKa.Domain.Entities.Users;
@@ -20,14 +21,14 @@ public class LessonServiceTest
         var repo = new Mock<ILessonRepository>(MockBehavior.Strict);
         repo.Setup(r => r.GetUserAsync(1)).ReturnsAsync(user);
         repo.Setup(r => r.GetCharacterByIdAsync(10)).ReturnsAsync(character);
-        repo.Setup(r => r.GetProficiencyAsync(1, 10)).ReturnsAsync((Proficiency?)null);
-        repo.Setup(r => r.AddProficiencyAsync(It.IsAny<Proficiency>())).Returns(Task.CompletedTask).Verifiable();
+        repo.Setup(r => r.GetProficiencyAsync(1, 10)).ReturnsAsync((KanaProficiency?)null);
+        repo.Setup(r => r.AddProficiencyAsync(It.IsAny<KanaProficiency>())).Returns(Task.CompletedTask).Verifiable();
         repo.Setup(r => r.AddLessonCompletionAsync(It.IsAny<LessonCompletion>())).Returns(Task.CompletedTask).Verifiable();
         repo.Setup(r => r.SaveChangesAsync()).Returns(Task.CompletedTask).Verifiable();
         var service = new LessonService(repo.Object);
 
         // Act
-        Proficiency proficiency = await service.LearnLessonAsync(1, 10);
+        KanaProficiency proficiency = await service.LearnLessonAsync(1, 10);
 
         // Assert
         Assert.Equal(1, proficiency.UserId);
@@ -42,7 +43,7 @@ public class LessonServiceTest
     {
         // Arrange
         const int userId = 1;
-        var dueReviews = new List<Proficiency>
+        var dueReviews = new List<KanaProficiency>
         {
             new() { UserId = userId, CharacterId = 1 },
             new() { UserId = userId, CharacterId = 2 },
@@ -65,7 +66,7 @@ public class LessonServiceTest
         // Arrange
         const int userId = 1;
         DateTimeOffset now = DateTimeOffset.UtcNow;
-        var dueReviews = new List<Proficiency>
+        var dueReviews = new List<KanaProficiency>
         {
             new()
             {
@@ -100,7 +101,7 @@ public class LessonServiceTest
     {
         var user = new User { Id = 1, Username = "user", PasswordHash = [0], PasswordSalt = [0] };
         var character = new Character { Id = 2, Symbol = "ら", Romanization = "ra" };
-        var proficiency = new Proficiency { UserId = user.Id, CharacterId = 2, LearnedAt = DateTimeOffset.UtcNow };
+        var proficiency = new KanaProficiency { UserId = user.Id, CharacterId = 2, LearnedAt = DateTimeOffset.UtcNow };
 
         var repo = new Mock<ILessonRepository>();
         repo.Setup(r => r.GetCharacterBySymbolAsync("ら")).ReturnsAsync(character);
@@ -122,7 +123,7 @@ public class LessonServiceTest
     {
         // Arrange
         var character = new Character { Id = 2, Symbol = "ら", Romanization = "ra" };
-        var proficiency = new Proficiency { UserId = 1, CharacterId = 2, SrsStage = SrsStage.Guru1, LearnedAt = DateTimeOffset.UtcNow };
+        var proficiency = new KanaProficiency { UserId = 1, CharacterId = 2, SrsStage = SrsStage.Guru1, LearnedAt = DateTimeOffset.UtcNow };
 
         var repo = new Mock<ILessonRepository>();
         repo.Setup(r => r.GetCharacterBySymbolAsync("ら")).ReturnsAsync(character);

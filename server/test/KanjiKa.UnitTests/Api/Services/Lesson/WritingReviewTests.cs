@@ -1,5 +1,6 @@
 using KanjiKa.Application.Services;
 using KanjiKa.Application.DTOs.Learning;
+using KanjiKa.Domain.Entities.Common;
 using KanjiKa.Domain.Entities.Kana;
 using KanjiKa.Domain.Entities.Learning;
 using KanjiKa.Domain.Entities.Users;
@@ -15,7 +16,7 @@ public class WritingReviewTests
     {
         // Arrange
         const int userId = 1;
-        var dueReviews = new List<Proficiency>
+        var dueReviews = new List<KanaProficiency>
         {
             new() { UserId = userId, CharacterId = 1 },
             new() { UserId = userId, CharacterId = 2 },
@@ -38,7 +39,7 @@ public class WritingReviewTests
         // Arrange
         const int userId = 1;
         var repo = new Mock<ILessonRepository>();
-        repo.Setup(r => r.GetDueReviewsAsync(userId)).ReturnsAsync(new List<Proficiency>());
+        repo.Setup(r => r.GetDueReviewsAsync(userId)).ReturnsAsync(new List<KanaProficiency>());
         var service = new LessonService(repo.Object);
 
         // Act
@@ -54,7 +55,7 @@ public class WritingReviewTests
         // Arrange
         const int userId = 1;
         DateTimeOffset now = DateTimeOffset.UtcNow;
-        var dueReviews = new List<Proficiency>
+        var dueReviews = new List<KanaProficiency>
         {
             new()
             {
@@ -90,7 +91,7 @@ public class WritingReviewTests
         // Arrange
         const int userId = 1;
         var repo = new Mock<ILessonRepository>();
-        repo.Setup(r => r.GetDueReviewsAsync(userId)).ReturnsAsync(new List<Proficiency>());
+        repo.Setup(r => r.GetDueReviewsAsync(userId)).ReturnsAsync(new List<KanaProficiency>());
         var service = new LessonService(repo.Object);
 
         // Act
@@ -105,7 +106,7 @@ public class WritingReviewTests
     {
         // Arrange
         var character = new Character { Id = 5, Symbol = "あ", Romanization = "a" };
-        var proficiency = new Proficiency { UserId = 1, CharacterId = 5, LearnedAt = DateTimeOffset.UtcNow };
+        var proficiency = new KanaProficiency { UserId = 1, CharacterId = 5, LearnedAt = DateTimeOffset.UtcNow };
 
         var repo = new Mock<ILessonRepository>();
         repo.Setup(r => r.GetCharacterByIdAsync(5)).ReturnsAsync(character);
@@ -128,7 +129,7 @@ public class WritingReviewTests
     {
         // Arrange
         var character = new Character { Id = 5, Symbol = "あ", Romanization = "a" };
-        var proficiency = new Proficiency { UserId = 1, CharacterId = 5, SrsStage = SrsStage.Guru1, LearnedAt = DateTimeOffset.UtcNow };
+        var proficiency = new KanaProficiency { UserId = 1, CharacterId = 5, SrsStage = SrsStage.Guru1, LearnedAt = DateTimeOffset.UtcNow };
 
         var repo = new Mock<ILessonRepository>();
         repo.Setup(r => r.GetCharacterByIdAsync(5)).ReturnsAsync(character);
@@ -167,7 +168,7 @@ public class WritingReviewTests
 
         var repo = new Mock<ILessonRepository>();
         repo.Setup(r => r.GetCharacterByIdAsync(5)).ReturnsAsync(character);
-        repo.Setup(r => r.GetProficiencyAsync(1, 5)).ReturnsAsync((Proficiency?)null);
+        repo.Setup(r => r.GetProficiencyAsync(1, 5)).ReturnsAsync((KanaProficiency?)null);
         var service = new LessonService(repo.Object);
 
         // Act & Assert

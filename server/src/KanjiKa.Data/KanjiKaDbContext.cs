@@ -16,7 +16,7 @@ public class KanjiKaDbContext : DbContext
 
     public DbSet<User> Users { get; set; }
     public DbSet<UserSettings> UserSettings { get; set; }
-    public DbSet<Proficiency> Proficiencies { get; set; }
+    public DbSet<KanaProficiency> KanaProficiencies { get; set; }
     public DbSet<LessonCompletion> LessonCompletions { get; set; }
     public DbSet<Character> Characters { get; set; }
     public DbSet<Example> Examples { get; set; }
@@ -54,7 +54,7 @@ public class KanjiKaDbContext : DbContext
             entity.HasIndex(u => u.Username).IsUnique();
             entity.HasIndex(u => u.ActivationToken)
                 .HasFilter("activation_token IS NOT NULL");
-            entity.HasMany(x => x.Proficiencies)
+            entity.HasMany(x => x.KanaProficiencies)
                 .WithOne(proficiency => proficiency.User)
                 .HasForeignKey(proficiency => proficiency.UserId);
             entity.HasMany(x => x.LessonCompletions)
@@ -69,9 +69,15 @@ public class KanjiKaDbContext : DbContext
             entity.HasKey(s => s.Id);
         });
 
-        modelBuilder.Entity<Proficiency>(entity => {
-            entity.HasKey(proficiency => new { proficiency.UserId, proficiency.CharacterId });
+        modelBuilder.Entity<KanaProficiency>(entity => {
+            entity.HasKey(p => p.Id);
+            entity.HasIndex(p => new { p.UserId, p.CharacterId }).IsUnique();
+            entity.Property(p => p.SrsStage).HasConversion<int>();
             entity.Ignore(p => p.Level);
+            entity.HasOne(p => p.Character)
+                .WithMany()
+                .HasForeignKey(p => p.CharacterId);
+            entity.Ignore(p => p.Content);
         });
 
         modelBuilder.Entity<LessonCompletion>(entity => {
@@ -104,6 +110,10 @@ public class KanjiKaDbContext : DbContext
             entity.HasKey(kp => kp.Id);
             entity.HasIndex(kp => new { kp.UserId, kp.KanjiId }).IsUnique();
             entity.Property(kp => kp.SrsStage).HasConversion<int>();
+            entity.HasOne(kp => kp.Kanji)
+                .WithMany()
+                .HasForeignKey(kp => kp.KanjiId);
+            entity.Ignore(kp => kp.Content);
         });
 
         modelBuilder.Entity<GrammarPoint>(entity => {
@@ -127,6 +137,11 @@ public class KanjiKaDbContext : DbContext
         modelBuilder.Entity<GrammarProficiency>(entity => {
             entity.HasKey(gp => gp.Id);
             entity.HasIndex(gp => new { gp.UserId, gp.GrammarPointId }).IsUnique();
+            entity.Property(gp => gp.SrsStage).HasConversion<int>();
+            entity.HasOne(gp => gp.GrammarPoint)
+                .WithMany()
+                .HasForeignKey(gp => gp.GrammarPointId);
+            entity.Ignore(gp => gp.Content);
         });
 
         modelBuilder.Entity<ReadingPassage>(entity => {
@@ -143,6 +158,11 @@ public class KanjiKaDbContext : DbContext
         modelBuilder.Entity<ReadingProficiency>(entity => {
             entity.HasKey(rp => rp.Id);
             entity.HasIndex(rp => new { rp.UserId, rp.ReadingPassageId }).IsUnique();
+            entity.Property(rp => rp.SrsStage).HasConversion<int>();
+            entity.HasOne(rp => rp.ReadingPassage)
+                .WithMany()
+                .HasForeignKey(rp => rp.ReadingPassageId);
+            entity.Ignore(rp => rp.Content);
         });
 
         modelBuilder.Entity<LearningUnit>(entity => {

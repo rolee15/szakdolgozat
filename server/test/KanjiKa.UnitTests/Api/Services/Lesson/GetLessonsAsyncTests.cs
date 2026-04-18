@@ -75,7 +75,7 @@ public class GetLessonsAsyncTests
         var repo = new Mock<ILessonRepository>();
         repo.Setup(r => r.GetUserWithProficienciesAsync(1)).ReturnsAsync(user);
         repo.Setup(r => r.CountLessonsCompletedTodayAsync(1)).ReturnsAsync(completedToday);
-        repo.Setup(r => r.GetNewCharactersAsync(user.Proficiencies)).ReturnsAsync(characters);
+        repo.Setup(r => r.GetNewCharactersAsync(user.KanaProficiencies)).ReturnsAsync(characters);
         var service = new LessonService(repo.Object);
 
         // Act
@@ -101,7 +101,7 @@ public class GetLessonsAsyncTests
         var repo = new Mock<ILessonRepository>();
         repo.Setup(r => r.GetUserWithProficienciesAsync(1)).ReturnsAsync(user);
         repo.Setup(r => r.CountLessonsCompletedTodayAsync(1)).ReturnsAsync(0);
-        repo.Setup(r => r.GetNewCharactersAsync(user.Proficiencies)).ReturnsAsync(characters);
+        repo.Setup(r => r.GetNewCharactersAsync(user.KanaProficiencies)).ReturnsAsync(characters);
         var service = new LessonService(repo.Object);
 
         // Act
@@ -130,7 +130,7 @@ public class GetLessonsAsyncTests
         var repo = new Mock<ILessonRepository>();
         repo.Setup(r => r.GetUserWithProficienciesAsync(1)).ReturnsAsync(user);
         repo.Setup(r => r.CountLessonsCompletedTodayAsync(1)).ReturnsAsync(0);
-        repo.Setup(r => r.GetNewCharactersAsync(user.Proficiencies)).ReturnsAsync([]);
+        repo.Setup(r => r.GetNewCharactersAsync(user.KanaProficiencies)).ReturnsAsync([]);
         var service = new LessonService(repo.Object);
 
         // Act
@@ -151,7 +151,7 @@ public class GetLessonsAsyncTests
         var repo = new Mock<ILessonRepository>();
         repo.Setup(r => r.GetUserWithProficienciesAsync(1)).ReturnsAsync(user);
         repo.Setup(r => r.CountLessonsCompletedTodayAsync(1)).ReturnsAsync(0);
-        repo.Setup(r => r.GetNewCharactersAsync(user.Proficiencies)).ReturnsAsync(characters);
+        repo.Setup(r => r.GetNewCharactersAsync(user.KanaProficiencies)).ReturnsAsync(characters);
         var service = new LessonService(repo.Object);
 
         // Act & Assert
@@ -170,7 +170,7 @@ public class GetLessonsAsyncTests
         var repo = new Mock<ILessonRepository>();
         repo.Setup(r => r.GetUserWithProficienciesAsync(1)).ReturnsAsync(user);
         repo.Setup(r => r.CountLessonsCompletedTodayAsync(1)).ReturnsAsync(0);
-        repo.Setup(r => r.GetNewCharactersAsync(user.Proficiencies)).ReturnsAsync(characters);
+        repo.Setup(r => r.GetNewCharactersAsync(user.KanaProficiencies)).ReturnsAsync(characters);
         var service = new LessonService(repo.Object);
 
         // Act
@@ -193,7 +193,7 @@ public class GetLessonsAsyncTests
         var repo = new Mock<ILessonRepository>();
         repo.Setup(r => r.GetUserWithProficienciesAsync(1)).ReturnsAsync(user);
         repo.Setup(r => r.CountLessonsCompletedTodayAsync(1)).ReturnsAsync(0);
-        repo.Setup(r => r.GetNewCharactersAsync(user.Proficiencies)).ReturnsAsync(characters);
+        repo.Setup(r => r.GetNewCharactersAsync(user.KanaProficiencies)).ReturnsAsync(characters);
         var service = new LessonService(repo.Object);
 
         // Act
@@ -233,7 +233,7 @@ public class GetLessonsAsyncTests
         var repo = new Mock<ILessonRepository>();
         repo.Setup(r => r.GetUserWithProficienciesAsync(1)).ReturnsAsync(user);
         repo.Setup(r => r.CountLessonsCompletedTodayAsync(1)).ReturnsAsync(0);
-        repo.Setup(r => r.GetNewCharactersAsync(user.Proficiencies)).ReturnsAsync(characters);
+        repo.Setup(r => r.GetNewCharactersAsync(user.KanaProficiencies)).ReturnsAsync(characters);
         var service = new LessonService(repo.Object);
 
         // Act
@@ -254,7 +254,7 @@ public class GetLessonsAsyncTests
         var repo = new Mock<ILessonRepository>();
         repo.Setup(r => r.GetUserWithProficienciesAsync(1)).ReturnsAsync(user);
         repo.Setup(r => r.CountLessonsCompletedTodayAsync(1)).ReturnsAsync(0);
-        repo.Setup(r => r.GetNewCharactersAsync(user.Proficiencies)).ReturnsAsync(characters);
+        repo.Setup(r => r.GetNewCharactersAsync(user.KanaProficiencies)).ReturnsAsync(characters);
         var service = new LessonService(repo.Object);
 
         // Act
@@ -280,7 +280,7 @@ public class GetLessonsAsyncTests
         var repo = new Mock<ILessonRepository>();
         repo.Setup(r => r.GetUserWithProficienciesAsync(1)).ReturnsAsync(user);
         repo.Setup(r => r.CountLessonsCompletedTodayAsync(1)).ReturnsAsync(0);
-        repo.Setup(r => r.GetNewCharactersAsync(user.Proficiencies)).ReturnsAsync(characters);
+        repo.Setup(r => r.GetNewCharactersAsync(user.KanaProficiencies)).ReturnsAsync(characters);
         var service = new LessonService(repo.Object);
 
         // Act

@@ -1,5 +1,6 @@
 using KanjiKa.Application.DTOs.Learning;
 using KanjiKa.Application.Interfaces;
+using KanjiKa.Domain.Entities.Common;
 using KanjiKa.Domain.Entities.Kana;
 using KanjiKa.Domain.Entities.Learning;
 using KanjiKa.Domain.Entities.Users;
@@ -25,7 +26,7 @@ public class LessonService : ILessonService
         int lessonsLearnedToday = await _repo.CountLessonsCompletedTodayAsync(userId);
         int count = LessonsPerDayCount - lessonsLearnedToday;
 
-        List<int> learnedCharacterIds = user.Proficiencies.Select(p => p.CharacterId).ToList();
+        List<int> learnedCharacterIds = user.KanaProficiencies.Select(p => p.CharacterId).ToList();
         int unlearnedCount = await _repo.CountNewCharactersAsync(learnedCharacterIds);
 
         return new LessonsCountDto
@@ -53,7 +54,7 @@ public class LessonService : ILessonService
             return [];
 
         int takeSize = Math.Min(count, pageSize);
-        IEnumerable<LessonDto> lessons = (await _repo.GetNewCharactersAsync(user.Proficiencies))
+        IEnumerable<LessonDto> lessons = (await _repo.GetNewCharactersAsync(user.KanaProficiencies))
             .Skip(pageIndex * takeSize)
             .Take(takeSize)
             .Select(MapToLessonDto);
@@ -61,7 +62,7 @@ public class LessonService : ILessonService
         return lessons;
     }
 
-    public async Task<Proficiency> LearnLessonAsync(int userId, int characterId)
+    public async Task<KanaProficiency> LearnLessonAsync(int userId, int characterId)
     {
         User? user = await _repo.GetUserAsync(userId);
         if (user == null)
@@ -71,11 +72,11 @@ public class LessonService : ILessonService
         if (character == null)
             throw new ArgumentException("Character not found", nameof(characterId));
 
-        Proficiency? existingProficiency = await _repo.GetProficiencyAsync(userId, characterId);
+        KanaProficiency? existingProficiency = await _repo.GetProficiencyAsync(userId, characterId);
         if (existingProficiency != null)
             throw new ArgumentException("Character already learned", nameof(characterId));
 
-        var proficiency = new Proficiency
+        var proficiency = new KanaProficiency
         {
             UserId = user.Id,
             CharacterId = character.Id,
@@ -106,7 +107,7 @@ public class LessonService : ILessonService
 
     public async Task<IEnumerable<LessonReviewDto>> GetLessonReviewsAsync(int userId)
     {
-        List<Proficiency> dueReviews = await _repo.GetDueReviewsAsync(userId);
+        List<KanaProficiency> dueReviews = await _repo.GetDueReviewsAsync(userId);
         List<LessonReviewDto> ordered = dueReviews
             .OrderBy(p => p.NextReviewDate)
             .Select(p => new LessonReviewDto
@@ -124,7 +125,7 @@ public class LessonService : ILessonService
         if (character == null)
             throw new ArgumentException("Character not found", nameof(answer));
 
-        Proficiency proficiency = await _repo.GetProficiencyAsync(userId, character.Id)
+        KanaProficiency proficiency = await _repo.GetProficiencyAsync(userId, character.Id)
                                   ?? await LearnLessonAsync(userId, character.Id);
 
         bool isCorrect = answer.Answer == character.Romanization;
@@ -145,7 +146,7 @@ public class LessonService : ILessonService
 
     public async Task<IEnumerable<WritingReviewDto>> GetWritingReviewsAsync(int userId)
     {
-        List<Proficiency> dueReviews = await _repo.GetDueReviewsAsync(userId);
+        List<KanaProficiency> dueReviews = await _repo.GetDueReviewsAsync(userId);
         List<WritingReviewDto> ordered = dueReviews
             .OrderBy(p => p.NextReviewDate)
             .Select(p => new WritingReviewDto
@@ -165,7 +166,7 @@ public class LessonService : ILessonService
         if (character == null)
             throw new ArgumentException("Character not found", nameof(answer));
 
-        Proficiency? proficiency = await _repo.GetProficiencyAsync(userId, character.Id);
+        KanaProficiency? proficiency = await _repo.GetProficiencyAsync(userId, character.Id);
         if (proficiency is null)
             throw new ArgumentException("No proficiency record found for this character.", nameof(answer));
 
@@ -181,11 +182,11 @@ public class LessonService : ILessonService
 
     private async Task<int> GetDueReviewsCountAsync(int userId)
     {
-        List<Proficiency> dueReviews = await _repo.GetDueReviewsAsync(userId);
+        List<KanaProficiency> dueReviews = await _repo.GetDueReviewsAsync(userId);
         return dueReviews.Count;
     }
 
-    private static LessonReviewAnswerResultDto BuildReviewResult(bool isCorrect, string correctAnswer, Proficiency proficiency)
+    private static LessonReviewAnswerResultDto BuildReviewResult(bool isCorrect, string correctAnswer, KanaProficiency proficiency)
     {
         return new LessonReviewAnswerResultDto
         {
