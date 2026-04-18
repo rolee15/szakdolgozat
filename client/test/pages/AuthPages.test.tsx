@@ -75,7 +75,7 @@ describe('Auth pages', () => {
           <RegisterPage />
         </MemoryRouter>
       )
-      expect(screen.getByRole('heading')).toBeInTheDocument()
+      expect(screen.getByRole('heading', { name: /create your account/i })).toBeInTheDocument()
     })
 
     it('shows validation error for short password', async () => {
