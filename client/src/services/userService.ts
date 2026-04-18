@@ -85,7 +85,7 @@ const api = {
         const response = await fetch(API_USERS_RESET_PASSWORD_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, code, newPassword }),
+            body: JSON.stringify({ email, resetCode: code, newPassword }),
         });
         if (!response.ok) throw new Error('Invalid or expired reset code');
     },
