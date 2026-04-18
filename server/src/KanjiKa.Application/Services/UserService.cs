@@ -154,7 +154,7 @@ public class UserService : IUserService
         User? user = await _repo.GetByUsernameAsync(email);
         if (user != null)
         {
-            var code = Random.Shared.Next(100000, 1000000).ToString();
+            var code = (RandomNumberGenerator.GetInt32(100000, 1000000)).ToString();
             user.PasswordResetCode = code;
             user.PasswordResetExpiry = DateTimeOffset.UtcNow.AddMinutes(15);
             await _repo.UpdateAsync(user);
