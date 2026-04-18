@@ -1,39 +1,57 @@
-﻿using KanjiKa.Core.Interfaces;
+using System.Security.Claims;
+using KanjiKa.Application.DTOs.User;
+using KanjiKa.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using RefreshTokenRequest = KanjiKa.Application.DTOs.User.RefreshTokenRequest;
 
 namespace KanjiKa.Api.Controllers;
 
 [ApiController]
 [Route("api/users")]
+[Produces("application/json")]
 public class UsersController : ControllerBase
 {
     private readonly IUserService _userService;
+    private readonly IUserSettingsService _userSettingsService;
 
-    public UsersController(IUserService userService)
+    public UsersController(IUserService userService, IUserSettingsService userSettingsService)
     {
         _userService = userService;
+        _userSettingsService = userSettingsService;
     }
 
+    private IActionResult GetUserIdOrUnauthorized(out int userId)
+    {
+        var claim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (claim == null || !int.TryParse(claim, out userId))
+        {
+            userId = 0;
+            return Unauthorized();
+        }
+        return null!;
+    }
+
+    [AllowAnonymous]
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginRequest request)
+    [Consumes("application/json")]
+    [ProducesResponseType(typeof(LoginDto), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Login([FromBody] KanjiKaLoginRequest request)
     {
-        try
-        {
-            var loginDto = await _userService.Login(request.Email, request.Password);
-            return Ok(loginDto);
-        }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(ex.Message);
-        }
+        LoginDto loginDto = await _userService.Login(request.Email, request.Password);
+        return Ok(loginDto);
     }
 
+    [AllowAnonymous]
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+    [Consumes("application/json")]
+    [ProducesResponseType(typeof(RegisterDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(RegisterDto), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Register([FromBody] KanjiKaRegisterRequest request)
     {
-        var registerDto = await _userService.Register(request.Email, request.Password);
-        if (!registerDto.IsSuccess)
+        RegisterDto registerDto = await _userService.Register(request.Email, request.Password);
+        if (!registerDto.Success)
         {
             return BadRequest(registerDto);
         }
@@ -41,17 +59,36 @@ public class UsersController : ControllerBase
         return Ok(registerDto);
     }
 
+    [AllowAnonymous]
+    [HttpPost("activate")]
+    [ProducesResponseType(typeof(ActivateDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ActivateDto), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Activate([FromQuery] string token)
+    {
+        if (string.IsNullOrWhiteSpace(token))
+            return BadRequest(new ActivateDto(false, "Token is required."));
+        var result = await _userService.ActivateAccount(token);
+        return Ok(result);
+    }
+
+    [AllowAnonymous]
     [HttpPost("forgotPassword")]
+    [Consumes("application/json")]
+    [ProducesResponseType(typeof(ForgotPasswordDto), StatusCodes.Status200OK)]
     public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
     {
-        var forgotPasswordDto = await _userService.ForgotPassword(request.Email);
+        ForgotPasswordDto forgotPasswordDto = await _userService.ForgotPassword(request.Email);
         return Ok(forgotPasswordDto);
     }
 
+    [AllowAnonymous]
     [HttpPost("resetPassword")]
+    [Consumes("application/json")]
+    [ProducesResponseType(typeof(ResetPasswordDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResetPasswordDto), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
     {
-        var resetPasswordDto = await _userService.ResetPassword(request.Email, request.ResetCode, request.NewPassword);
+        ResetPasswordDto resetPasswordDto = await _userService.ResetPassword(request.Email, request.ResetCode, request.NewPassword);
         if (!resetPasswordDto.IsSuccess)
         {
             return BadRequest(resetPasswordDto);
@@ -60,10 +97,61 @@ public class UsersController : ControllerBase
         return Ok(resetPasswordDto);
     }
 
+    [AllowAnonymous]
     [HttpPost("refreshToken")]
-    public async Task<IActionResult> RefreshToken([FromBody] string token, string refreshToken)
+    [Consumes("application/json")]
+    [ProducesResponseType(typeof(RefreshTokenDto), StatusCodes.Status200OK)]
+    public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
     {
-        var refreshTokenDto = await _userService.RefreshToken(token, refreshToken);
+        RefreshTokenDto refreshTokenDto = await _userService.RefreshToken(request.Token, request.RefreshToken);
         return Ok(refreshTokenDto);
+    }
+
+    [Authorize]
+    [HttpPost("changePassword")]
+    [Consumes("application/json")]
+    [ProducesResponseType(typeof(ChangePasswordDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ChangePasswordDto), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
+    {
+        var error = GetUserIdOrUnauthorized(out int userId);
+        if (error != null) return error;
+
+        ChangePasswordDto result = await _userService.ChangePassword(userId, request.CurrentPassword, request.NewPassword);
+        if (!result.IsSuccess)
+        {
+            return BadRequest(result);
+        }
+
+        return Ok(result);
+    }
+
+    [Authorize]
+    [HttpGet("settings")]
+    [ProducesResponseType(typeof(UserSettingsDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> GetSettings()
+    {
+        var error = GetUserIdOrUnauthorized(out int userId);
+        if (error != null) return error;
+
+        UserSettingsDto settings = await _userSettingsService.GetSettingsAsync(userId);
+        return Ok(settings);
+    }
+
+    [Authorize]
+    [HttpPut("settings")]
+    [Consumes("application/json")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> UpdateSettings([FromBody] UpdateUserSettingsDto dto)
+    {
+        var error = GetUserIdOrUnauthorized(out int userId);
+        if (error != null) return error;
+
+        await _userSettingsService.UpdateSettingsAsync(userId, dto);
+        return NoContent();
     }
 }

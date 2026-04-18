@@ -1,5 +1,4 @@
 type RegisterDto = {
-    isSuccess: boolean;
-    errorMessage: string;
-    token: string;
+  success: boolean;
+  message: string;
 };

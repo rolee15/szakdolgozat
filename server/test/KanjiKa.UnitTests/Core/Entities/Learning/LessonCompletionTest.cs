@@ -1,6 +1,6 @@
-﻿using KanjiKa.Core.Entities.Kana;
-using KanjiKa.Core.Entities.Learning;
-using KanjiKa.Core.Entities.Users;
+﻿using KanjiKa.Domain.Entities.Kana;
+using KanjiKa.Domain.Entities.Learning;
+using KanjiKa.Domain.Entities.Users;
 
 namespace KanjiKa.UnitTests.Core.Entities.Learning;
 
@@ -16,7 +16,7 @@ public class LessonCompletionTest
             Id = userId,
             Username = "testUser",
             PasswordHash = "passwordHash"u8.ToArray(),
-            PasswordSalt = "passwordSalt"u8.ToArray(),
+            PasswordSalt = "passwordSalt"u8.ToArray()
         };
         const int characterId = 1;
         var character = new Character

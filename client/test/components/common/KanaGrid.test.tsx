@@ -12,22 +12,29 @@ vi.mock('react-router-dom', async () => {
   }
 })
 
-// Mock the kanaService used inside KanaGrid
-vi.mock('@services/kanaService', () => ({
+// Mock the services used inside KanaGrid
+vi.mock('@/services/hiraganaService', () => ({
   default: {
     getCharacters: vi.fn(),
   },
 }))
 
-import api from '@services/kanaService'
+vi.mock('@/services/katakanaService', () => ({
+  default: {
+    getCharacters: vi.fn(),
+  },
+}))
 
-const sampleChars: KanaCharacter[] = [
-  { character: 'あ', romanization: 'a', proficiency: 10 },
-  { character: 'い', romanization: 'i', proficiency: 20 },
-  { character: 'う', romanization: 'u', proficiency: 30 },
-  { character: 'え', romanization: 'e', proficiency: 40 },
-  { character: 'お', romanization: 'o', proficiency: 50 },
-  { character: 'か', romanization: 'ka', proficiency: 60 },
+import hiraganaApi from '@/services/hiraganaService'
+import katakanaApi from '@/services/katakanaService'
+
+const hiraganaChars: KanaCharacter[] = [
+  { character: 'あ', romanization: 'a', type: 'hiragana', proficiency: 10 },
+  { character: 'い', romanization: 'i', type: 'hiragana', proficiency: 20 },
+  { character: 'う', romanization: 'u', type: 'hiragana', proficiency: 30 },
+  { character: 'え', romanization: 'e', type: 'hiragana', proficiency: 40 },
+  { character: 'お', romanization: 'o', type: 'hiragana', proficiency: 50 },
+  { character: 'か', romanization: 'ka', type: 'hiragana', proficiency: 60 },
 ]
 
 describe('KanaGrid', () => {
@@ -35,32 +42,135 @@ describe('KanaGrid', () => {
     vi.resetAllMocks()
   })
 
-  it('fetches and displays characters in rows of 5 with KanaButtons', async () => {
-    ;(api.getCharacters as unknown as ReturnType<typeof vi.fn>).mockResolvedValue(sampleChars)
+  it('fetches hiragana characters using hiraganaService', async () => {
+    ;(hiraganaApi.getCharacters as unknown as ReturnType<typeof vi.fn>).mockResolvedValue(hiraganaChars)
 
     render(<KanaGrid type="hiragana" />)
 
-    // Title renders
     expect(screen.getByText(/Hiragana Characters/i)).toBeInTheDocument()
 
-    // Wait for buttons to render (each KanaButton has role button with name starting with 'Kana ' per component)
     await waitFor(() => {
       expect(screen.getByText('あ')).toBeInTheDocument()
       expect(screen.getByText('か')).toBeInTheDocument()
     })
 
-    // Ensure correct number of buttons
     const buttons = screen.getAllByRole('button', { name: /Kana /i })
-    expect(buttons).toHaveLength(sampleChars.length)
+    expect(buttons).toHaveLength(hiraganaChars.length)
+    expect(hiraganaApi.getCharacters as unknown as ReturnType<typeof vi.fn>).toHaveBeenCalled()
+    expect(katakanaApi.getCharacters as unknown as ReturnType<typeof vi.fn>).not.toHaveBeenCalled()
   })
 
-  it('shows error message when fetch fails', async () => {
-    ;(api.getCharacters as unknown as ReturnType<typeof vi.fn>).mockRejectedValue(new Error('Network down'))
+  it('fetches katakana characters using katakanaService', async () => {
+    const katakanaChars: KanaCharacter[] = [
+      { character: 'ア', romanization: 'a', type: 'katakana', proficiency: 10 },
+    ]
+    ;(katakanaApi.getCharacters as unknown as ReturnType<typeof vi.fn>).mockResolvedValue(katakanaChars)
 
     render(<KanaGrid type="katakana" />)
+
+    expect(screen.getByText(/Katakana Characters/i)).toBeInTheDocument()
+
+    await waitFor(() => {
+      expect(screen.getByText('ア')).toBeInTheDocument()
+    })
+
+    expect(katakanaApi.getCharacters as unknown as ReturnType<typeof vi.fn>).toHaveBeenCalled()
+    expect(hiraganaApi.getCharacters as unknown as ReturnType<typeof vi.fn>).not.toHaveBeenCalled()
+  })
+
+  it('renders spacers for empty grid positions (ya/wa rows)', async () => {
+    // Full set including ya-row and wa-row characters
+    const chars: KanaCharacter[] = [
+      { character: 'や', romanization: 'ya', type: 'hiragana', proficiency: 0 },
+      { character: 'ゆ', romanization: 'yu', type: 'hiragana', proficiency: 0 },
+      { character: 'よ', romanization: 'yo', type: 'hiragana', proficiency: 0 },
+      { character: 'わ', romanization: 'wa', type: 'hiragana', proficiency: 0 },
+      { character: 'を', romanization: 'wo', type: 'hiragana', proficiency: 0 },
+    ]
+    ;(hiraganaApi.getCharacters as unknown as ReturnType<typeof vi.fn>).mockResolvedValue(chars)
+
+    render(<KanaGrid type="hiragana" />)
+
+    await waitFor(() => {
+      expect(screen.getByText('や')).toBeInTheDocument()
+    })
+
+    // ya-row: 5 cells (ya, spacer, yu, spacer, yo) — only 3 buttons
+    // wa-row: 5 cells (wa, spacer, spacer, spacer, wo) — only 2 buttons
+    const buttons = screen.getAllByRole('button', { name: /Kana /i })
+    expect(buttons).toHaveLength(5)
+
+    // Spacers are aria-hidden divs
+    const spacers = document.querySelectorAll('[aria-hidden="true"]')
+    expect(spacers.length).toBeGreaterThan(0)
+  })
+
+  it('shows error message when fetch fails with an Error', async () => {
+    ;(hiraganaApi.getCharacters as unknown as ReturnType<typeof vi.fn>).mockRejectedValue(new Error('Network down'))
+
+    render(<KanaGrid type="hiragana" />)
 
     await waitFor(() => {
       expect(screen.getByText(/Error: Network down/i)).toBeInTheDocument()
     })
+  })
+
+  it('shows fallback error message when a non-Error is thrown', async () => {
+    ;(hiraganaApi.getCharacters as unknown as ReturnType<typeof vi.fn>).mockRejectedValue('unexpected')
+
+    render(<KanaGrid type="hiragana" />)
+
+    await waitFor(() => {
+      expect(screen.getByText(/Error: Failed to load characters/i)).toBeInTheDocument()
+    })
+  })
+
+  it('renders all six section headings', async () => {
+    ;(hiraganaApi.getCharacters as unknown as ReturnType<typeof vi.fn>).mockResolvedValue([])
+
+    render(<KanaGrid type="hiragana" />)
+
+    await waitFor(() => {
+      expect(screen.getByText('Basic')).toBeInTheDocument()
+      expect(screen.getByText('Dakuten ゛')).toBeInTheDocument()
+      expect(screen.getByText('Handakuten ゜')).toBeInTheDocument()
+      expect(screen.getByText('Yoon')).toBeInTheDocument()
+      expect(screen.getByText('Yoon + Dakuten ゛')).toBeInTheDocument()
+      expect(screen.getByText('Yoon + Handakuten ゜')).toBeInTheDocument()
+    })
+  })
+
+  it('renders yoon characters as buttons when present in charMap', async () => {
+    const chars: KanaCharacter[] = [
+      { character: 'きゃ', romanization: 'kya', type: 'hiragana', proficiency: 0 },
+      { character: 'きゅ', romanization: 'kyu', type: 'hiragana', proficiency: 0 },
+      { character: 'きょ', romanization: 'kyo', type: 'hiragana', proficiency: 0 },
+    ]
+    ;(hiraganaApi.getCharacters as unknown as ReturnType<typeof vi.fn>).mockResolvedValue(chars)
+
+    render(<KanaGrid type="hiragana" />)
+
+    // KanaButton splits 2-char strings across two spans, so getByText won't find the full
+    // combined string. Use the aria-label instead.
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /Kana きゃ/ })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /Kana きゅ/ })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /Kana きょ/ })).toBeInTheDocument()
+    })
+  })
+
+  it('renders spacers for yoon romanizations absent from charMap', async () => {
+    // Return no characters so all yoon cells fall back to spacers
+    ;(hiraganaApi.getCharacters as unknown as ReturnType<typeof vi.fn>).mockResolvedValue([])
+
+    render(<KanaGrid type="hiragana" />)
+
+    await waitFor(() => {
+      expect(screen.getByText('Yoon')).toBeInTheDocument()
+    })
+
+    // With no data, every cell in every grid is a spacer
+    const spacers = document.querySelectorAll('[aria-hidden="true"]')
+    expect(spacers.length).toBeGreaterThan(0)
   })
 })

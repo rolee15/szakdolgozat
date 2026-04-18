@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 const NewLessonsPage = () => {
   const [lessons, setLessons] = useState<Lesson[]>([]);
+  const [loaded, setLoaded] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const [currentLesson, setCurrentLesson] = useState<Lesson>();
@@ -18,6 +19,8 @@ const NewLessonsPage = () => {
         setLessons(newLessons);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load new lessons");
+      } finally {
+        setLoaded(true);
       }
     };
 
@@ -43,6 +46,14 @@ const NewLessonsPage = () => {
       }
     }
   };
+
+  if (loaded && lessons.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center p-6">
+        <p className="text-xl text-gray-400">No more lessons to learn</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col items-center justify-center p-6">

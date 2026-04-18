@@ -1,0 +1,57 @@
+using System.Security.Claims;
+using KanjiKa.Application.DTOs;
+using KanjiKa.Application.DTOs.Admin;
+using KanjiKa.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace KanjiKa.Api.Controllers;
+
+[ApiController]
+[Route("api/admin")]
+[Authorize(Roles = "Admin")]
+[Produces("application/json")]
+public class AdminController : ControllerBase
+{
+    private readonly IAdminService _adminService;
+
+    public AdminController(IAdminService adminService)
+    {
+        _adminService = adminService;
+    }
+
+    [HttpGet("users")]
+    [ProducesResponseType(typeof(PagedResult<AdminUserDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetUsers([FromQuery] int page = 1, [FromQuery] int pageSize = 20, [FromQuery] string? search = null)
+    {
+        PagedResult<AdminUserDto> result = await _adminService.GetUsersAsync(page, pageSize, search);
+        return Ok(result);
+    }
+
+    [HttpGet("users/{id:int}")]
+    [ProducesResponseType(typeof(AdminUserDetailDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetUserById(int id)
+    {
+        AdminUserDetailDto? result = await _adminService.GetUserByIdAsync(id);
+        if (result == null) return NotFound();
+
+        return Ok(result);
+    }
+
+    [HttpDelete("users/{id:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> DeleteUser(int id)
+    {
+        var claim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (claim == null || !int.TryParse(claim, out int adminUserId))
+            return Unauthorized();
+
+        bool deleted = await _adminService.DeleteUserAsync(adminUserId, id);
+        if (!deleted) return BadRequest("Cannot delete this user.");
+
+        return NoContent();
+    }
+}

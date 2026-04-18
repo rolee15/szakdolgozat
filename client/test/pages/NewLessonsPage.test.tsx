@@ -3,8 +3,8 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import NewLessonsPage from '@/pages/NewLessonsPage'
 
 const navigateSpy = vi.fn()
-vi.mock('react-router-dom', async (orig) => {
-  const actual = await orig()
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual<typeof import('react-router-dom')>('react-router-dom')
   return {
     ...actual,
     useNavigate: () => navigateSpy,
@@ -53,5 +53,36 @@ describe('NewLessonsPage', () => {
     await import('@testing-library/react').then(({ waitFor }) => waitFor(() => {
       expect(navigateSpy).toHaveBeenCalledWith('/lessons')
     }))
+  })
+
+  it('shows error message when fetch fails with an Error instance', async () => {
+    const svc = lessonService as unknown as { getLessons: ReturnType<typeof vi.fn>, postLearnLesson: ReturnType<typeof vi.fn> }
+    svc.getLessons.mockRejectedValue(new Error('network failure'))
+    svc.postLearnLesson.mockResolvedValue(undefined)
+
+    render(<NewLessonsPage />)
+
+    expect(await screen.findByText(/error: network failure/i)).toBeInTheDocument()
+  })
+
+  it('shows fallback error message when fetch fails with a non-Error value', async () => {
+    const svc = lessonService as unknown as { getLessons: ReturnType<typeof vi.fn>, postLearnLesson: ReturnType<typeof vi.fn> }
+    svc.getLessons.mockRejectedValue('some string error')
+    svc.postLearnLesson.mockResolvedValue(undefined)
+
+    render(<NewLessonsPage />)
+
+    expect(await screen.findByText(/error: failed to load new lessons/i)).toBeInTheDocument()
+  })
+
+  it('shows empty state message when there are no lessons to learn', async () => {
+    const svc = lessonService as unknown as { getLessons: ReturnType<typeof vi.fn>, postLearnLesson: ReturnType<typeof vi.fn> }
+    svc.getLessons.mockResolvedValue([])
+    svc.postLearnLesson.mockResolvedValue(undefined)
+
+    render(<NewLessonsPage />)
+
+    expect(await screen.findByText(/no more lessons to learn/i)).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /next/i })).not.toBeInTheDocument()
   })
 })

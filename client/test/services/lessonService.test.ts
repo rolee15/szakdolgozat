@@ -1,31 +1,29 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
-// Mock the routes to avoid dependency on import.meta.env
 vi.mock('@/services/routes', () => ({
   API_LESSONS_URL: 'http://api.test/lessons',
 }));
 
-import lessonService from '@/services/lessonService';
+vi.mock('@/services/apiClient', () => ({
+  apiFetch: vi.fn(),
+}));
 
-// Helpers to build fetch mocks
-function mockFetchOk(data: unknown) {
-  const json = vi.fn().mockResolvedValue(data);
-  const okResponse = { ok: true, json } as unknown as Response;
-  (globalThis as { fetch: typeof fetch }).fetch = vi
-    .fn()
-    .mockResolvedValue(okResponse) as unknown as typeof fetch;
+import lessonService from '@/services/lessonService';
+import { apiFetch } from '@/services/apiClient';
+
+const mockApiFetch = apiFetch as ReturnType<typeof vi.fn>;
+
+function mockOk(data: unknown) {
+  mockApiFetch.mockResolvedValue({ ok: true, json: vi.fn().mockResolvedValue(data) });
 }
 
-function mockFetchNotOk() {
-  const notOkResponse = { ok: false, json: vi.fn() } as unknown as Response;
-  (globalThis as { fetch: typeof fetch }).fetch = vi
-    .fn()
-    .mockResolvedValue(notOkResponse) as unknown as typeof fetch;
+function mockNotOk() {
+  mockApiFetch.mockResolvedValue({ ok: false, json: vi.fn() });
 }
 
 describe('lessonService', () => {
   beforeEach(() => {
-    vi.restoreAllMocks();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
@@ -35,19 +33,16 @@ describe('lessonService', () => {
   describe('getLessonsCount', () => {
     it('fetches lessons count and returns JSON', async () => {
       const payload = { count: 42 };
-      mockFetchOk(payload);
+      mockOk(payload);
 
       const result = await lessonService.getLessonsCount();
 
       expect(result).toEqual(payload);
-      expect(global.fetch).toHaveBeenCalledTimes(1);
-      const fetchMock = global.fetch as unknown as ReturnType<typeof vi.fn>;
-      const url = fetchMock.mock.calls[0][0] as string;
-      expect(url).toBe('http://api.test/lessons/count?userId=1');
+      expect(mockApiFetch).toHaveBeenCalledWith('http://api.test/lessons/count');
     });
 
     it('throws when response is not ok', async () => {
-      mockFetchNotOk();
+      mockNotOk();
       await expect(lessonService.getLessonsCount()).rejects.toThrow('Failed to fetch lesson count');
     });
   });
@@ -58,83 +53,67 @@ describe('lessonService', () => {
         { characterId: 1, symbol: 'あ', romanization: 'a', type: 0 },
         { characterId: 2, symbol: 'い', romanization: 'i', type: 0 },
       ];
-      mockFetchOk(payload);
+      mockOk(payload);
 
       const pageIndex = 3;
       const pageSize = 25;
       const result = await lessonService.getLessons(pageIndex, pageSize);
 
       expect(result).toEqual(payload);
-      expect(global.fetch).toHaveBeenCalledTimes(1);
-      const fetchMock = global.fetch as unknown as ReturnType<typeof vi.fn>;
-      const url = fetchMock.mock.calls[0][0] as string;
-      expect(url).toBe(`http://api.test/lessons/?userId=1&pageIndex=${pageIndex}&pageSize=${pageSize}`);
+      expect(mockApiFetch).toHaveBeenCalledWith(
+        `http://api.test/lessons/?pageIndex=${pageIndex}&pageSize=${pageSize}`
+      );
     });
 
     it('throws when response is not ok', async () => {
-      mockFetchNotOk();
+      mockNotOk();
       await expect(lessonService.getLessons(0, 10)).rejects.toThrow('Failed to fetch new lessons');
     });
   });
 
   describe('postLearnLesson', () => {
-    it('posts learn lesson with correct method and headers', async () => {
-      // This endpoint does not check response.ok in the service
-      const okResponse = { ok: false } as unknown as Response; // ok value shouldn't matter here
-      (globalThis as { fetch: typeof fetch }).fetch = vi
-        .fn()
-        .mockResolvedValue(okResponse) as unknown as typeof fetch;
+    it('posts learn lesson with correct method', async () => {
+      mockApiFetch.mockResolvedValue({ ok: true });
 
       await expect(lessonService.postLearnLesson(123)).resolves.toBeUndefined();
 
-      expect(global.fetch).toHaveBeenCalledTimes(1);
-      const fetchMock = global.fetch as unknown as ReturnType<typeof vi.fn>;
-      const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
-      expect(url).toBe('http://api.test/lessons/learn/123?userId=1');
-      expect(init?.method).toBe('POST');
-      expect(init?.headers).toEqual({ 'Content-Type': 'application/json' });
+      expect(mockApiFetch).toHaveBeenCalledWith(
+        'http://api.test/lessons/learn/123',
+        expect.objectContaining({ method: 'POST' })
+      );
     });
   });
 
   describe('getLessonReviewsCount', () => {
     it('fetches review count and returns JSON', async () => {
       const payload = { count: 7 };
-      mockFetchOk(payload);
+      mockOk(payload);
 
       const result = await lessonService.getLessonReviewsCount();
 
       expect(result).toEqual(payload);
-      expect(global.fetch).toHaveBeenCalledTimes(1);
-      const fetchMock = global.fetch as unknown as ReturnType<typeof vi.fn>;
-      const url = fetchMock.mock.calls[0][0] as string;
-      expect(url).toBe('http://api.test/lessons/reviews/count?userId=1');
+      expect(mockApiFetch).toHaveBeenCalledWith('http://api.test/lessons/reviews/count');
     });
 
     it('throws when response is not ok', async () => {
-      mockFetchNotOk();
+      mockNotOk();
       await expect(lessonService.getLessonReviewsCount()).rejects.toThrow('Failed to fetch lesson review count');
     });
   });
 
   describe('getLessonReviews', () => {
     it('fetches reviews and returns JSON', async () => {
-      const payload = [
-        { question: 'Q1' },
-        { question: 'Q2' },
-      ];
-      mockFetchOk(payload);
+      const payload = [{ question: 'Q1' }, { question: 'Q2' }];
+      mockOk(payload);
 
       const result = await lessonService.getLessonReviews();
 
       expect(result).toEqual(payload);
-      expect(global.fetch).toHaveBeenCalledTimes(1);
-      const fetchMock = global.fetch as unknown as ReturnType<typeof vi.fn>;
-      const url = fetchMock.mock.calls[0][0] as string;
-      expect(url).toBe('http://api.test/lessons/reviews?userId=1');
+      expect(mockApiFetch).toHaveBeenCalledWith('http://api.test/lessons/reviews');
     });
 
     it('throws when response is not ok', async () => {
-      mockFetchNotOk();
+      mockNotOk();
       await expect(lessonService.getLessonReviews()).rejects.toThrow('Failed to fetch lesson reviews');
     });
   });
@@ -142,25 +121,95 @@ describe('lessonService', () => {
   describe('postLessonReviewCheck', () => {
     it('posts review check and returns JSON', async () => {
       const payload = { isCorrect: true, correctAnswer: 'あ' };
-      mockFetchOk(payload);
+      mockOk(payload);
 
       const question = 'What is あ?';
       const answer = 'a';
       const result = await lessonService.postLessonReviewCheck(question, answer);
 
       expect(result).toEqual(payload);
-      expect(global.fetch).toHaveBeenCalledTimes(1);
-      const fetchMock = global.fetch as unknown as ReturnType<typeof vi.fn>;
-      const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
-      expect(url).toBe('http://api.test/lessons/reviews/check?userId=1');
-      expect(init?.method).toBe('POST');
-      expect(init?.headers).toEqual({ 'Content-Type': 'application/json' });
-      expect(init?.body).toBe(JSON.stringify({ question, answer }));
+      expect(mockApiFetch).toHaveBeenCalledWith(
+        'http://api.test/lessons/reviews/check',
+        expect.objectContaining({
+          method: 'POST',
+          body: JSON.stringify({ question, answer }),
+        })
+      );
     });
 
     it('throws when response is not ok', async () => {
-      mockFetchNotOk();
-      await expect(lessonService.postLessonReviewCheck('Q', 'A')).rejects.toThrow('Failed to post lesson review answer');
+      mockNotOk();
+      await expect(lessonService.postLessonReviewCheck('Q', 'A')).rejects.toThrow(
+        'Failed to post lesson review answer'
+      );
+    });
+  });
+
+  describe('getWritingReviewsCount', () => {
+    it('fetches writing review count and returns JSON', async () => {
+      const payload = { count: 4 };
+      mockOk(payload);
+
+      const result = await lessonService.getWritingReviewsCount();
+
+      expect(result).toEqual(payload);
+      expect(mockApiFetch).toHaveBeenCalledWith('http://api.test/lessons/writing-reviews/count');
+    });
+
+    it('throws when response is not ok', async () => {
+      mockNotOk();
+      await expect(lessonService.getWritingReviewsCount()).rejects.toThrow(
+        'Failed to fetch writing review count'
+      );
+    });
+  });
+
+  describe('getWritingReviews', () => {
+    it('fetches writing reviews and returns JSON', async () => {
+      const payload = [
+        { characterId: 1, romanization: 'a', characterType: 'hiragana' },
+        { characterId: 2, romanization: 'i', characterType: 'hiragana' },
+      ];
+      mockOk(payload);
+
+      const result = await lessonService.getWritingReviews();
+
+      expect(result).toEqual(payload);
+      expect(mockApiFetch).toHaveBeenCalledWith('http://api.test/lessons/writing-reviews');
+    });
+
+    it('throws when response is not ok', async () => {
+      mockNotOk();
+      await expect(lessonService.getWritingReviews()).rejects.toThrow(
+        'Failed to fetch writing reviews'
+      );
+    });
+  });
+
+  describe('postWritingReviewCheck', () => {
+    it('posts writing review check and returns JSON', async () => {
+      const payload = { isCorrect: true, correctAnswer: 'あ' };
+      mockOk(payload);
+
+      const characterId = 5;
+      const typedCharacter = 'あ';
+      const result = await lessonService.postWritingReviewCheck(characterId, typedCharacter);
+
+      expect(result).toEqual(payload);
+      expect(mockApiFetch).toHaveBeenCalledWith(
+        'http://api.test/lessons/writing-reviews/check',
+        expect.objectContaining({
+          method: 'POST',
+          body: JSON.stringify({ characterId, typedCharacter }),
+        })
+      );
+    });
+
+    it('throws when response is not ok', async () => {
+      mockNotOk();
+      await expect(lessonService.postWritingReviewCheck(1, 'あ')).rejects.toThrow(
+        'Failed to post writing review answer'
+      );
     });
   });
 });

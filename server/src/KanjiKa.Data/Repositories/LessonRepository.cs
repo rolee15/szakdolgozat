@@ -1,7 +1,7 @@
-﻿using KanjiKa.Core.Entities.Kana;
-using KanjiKa.Core.Entities.Learning;
-using KanjiKa.Core.Entities.Users;
-using KanjiKa.Core.Interfaces;
+﻿using KanjiKa.Domain.Entities.Kana;
+using KanjiKa.Domain.Entities.Learning;
+using KanjiKa.Domain.Entities.Users;
+using KanjiKa.Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace KanjiKa.Data.Repositories;
@@ -24,6 +24,7 @@ public class LessonRepository : ILessonRepository
     {
         return await _db.Users
             .Include(u => u.Proficiencies)
+            .AsNoTracking()
             .FirstOrDefaultAsync(u => u.Id == userId);
     }
 
@@ -38,12 +39,20 @@ public class LessonRepository : ILessonRepository
         if (proficiencies.Count == 0)
             return await _db.Characters.ToListAsync();
 
-        List<Character> result =  await _db.Characters
-            .Where(ch =>
-                proficiencies.All(p => p.CharacterId != ch.Id))
+        List<int> learnedIds = proficiencies.Select(p => p.CharacterId).ToList();
+        List<Character> result = await _db.Characters
+            .Where(ch => !learnedIds.Contains(ch.Id))
             .ToListAsync();
 
         return result;
+    }
+
+    public async Task<int> CountNewCharactersAsync(List<int> learnedCharacterIds)
+    {
+        if (learnedCharacterIds.Count == 0)
+            return await _db.Characters.CountAsync();
+
+        return await _db.Characters.CountAsync(ch => !learnedCharacterIds.Contains(ch.Id));
     }
 
     public async Task<Character?> GetCharacterByIdAsync(int characterId)
@@ -76,6 +85,18 @@ public class LessonRepository : ILessonRepository
         return await _db.LessonCompletions
             .Include(lc => lc.Character)
             .Where(lc => lc.UserId == userId).ToListAsync();
+    }
+
+    public async Task<List<Proficiency>> GetDueReviewsAsync(int userId)
+    {
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+        return await _db.Proficiencies
+            .Include(p => p.Character)
+            .Where(p => p.UserId == userId
+                        && p.NextReviewDate != null
+                        && p.NextReviewDate <= now
+                        && p.SrsStage != SrsStage.Burned)
+            .ToListAsync();
     }
 
     public Task SaveChangesAsync()

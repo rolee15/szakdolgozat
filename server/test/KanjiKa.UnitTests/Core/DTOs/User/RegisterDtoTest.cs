@@ -1,25 +1,28 @@
-﻿using KanjiKa.Core.DTOs.User;
+using KanjiKa.Application.DTOs.User;
 
 namespace KanjiKa.UnitTests.Core.DTOs.User;
 
 public class RegisterDtoTest
 {
     [Fact]
-    public void RegisterDto_Constructor_ShouldInitializeProperties()
+    public void RegisterDto_Constructor_Success_ShouldInitializeProperties()
     {
-        var registerDto = new RegisterDto
-        {
-            IsSuccess = true,
-            ErrorMessage = "No error",
-            Token = "test_token",
-            RefreshToken = "test_refresh_token"
-        };
+        var registerDto = new RegisterDto(true, "Registration successful.");
 
         Assert.Multiple(
-            () => Assert.True(registerDto.IsSuccess),
-            () => Assert.Equal("No error", registerDto.ErrorMessage),
-            () => Assert.Equal("test_token", registerDto.Token),
-            () => Assert.Equal("test_refresh_token", registerDto.RefreshToken)
+            () => Assert.True(registerDto.Success),
+            () => Assert.Equal("Registration successful.", registerDto.Message)
+        );
+    }
+
+    [Fact]
+    public void RegisterDto_Constructor_Failure_ShouldInitializeProperties()
+    {
+        var registerDto = new RegisterDto(false, "Username already exists.");
+
+        Assert.Multiple(
+            () => Assert.False(registerDto.Success),
+            () => Assert.Equal("Username already exists.", registerDto.Message)
         );
     }
 }

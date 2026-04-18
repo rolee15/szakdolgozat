@@ -1,5 +1,5 @@
-﻿using KanjiKa.Core.Entities.Kana;
-using KanjiKa.Core.Entities.Learning;
+﻿using KanjiKa.Domain.Entities.Kana;
+using KanjiKa.Domain.Entities.Learning;
 
 namespace KanjiKa.UnitTests.Core.Entities.Learning;
 

@@ -1,59 +1,104 @@
-using KanjiKa.Api.Services;
-using KanjiKa.Core.Interfaces;
-using KanjiKa.Core.Services;
+using System.Text;
+using KanjiKa.Api.Extensions;
+using KanjiKa.Application.Interfaces;
+using KanjiKa.Application.Options;
+using KanjiKa.Application.Services;
 using KanjiKa.Data;
 using KanjiKa.Data.Repositories;
+using KanjiKa.Data.Seeders;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddOptions<AuthOptions>()
+    .Bind(builder.Configuration.GetSection(AuthOptions.SectionName))
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
+
+builder.Services.AddOptions<AppOptions>()
+    .Bind(builder.Configuration.GetSection(AppOptions.SectionName))
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
+
+builder.Services.AddSwaggerConfiguration();
 builder.Services.AddControllers();
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]
+                    ?? throw new InvalidOperationException("Jwt:Key is not configured."))),
+            ClockSkew = TimeSpan.Zero
+        };
+    });
+
+builder.Services.AddScoped<IAdminService, AdminService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserSettingsService, UserSettingsService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IKanaService, KanaService>();
+builder.Services.AddScoped<IKanaRepository, KanaRepository>();
+builder.Services.AddScoped<IKanjiService, KanjiService>();
+builder.Services.AddScoped<IKanjiRepository, KanjiRepository>();
 builder.Services.AddScoped<ILessonService, LessonService>();
 builder.Services.AddScoped<ILessonRepository, LessonRepository>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IGrammarService, GrammarService>();
+builder.Services.AddScoped<IGrammarRepository, GrammarRepository>();
+builder.Services.AddScoped<IReadingService, ReadingService>();
+builder.Services.AddScoped<IReadingRepository, ReadingRepository>();
+builder.Services.AddScoped<IPathRepository, PathRepository>();
+builder.Services.AddScoped<IPathService, PathService>();
 builder.Services.AddScoped<IHashService, HashService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<IEmailService, DummyEmailService>();
+builder.Services.AddScoped<IEmailService, SmtpEmailService>();
+string[] corsOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
+    ?? ["http://localhost:5173", "http://localhost:3000", "https://localhost:5173", "https://localhost:3000"];
 
-builder.Services.AddCors(options => {
+builder.Services.AddCors(options =>
+{
     options.AddPolicy("AllowReactApp",
         x => x
-            .AllowAnyOrigin()
+            .WithOrigins(corsOrigins)
+            .AllowCredentials()
             .AllowAnyMethod()
             .AllowAnyHeader());
 });
 
-var conn = builder.Configuration.GetConnectionString("DefaultConnection");
+string? conn = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<KanjiKaDbContext>(options =>
     options.UseNpgsql(conn));
-builder.Services.AddScoped<KanjiKaDataSeeder>();
 
-var app = builder.Build();
+if (builder.Environment.IsDevelopment())
+    builder.Services.AddScoped<IDataSeeder, DevelopmentDataSeeder>();
+else
+    builder.Services.AddScoped<IDataSeeder, ProductionDataSeeder>();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+WebApplication app = builder.Build();
+
+app.UseSwaggerConfiguration();
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 app.UseCors("AllowReactApp");
 // Disabled because the self-signed certificate doesn't work in containers.
 //app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-
-// Seed test data.
-if (app.Environment.IsDevelopment())
-{
-    using var scope = app.Services.CreateScope();
-    var seeder = scope.ServiceProvider.GetRequiredService<KanjiKaDataSeeder>();
-    await seeder.SeedAsync();
-}
+await app.InitialiseDatabaseAsync();
 
 await app.RunAsync();

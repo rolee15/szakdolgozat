@@ -1,7 +1,7 @@
-using KanjiKa.Api.Services;
-using KanjiKa.Core.DTOs.Learning;
-using KanjiKa.Core.Entities.Users;
-using KanjiKa.Core.Interfaces;
+using KanjiKa.Application.Services;
+using KanjiKa.Application.DTOs.Learning;
+using KanjiKa.Domain.Entities.Users;
+using KanjiKa.Application.Interfaces;
 using Moq;
 
 namespace KanjiKa.UnitTests.Api.Services.Lesson;
@@ -32,8 +32,9 @@ public class GetLessonsCountAsyncTests
         // Arrange
         var user = new User { Id = 1, Username = "user", PasswordHash = [0], PasswordSalt = [0] };
         var repo = new Mock<ILessonRepository>();
-        repo.Setup(r => r.GetUserAsync(1)).ReturnsAsync(user);
+        repo.Setup(r => r.GetUserWithProficienciesAsync(1)).ReturnsAsync(user);
         repo.Setup(r => r.CountLessonsCompletedTodayAsync(1)).ReturnsAsync(completedToday);
+        repo.Setup(r => r.CountNewCharactersAsync(It.IsAny<List<int>>())).ReturnsAsync(100);
         var service = new LessonService(repo.Object);
 
         // Act
