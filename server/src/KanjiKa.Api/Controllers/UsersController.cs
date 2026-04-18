@@ -22,6 +22,18 @@ public class UsersController : ControllerBase
         _userSettingsService = userSettingsService;
     }
 
+    private IActionResult GetUserIdOrUnauthorized(out int userId)
+    {
+        var claim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (claim == null || !int.TryParse(claim, out userId))
+        {
+            userId = 0;
+            return Unauthorized();
+        }
+        return null!;
+    }
+
+    [AllowAnonymous]
     [HttpPost("login")]
     [Consumes("application/json")]
     [ProducesResponseType(typeof(LoginDto), StatusCodes.Status200OK)]
@@ -31,6 +43,7 @@ public class UsersController : ControllerBase
         return Ok(loginDto);
     }
 
+    [AllowAnonymous]
     [HttpPost("register")]
     [Consumes("application/json")]
     [ProducesResponseType(typeof(RegisterDto), StatusCodes.Status200OK)]
@@ -58,6 +71,7 @@ public class UsersController : ControllerBase
         return Ok(result);
     }
 
+    [AllowAnonymous]
     [HttpPost("forgotPassword")]
     [Consumes("application/json")]
     [ProducesResponseType(typeof(ForgotPasswordDto), StatusCodes.Status200OK)]
@@ -67,6 +81,7 @@ public class UsersController : ControllerBase
         return Ok(forgotPasswordDto);
     }
 
+    [AllowAnonymous]
     [HttpPost("resetPassword")]
     [Consumes("application/json")]
     [ProducesResponseType(typeof(ResetPasswordDto), StatusCodes.Status200OK)]
@@ -82,6 +97,7 @@ public class UsersController : ControllerBase
         return Ok(resetPasswordDto);
     }
 
+    [AllowAnonymous]
     [HttpPost("refreshToken")]
     [Consumes("application/json")]
     [ProducesResponseType(typeof(RefreshTokenDto), StatusCodes.Status200OK)]
@@ -96,9 +112,12 @@ public class UsersController : ControllerBase
     [Consumes("application/json")]
     [ProducesResponseType(typeof(ChangePasswordDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ChangePasswordDto), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
     {
-        int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var error = GetUserIdOrUnauthorized(out int userId);
+        if (error != null) return error;
+
         ChangePasswordDto result = await _userService.ChangePassword(userId, request.CurrentPassword, request.NewPassword);
         if (!result.IsSuccess)
         {
@@ -111,9 +130,12 @@ public class UsersController : ControllerBase
     [Authorize]
     [HttpGet("settings")]
     [ProducesResponseType(typeof(UserSettingsDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> GetSettings()
     {
-        int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var error = GetUserIdOrUnauthorized(out int userId);
+        if (error != null) return error;
+
         UserSettingsDto settings = await _userSettingsService.GetSettingsAsync(userId);
         return Ok(settings);
     }
@@ -123,9 +145,12 @@ public class UsersController : ControllerBase
     [Consumes("application/json")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> UpdateSettings([FromBody] UpdateUserSettingsDto dto)
     {
-        int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var error = GetUserIdOrUnauthorized(out int userId);
+        if (error != null) return error;
+
         await _userSettingsService.UpdateSettingsAsync(userId, dto);
         return NoContent();
     }
