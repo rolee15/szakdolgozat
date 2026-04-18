@@ -55,7 +55,7 @@ describe('Auth pages', () => {
           <RegisterPage />
         </MemoryRouter>
       )
-      expect(screen.getByRole('heading', { name: /register/i })).toBeInTheDocument()
+      expect(screen.getByRole('heading', { name: /create your account/i })).toBeInTheDocument()
     })
   })
 
