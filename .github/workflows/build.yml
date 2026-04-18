@@ -7,8 +7,8 @@ on:
     types: [opened, synchronize, reopened]
 
 jobs:
-  build-test-analyze:
-    name: Build, Test, and Analyze
+  build-and-test:
+    name: Build and Test
     runs-on: windows-latest
     permissions:
       contents: read
@@ -21,12 +21,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      # ---------- Setup tools ----------
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.0.x'
-
+      # ---------- Client (frontend) ----------
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -34,10 +29,6 @@ jobs:
           cache: 'npm'
           cache-dependency-path: client/package-lock.json
 
-      - name: Install SonarScanner for .NET
-        run: dotnet tool install --global dotnet-sonarscanner
-
-      # ---------- Client (frontend) ----------
       - name: Install client dependencies
         working-directory: client
         run: npm ci
@@ -46,23 +37,12 @@ jobs:
         working-directory: client
         run: npm run test:coverage -- --run
 
-      # ---------- Begin SonarCloud analysis ----------
-      - name: Begin SonarCloud analysis
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          dotnet sonarscanner begin `
-            /k:"rolee15_szakdolgozat" `
-            /o:"rolee15" `
-            /d:sonar.token="$env:SONAR_TOKEN" `
-            /d:sonar.host.url="https://sonarcloud.io" `
-            /d:sonar.javascript.lcov.reportPaths="client/coverage/lcov.info" `
-            /d:sonar.cs.opencover.reportsPaths="server/TestResults/**/coverage.opencover.xml" `
-            /d:sonar.test.inclusions="client/test/**/*.*,server/test/**/*.*" `
-            /d:sonar.exclusions="**/node_modules/**,**/dist/**,**/build/**,client/coverage/**,client/public/**,server/TestResults/**,server/docs/**,docs/**"
+      # ---------- Server (backend) ----------
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
 
-      # ---------- Build and test server ----------
       - name: Build server
         run: dotnet build .\server\KanjiKa.sln --configuration Release
 
@@ -75,14 +55,6 @@ jobs:
             --collect:"XPlat Code Coverage" `
             -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
 
-      # ---------- End SonarCloud analysis ----------
-      - name: End SonarCloud analysis
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: dotnet sonarscanner end /d:sonar.token="$env:SONAR_TOKEN"
-
-      # ---------- Publish test results ----------
       - name: Publish .NET test results
         uses: dorny/test-reporter@dc3a92680fcc15842eef52e8c4606ea7ce6bd3f3 # v2.1.1
         if: success() || failure()
@@ -90,3 +62,50 @@ jobs:
           name: Unit Tests
           path: server/TestResults/*.trx
           reporter: dotnet-trx
+
+      # ---------- Upload coverage for SonarCloud ----------
+      - name: Upload client coverage (lcov)
+        uses: actions/upload-artifact@v4
+        with:
+          name: client-coverage
+          path: client/coverage/lcov.info
+          if-no-files-found: error
+
+      - name: Upload server coverage (OpenCover)
+        uses: actions/upload-artifact@v4
+        with:
+          name: server-coverage
+          path: server/TestResults/**/coverage.opencover.xml
+          if-no-files-found: error
+
+  analyze:
+    name: SonarCloud Analysis
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download client coverage (lcov)
+        uses: actions/download-artifact@v4
+        with:
+          name: client-coverage
+          path: client/coverage
+
+      - name: Download server coverage (OpenCover)
+        uses: actions/download-artifact@v4
+        with:
+          name: server-coverage
+          path: server/TestResults
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarqube-scan-action@7295e71c9583053f5bf40e9d4068a0c974603ec8 # v4.2.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
