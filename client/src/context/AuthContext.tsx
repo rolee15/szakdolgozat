@@ -30,6 +30,13 @@ function decodeJwtPayload(token: string): Record<string, string | undefined> {
   }
 }
 
+function isTokenExpired(token: string): boolean {
+  const payload = decodeJwtPayload(token);
+  const exp = payload['exp'];
+  if (!exp) return true;
+  return Date.now() / 1000 > parseInt(exp);
+}
+
 function extractRole(payload: Record<string, string | undefined>): string | null {
   // ClaimTypes.Role serializes as the full URI or as "role" depending on JWT config
   return payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']
@@ -37,11 +44,13 @@ function extractRole(payload: Record<string, string | undefined>): string | null
     ?? null;
 }
 
+const EMPTY_STATE: AuthState = { token: null, refreshToken: null, userId: null, username: null, role: null, mustChangePassword: false };
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AuthState>(() => {
     const token = localStorage.getItem('token');
     const refreshToken = localStorage.getItem('refreshToken');
-    if (token) {
+    if (token && !isTokenExpired(token)) {
       const payload = decodeJwtPayload(token);
       return {
         token,
@@ -52,7 +61,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         mustChangePassword: payload['must_change_password'] === 'true',
       };
     }
-    return { token: null, refreshToken: null, userId: null, username: null, role: null, mustChangePassword: false };
+    // Clear stale token on mount
+    if (token) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('refreshToken');
+    }
+    return EMPTY_STATE;
   });
 
   const login = async (email: string, password: string) => {
@@ -80,7 +94,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('refreshToken');
-    setState({ token: null, refreshToken: null, userId: null, username: null, role: null, mustChangePassword: false });
+    setState(EMPTY_STATE);
   };
 
   const clearMustChangePassword = () => {
