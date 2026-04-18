@@ -51,6 +51,7 @@ public class KanjiKaDbContext : DbContext
                 .HasDefaultValue(false);
             entity.Property(u => u.IsActive)
                 .HasDefaultValue(false);
+            entity.HasIndex(u => u.Username).IsUnique();
             entity.HasIndex(u => u.ActivationToken)
                 .HasFilter("activation_token IS NOT NULL");
             entity.HasMany(x => x.Proficiencies)

@@ -1,4 +1,5 @@
 using KanjiKa.Domain.Entities.Users;
+using KanjiKa.Domain.Exceptions;
 using KanjiKa.Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -93,9 +94,17 @@ public class UserRepository : IUserRepository
         return true;
     }
 
-    public Task SaveChangesAsync()
+    public async Task SaveChangesAsync()
     {
-        return _db.SaveChangesAsync();
+        try
+        {
+            await _db.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex) when (ex.InnerException?.Message.Contains("23505") == true
+            || ex.InnerException?.Message.Contains("unique") == true)
+        {
+            throw new DuplicateUsernameException();
+        }
     }
 
     public Task<UserSettings?> GetSettingsAsync(int userId)

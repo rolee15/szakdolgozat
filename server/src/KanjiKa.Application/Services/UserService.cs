@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using KanjiKa.Application.DTOs.User;
 using KanjiKa.Application.Interfaces;
 using KanjiKa.Domain.Entities.Users;
+using KanjiKa.Domain.Exceptions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -93,7 +94,14 @@ public class UserService : IUserService
         };
 
         await _repo.AddAsync(newUser);
-        await _repo.SaveChangesAsync();
+        try
+        {
+            await _repo.SaveChangesAsync();
+        }
+        catch (DuplicateUsernameException)
+        {
+            return new RegisterDto(false, "Username already exists.");
+        }
 
         string frontendBaseUrl = _config["App:FrontendBaseUrl"] ?? "http://localhost:5173";
         string activationLink = $"{frontendBaseUrl}/activate?token={activationToken}";
