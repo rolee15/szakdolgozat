@@ -42,9 +42,13 @@ public class AdminController : ControllerBase
     [HttpDelete("users/{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> DeleteUser(int id)
     {
-        int adminUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var claim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (claim == null || !int.TryParse(claim, out int adminUserId))
+            return Unauthorized();
+
         bool deleted = await _adminService.DeleteUserAsync(adminUserId, id);
         if (!deleted) return BadRequest("Cannot delete this user.");
 
