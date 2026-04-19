@@ -27,7 +27,10 @@ const ReadingListPage = () => {
           {passages?.map((passage) => (
             <div
               key={passage.id}
+              role="button"
+              tabIndex={0}
               onClick={() => navigate(`/reading/${passage.id}`)}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') navigate(`/reading/${passage.id}`); }}
               className="bg-gray-800 hover:bg-gray-700 transition-colors rounded-lg shadow-md p-5 cursor-pointer"
             >
               <div className="flex items-center justify-between mb-2">

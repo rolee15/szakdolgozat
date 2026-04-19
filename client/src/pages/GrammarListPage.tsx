@@ -24,7 +24,10 @@ const GrammarListPage = () => {
         {grammarPoints?.map((point) => (
           <div
             key={point.id}
+            role="button"
+            tabIndex={0}
             onClick={() => navigate(`/grammar/${point.id}`)}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') navigate(`/grammar/${point.id}`); }}
             className="bg-gray-800 hover:bg-gray-700 transition-colors rounded-lg shadow-md p-5 cursor-pointer"
           >
             <h2 className="text-lg font-semibold text-white mb-1">{point.title}</h2>

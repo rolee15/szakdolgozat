@@ -15,7 +15,7 @@ const RegisterPage = () => {
   const emailError = useMemo(() => {
     if (!touched.email) return "";
     if (!email) return "Email is required";
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[^\s@]{1,64}@[^\s@]{1,253}\.[^\s@]{2,63}$/;
     if (!emailRegex.test(email)) return "Please enter a valid email address";
     return "";
   }, [email, touched.email]);
@@ -41,7 +41,7 @@ const RegisterPage = () => {
 
     const currentEmailError = (() => {
       if (!email) return "Email is required";
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const emailRegex = /^[^\s@]{1,64}@[^\s@]{1,253}\.[^\s@]{2,63}$/;
       if (!emailRegex.test(email)) return "Please enter a valid email address";
       return "";
     })();
