@@ -216,7 +216,7 @@ const FlashCardPage = () => {
       </p>
 
       {/* Flip card */}
-      <div className={styles.scene} onClick={handleFlip} role="button" aria-label="Flip card">
+      <div className={styles.scene} role="button" tabIndex={0} aria-label="Flip card" onClick={handleFlip} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleFlip(); }}>
         <div className={`${styles.card} ${isFlipped ? styles.flipped : ""}`}>
           <div className={`${styles.cardFace} ${styles.cardFront}`}>
             <span className="text-8xl font-bold text-indigo-300 select-none">{cardFront}</span>

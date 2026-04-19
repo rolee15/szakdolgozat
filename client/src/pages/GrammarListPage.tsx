@@ -22,10 +22,11 @@ const GrammarListPage = () => {
       <h1 className="text-3xl font-bold text-white mb-6">Grammar</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {grammarPoints?.map((point) => (
-          <div
+          <button
             key={point.id}
+            type="button"
             onClick={() => navigate(`/grammar/${point.id}`)}
-            className="bg-gray-800 hover:bg-gray-700 transition-colors rounded-lg shadow-md p-5 cursor-pointer"
+            className="w-full text-left bg-gray-800 hover:bg-gray-700 transition-colors rounded-lg shadow-md p-5 cursor-pointer"
           >
             <h2 className="text-lg font-semibold text-white mb-1">{point.title}</h2>
             <p className="text-gray-400 text-sm font-mono mb-3">{point.pattern}</p>
@@ -51,7 +52,7 @@ const GrammarListPage = () => {
                 </span>
               )}
             </div>
-          </div>
+          </button>
         ))}
       </div>
     </div>
