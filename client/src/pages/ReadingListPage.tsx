@@ -25,13 +25,11 @@ const ReadingListPage = () => {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {passages?.map((passage) => (
-            <div
+            <button
               key={passage.id}
-              role="button"
-              tabIndex={0}
+              type="button"
               onClick={() => navigate(`/reading/${passage.id}`)}
-              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') navigate(`/reading/${passage.id}`); }}
-              className="bg-gray-800 hover:bg-gray-700 transition-colors rounded-lg shadow-md p-5 cursor-pointer"
+              className="w-full text-left bg-gray-800 hover:bg-gray-700 transition-colors rounded-lg shadow-md p-5 cursor-pointer"
             >
               <div className="flex items-center justify-between mb-2">
                 <h2 className="text-lg font-semibold text-white">{passage.title}</h2>
@@ -59,7 +57,7 @@ const ReadingListPage = () => {
                   </span>
                 )}
               </div>
-            </div>
+            </button>
           ))}
         </div>
       )}

@@ -61,12 +61,11 @@ const LearningPathPage = () => {
                 </div>
 
                 {/* Card */}
-                <div
-                  role="button"
-                  tabIndex={isLocked ? -1 : 0}
-                  onClick={() => !isLocked && navigate(`/path/${unit.id}`)}
-                  onKeyDown={(e) => { if (!isLocked && (e.key === 'Enter' || e.key === ' ')) navigate(`/path/${unit.id}`); }}
-                  className={`flex-1 bg-gray-800 rounded-lg p-5 transition-colors ${
+                <button
+                  type="button"
+                  disabled={isLocked}
+                  onClick={() => navigate(`/path/${unit.id}`)}
+                  className={`flex-1 text-left bg-gray-800 rounded-lg p-5 transition-colors ${
                     isLocked
                       ? 'opacity-50 cursor-not-allowed'
                       : 'hover:bg-gray-700 cursor-pointer'
@@ -97,7 +96,7 @@ const LearningPathPage = () => {
                       <span>Best score: {unit.bestScore}%</span>
                     )}
                   </div>
-                </div>
+                </button>
               </li>
             );
           })}
