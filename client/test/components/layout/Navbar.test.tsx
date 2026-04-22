@@ -54,22 +54,11 @@ describe('Navbar', () => {
     fireEvent.click(practiceButtons[0])
 
     expect(screen.getAllByRole('link', { name: 'Lessons' })[0]).toBeInTheDocument()
-    expect(screen.getAllByRole('link', { name: 'Writing' })[0]).toBeInTheDocument()
     expect(screen.getAllByRole('link', { name: 'Flash Cards' })[0]).toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'Writing' })).not.toBeInTheDocument()
   })
 
-  // 4. Writing link has correct href /lessons/writing
-  it('Writing link in Practice dropdown has href /lessons/writing', () => {
-    renderNavbar()
-
-    const practiceButtons = screen.getAllByRole('button', { name: /practice/i })
-    fireEvent.click(practiceButtons[0])
-
-    const writingLinks = screen.getAllByRole('link', { name: 'Writing' })
-    expect(writingLinks[0]).toHaveAttribute('href', '/lessons/writing')
-  })
-
-  // 5. Learning Path link renders with href /path
+  // 4. Learning Path link renders with href /path
   it('renders the Learning Path link with href /path', () => {
     renderNavbar()
 

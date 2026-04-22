@@ -41,9 +41,6 @@ const Navbar = () => {
   const dropdownLinkClass = ({ isActive }: { isActive: boolean }) =>
     `block px-4 py-2 text-sm ${isActive ? 'text-indigo-400' : 'text-gray-300 hover:text-white'}`;
 
-  const dropdownSubLinkClass = ({ isActive }: { isActive: boolean }) =>
-    `block px-4 py-2 text-sm pl-7 ${isActive ? 'text-indigo-400' : 'text-gray-300 hover:text-white'}`;
-
   return (
     <header className="bg-black shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" ref={navRef}>
@@ -88,7 +85,6 @@ const Navbar = () => {
                 {openDropdown === 'practice' && (
                   <div className={dropdownPanelClass} role="menu">
                     <NavLink to="/lessons" end className={dropdownLinkClass} onClick={() => setOpenDropdown(null)}>Lessons</NavLink>
-                    <NavLink to="/lessons/writing" className={dropdownSubLinkClass} onClick={() => setOpenDropdown(null)}>Writing</NavLink>
                     <NavLink to="/flashcards" className={dropdownLinkClass} onClick={() => setOpenDropdown(null)}>Flash Cards</NavLink>
                   </div>
                 )}
@@ -170,7 +166,6 @@ const Navbar = () => {
               <p className="text-gray-500 text-xs uppercase tracking-wider mb-1">Practice</p>
               <div className="flex flex-col gap-1 pl-2">
                 <NavLink to="/lessons" end className={navLinkClass} onClick={() => setMobileOpen(false)}>Lessons</NavLink>
-                <NavLink to="/lessons/writing" className={`pl-4 text-sm ${navLinkClass({ isActive: false })}`} onClick={() => setMobileOpen(false)}>Writing</NavLink>
                 <NavLink to="/flashcards" className={navLinkClass} onClick={() => setMobileOpen(false)}>Flash Cards</NavLink>
               </div>
             </div>
