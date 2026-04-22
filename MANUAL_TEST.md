@@ -62,14 +62,17 @@ Precondition: dev DB running, backend started, frontend started (see CLAUDE.md f
 
 ## 2. Navigation
 
-- [ ] Desktop navbar shows three groups: Study, Practice, Path
-- [ ] Study group contains: Hiragana, Katakana, Kanji, Grammar, Reading links
-- [ ] Practice group contains: Lessons, Writing, Flash Cards links
-- [ ] Path group contains: Learning Path link to `/path`
+- [ ] Desktop navbar shows "Study ▾" and "Practice ▾" dropdown buttons plus a plain "Learning Path" link
+- [ ] Clicking "Study ▾" opens a dropdown with: Hiragana, Katakana, Kanji, Grammar, Reading
+- [ ] Clicking "Practice ▾" opens a dropdown with: Lessons, Writing (indented sub-item), Flash Cards
+- [ ] Writing in Practice dropdown links to `/lessons/writing`
+- [ ] Only one dropdown can be open at a time (opening Study closes Practice and vice versa)
+- [ ] Clicking outside an open dropdown closes it
+- [ ] "Learning Path" link navigates to `/path` without a dropdown
 - [ ] Admin link visible in navbar for admin users only
 - [ ] Admin link hidden for regular users
 - [ ] Mobile: hamburger button (☰) appears on small screens
-- [ ] Mobile: clicking hamburger opens dropdown nav with all links grouped by section
+- [ ] Mobile: clicking hamburger opens panel with Study, Practice (Writing indented), Path sections
 - [ ] Mobile: clicking a nav link closes the mobile menu
 - [ ] Logo/brand link navigates to home or lessons
 - [ ] 404 page shown for unknown routes (e.g. `/nonexistent`)
@@ -157,7 +160,7 @@ Precondition: dev DB running, backend started, frontend started (see CLAUDE.md f
 - [ ] Correct items are removed from the queue; incorrect items re-appear later
 - [ ] After all items reviewed -> "Writing practice complete!" message shown
 - [ ] When no items are due -> "No items to review." message shown
-- [ ] "Writing" link in navbar navigates to `/writing`
+- [ ] Writing sub-item in the Practice dropdown navigates to `/lessons/writing`
 - [ ] API failure -> error state shown, page does not crash
 
 ---
