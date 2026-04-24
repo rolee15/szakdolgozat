@@ -4,10 +4,10 @@ import { MemoryRouter } from 'react-router-dom'
 import MenuItem from '@/components/layout/MenuItem'
 
 describe('MenuItem', () => {
-  it('renders NavLink to lowercase path with the given text', () => {
+  it('renders NavLink to the given path with the given text', () => {
     render(
       <MemoryRouter>
-        <MenuItem text="Hiragana" />
+        <MenuItem to="/hiragana">Hiragana</MenuItem>
       </MemoryRouter>
     )
 

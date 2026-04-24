@@ -1,6 +1,7 @@
 import { FormEvent, useMemo, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
+import Button from "@/components/common/Button";
 
 const RegisterPage = () => {
   const { register } = useAuth();
@@ -160,9 +161,9 @@ const RegisterPage = () => {
           </p>
         )}
 
-        <button type="submit" className="text-xl" disabled={isSubmitting}>
+        <Button type="submit" disabled={isSubmitting}>
           {isSubmitting ? "Registering..." : "Register"}
-        </button>
+        </Button>
 
         <div className="mt-4">
           <NavLink to="/login" className="text-blue-500">
