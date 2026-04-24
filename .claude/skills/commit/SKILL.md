@@ -5,51 +5,36 @@ description: Stage changed files, generate a conventional commit message matchin
 
 # Commit & Push
 
-Follow these steps exactly.
-
-## 1. Gather context
+## 1. Context
 
 Run in parallel:
+
 ```bash
 git status
 git diff HEAD
 ```
 
-## 2. Decide what to stage
+## 2. Stage
 
-- Stage all files relevant to the current change.
-- **Never stage**: `.env*`, credentials, secrets, unrelated experimental files.
+- Add only files relevant to the change.
+- Never stage `.env*`, credentials, or unrelated experimental files.
 - Prefer `git add <specific files>` over `git add -A`.
 
-## 3. Write the commit message
-
-Use this project's commit style:
+## 3. Message
 
 ```
 <type>: <short imperative description>
 ```
 
-**Types used in this project**: `feat`, `fix`, `bug`, `refactor`, `test`, `docs`, `chore`
+- Types used in this project: `feat`, `fix`, `refactor`, `test`, `docs`, `chore` (check `git log --oneline -20` if unsure).
+- Lowercase, no trailing period, ~72-char subject. Optional blank-line body with bullets for larger changes.
+- No `Co-Authored-By` trailer (solo project).
 
-Rules:
-- Lowercase type and description
-- No period at end
-- Max ~72 chars for the subject line
-- If the change is large, add a blank line and a short body bullet list
-- No "Co-Authored-By" trailer needed (solo dev project)
+Use a HEREDOC for multi-line messages:
 
-## 4. Commit and push
-
-```bash
-git add <relevant files>
-git commit -m "type: description"
-git push
-```
-
-Use a HEREDOC for the message if it has multiple lines:
 ```bash
 git commit -m "$(cat <<'EOF'
-feat: add foo feature
+feat: add foo
 
 - detail one
 - detail two
@@ -57,22 +42,19 @@ EOF
 )"
 ```
 
-## 5. Confirm
+## 4. Push
 
-Show the output of `git log --oneline -3` to confirm the commit landed.
-
-## Troubleshooting: GPG signing failure
-
-If `git commit` fails with `gpg: can't connect to the keyboxd` or `gpg-agent` not running, the GPG agent process has died. Fix it by running in a **Windows** terminal (PowerShell or cmd, not Git Bash):
-
-```powershell
-gpg-connect-agent reloadagent /bye
-```
-
-Or from Git Bash / WSL:
 ```bash
-gpgconf --kill gpg-agent
-gpgconf --launch gpg-agent
+git push
 ```
 
-After the agent is back, retry the commit normally. Do **not** use `--no-gpg-sign` unless the user explicitly allows it.
+Then `git log --oneline -3` to confirm.
+
+## GPG troubleshooting
+
+If the commit fails with `gpg-agent` not running, reload the agent:
+
+- Git Bash / WSL: `gpgconf --kill gpg-agent && gpgconf --launch gpg-agent`
+- Windows (PS/cmd): `gpg-connect-agent reloadagent /bye`
+
+Retry normally — do not use `--no-gpg-sign` unless the user explicitly allows it.
