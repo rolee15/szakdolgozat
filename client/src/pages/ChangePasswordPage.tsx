@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import userService from "@/services/userService";
+import Button from "@/components/common/Button";
 
 const ChangePasswordPage = () => {
   const { mustChangePassword, clearMustChangePassword } = useAuth();
@@ -87,9 +88,9 @@ const ChangePasswordPage = () => {
             {error}
           </p>
         )}
-        <button type="submit" className="text-xl mt-8" disabled={isSubmitting}>
+        <Button type="submit" className="mt-8" disabled={isSubmitting}>
           {isSubmitting ? "Changing..." : "Change Password"}
-        </button>
+        </Button>
       </form>
     </div>
   );

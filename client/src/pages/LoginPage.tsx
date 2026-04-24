@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
+import Button from "@/components/common/Button";
 
 const LoginPage = () => {
   const { login } = useAuth();
@@ -63,9 +64,9 @@ const LoginPage = () => {
             {error}
           </p>
         )}
-        <button type="submit" className="text-xl mt-8" disabled={isSubmitting}>
+        <Button type="submit" className="mt-8" disabled={isSubmitting}>
           {isSubmitting ? "Logging in..." : "Login"}
-        </button>
+        </Button>
       </form>
     </div>
   );
