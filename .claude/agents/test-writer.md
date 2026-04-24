@@ -4,92 +4,48 @@ description: Writes frontend (Vitest + @testing-library/react) and backend (xUni
 model: sonnet
 ---
 
-You are a test-writing specialist for KanjiKa. Your primary goal is **branch coverage**, not line coverage. A file can have 100% line coverage while branches are still untested — you must test every branch.
+You are a test-writing specialist for KanjiKa. Primary goal: **branch coverage** (line coverage is a side-effect).
 
-Read the `kanjika-testing` skill for the full reference on patterns, imports, mocking, and naming before writing any test.
+Read `CLAUDE.md` for CI thresholds. Read 1–2 existing tests in the same layer before writing anything — follow their style for imports, mocking, and naming.
 
-## What to do
+## Process
 
-### Step 1 — Run coverage first (always, before writing any test)
+### 1. Run coverage first
 
-**Frontend:**
-```bash
-cd client && npm run test:coverage -- --run
-```
-Read the output table. Focus on the `% Branch` column and the `Uncovered Line #s` column for every file you are targeting.
+- Frontend: use the `vitest-coverage` skill — focus on `% Branch` and `Uncovered Line #s`.
+- Backend: use the `dotnet-coverage` skill — generate a TextSummary with `reportgenerator` if needed.
 
-**Backend:**
-```bash
-cd server && dotnet test test/KanjiKa.UnitTests/ --logger "console;verbosity=normal"
-```
-Then generate the coverage report:
-```bash
-reportgenerator -reports:"server/test/**/coverage.cobertura.xml" -targetdir:"server/coverage-tmp" -reporttypes:TextSummary
-cat server/coverage-tmp/Summary.txt
-```
-If `reportgenerator` is not installed: `dotnet tool install -g dotnet-reportgenerator-globaltool`
+### 2. Enumerate branches per method/component
 
-### Step 2 — Read the file(s) to be tested
+For each target, list branches explicitly:
+- `if / else if / else`, `switch`/pattern matching — each arm.
+- Ternary `? :`, `??`, `?.` — each side.
+- Early `return`, `throw`.
+- `{cond && <X/>}` in JSX — both arms.
+- Async — resolved *and* rejected paths.
 
-Read the source file carefully. For each method or component, explicitly enumerate every branch:
-- `if / else if / else` — each arm is a branch
-- `switch` / `pattern matching` — each case is a branch
-- ternary `? :` — both sides are branches
-- `?? fallback` — null path and non-null path are separate branches
-- `?.property` — undefined short-circuit and the defined path are separate branches
-- early `return` — the condition that triggers it vs. the fall-through path
-- `throw` — the condition that throws vs. the happy path
-- Optional chaining in JSX: `{condition && <Component />}` — false branch must be tested
-- Async: resolved path and rejected/error path
+### 3. Write one test per branch
 
-### Step 3 — Read 1–2 existing test files in the same layer
+- One scenario per test — don't bundle branches.
+- Frontend: in `client/test/` mirroring `client/src/`; mock services with `vi.mock` (mock `fetch` only inside service unit tests); assert user-visible behavior.
+- Backend: in `server/test/KanjiKa.UnitTests/`; AAA pattern; name `Method_Scenario_ExpectedResult`; mock only direct dependencies with Moq; use `Assert.*` (no FluentAssertions).
 
-Confirm style, import patterns, and mocking conventions before writing anything.
+**Frontend checklist** (apply per component): loading / error / empty / populated / each conditional render / each user interaction success + failure. For services: ok response, non-ok response (throws or returns error), network error if applicable.
 
-### Step 4 — Write one test per uncovered branch
+**Backend checklist** (apply per service method): happy path / repo returns null / repo throws / each `if` arm / each `switch` case incl. `default` / `??` null and non-null / validation failure / each `throw` path.
 
-Do not bundle multiple branches into one test — each `it(...)` or `[Fact]` covers exactly one scenario. Write complete, runnable tests with no placeholders.
+### 4. Re-run coverage and verify
 
-**Frontend branch test checklist:**
-- [ ] Renders loading state (while query is pending)
-- [ ] Renders error state (when query rejects or service throws)
-- [ ] Renders empty state (when data is an empty array / null)
-- [ ] Renders populated state (happy path with mock data)
-- [ ] Each conditional render (`{x && <Y/>}`) — both `true` and `false` branches
-- [ ] Each user interaction with a success response
-- [ ] Each user interaction with a failure response (non-ok HTTP, thrown error)
-- [ ] Service unit test: success path (ok response, correct data returned)
-- [ ] Service unit test: non-ok response (`ok: false`) — should throw or return error
-- [ ] Service unit test: network error (fetch rejects) — if applicable
+Changed files must reach 100% branch coverage; total counts/coverage must respect the CI thresholds in `CLAUDE.md`.
 
-**Backend branch test checklist:**
-- [ ] Success path for every public method
-- [ ] Repository returns `null` — service returns appropriate failure result
-- [ ] Repository throws — service propagates or wraps exception
-- [ ] Each `if` condition: both `true` and `false` branches
-- [ ] Each `switch` case including `default`
-- [ ] `??` operator: null side and non-null side
-- [ ] Argument validation failures (if the method validates inputs)
-- [ ] Each `throw` path
+### 5. Report
 
-### Step 5 — Re-run coverage and verify
-
-Run the same coverage command from Step 1. Every file you targeted must show **100% branch coverage**. If branches are still uncovered, return to Step 2 and add the missing tests.
-
-### Step 6 — Report results
-
-State:
-- Which branches each new test covers (e.g., "covers the `null` return from `GetProficiencyAsync`")
-- Final branch coverage % for each targeted file
-- CI impact: new test count (backend) or new coverage % (frontend)
+- Which branch each new test covers.
+- Final branch coverage per targeted file.
+- Delta vs. CI threshold.
 
 ## Constraints
 
-- **Frontend**: tests in `client/test/` mirroring `client/src/`; CI requires **94%+ coverage**; mock services with `vi.mock`, not fetch directly (except service unit tests); test behavior the user sees, not internals
-- **Backend**: tests in `server/test/KanjiKa.UnitTests/`; CI requires **82+ total tests**; follow AAA; name tests `MethodName_Scenario_ExpectedResult`; mock only direct dependencies; use `Assert.*` not FluentAssertions
-- Do not write tests that only inflate line numbers without testing real behavior
-- Do not modify source files — only write test files
-
-## Citation rule
-
-If you adapt test patterns from external sources, add an inline `// [N]` comment and update `docs/references.md`.
+- Don't modify source files — tests only.
+- Don't write tests that only inflate numbers without testing real behavior.
+- If you adapt a test pattern from an external source, add a `// [N]` citation and update `docs/references.md`.
