@@ -104,7 +104,7 @@ describe('Navbar', () => {
     expect(settingsLinks.length).toBeGreaterThan(0)
     expect(settingsLinks[0]).toHaveAttribute('href', '/settings')
 
-    const logoutBtns = screen.getAllByRole('button', { name: /logout/i })
+    const logoutBtns = screen.getAllByRole('button', { name: /log out/i })
     expect(logoutBtns.length).toBeGreaterThan(0)
   })
 
