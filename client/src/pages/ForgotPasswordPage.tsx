@@ -69,7 +69,7 @@ const ForgotPasswordPage = () => {
             <input
               id="code"
               type="text"
-              className="w-80 p-2 text-xl"
+              className="w-80 p-2 text-xl border"
               {...resetForm.register("code", { required: "Code is required" })}
             />
             {resetForm.formState.errors.code && (
@@ -83,7 +83,7 @@ const ForgotPasswordPage = () => {
             <input
               id="newPassword"
               type="password"
-              className="w-80 p-2 text-xl"
+              className="w-80 p-2 text-xl border"
               {...resetForm.register("newPassword", { required: "Password is required" })}
             />
             {resetForm.formState.errors.newPassword && (
@@ -97,7 +97,7 @@ const ForgotPasswordPage = () => {
             <input
               id="confirmPassword"
               type="password"
-              className="w-80 p-2 text-xl"
+              className="w-80 p-2 text-xl border"
               {...resetForm.register("confirmPassword", { required: "Please confirm your password" })}
             />
             {resetForm.formState.errors.confirmPassword && (
@@ -131,7 +131,7 @@ const ForgotPasswordPage = () => {
           <input
             id="email"
             type="email"
-            className="w-80 p-2 text-xl"
+            className="w-80 p-2 text-xl border"
             {...emailForm.register("email", { required: "Email is required" })}
           />
           {emailForm.formState.errors.email && (

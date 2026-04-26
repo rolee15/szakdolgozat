@@ -54,7 +54,7 @@ const ChangePasswordPage = () => {
           <input
             type="password"
             id="currentPassword"
-            className="w-80 p-2 text-xl"
+            className="w-80 p-2 text-xl border"
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
           />
@@ -66,7 +66,7 @@ const ChangePasswordPage = () => {
           <input
             type="password"
             id="newPassword"
-            className="w-80 p-2 text-xl"
+            className="w-80 p-2 text-xl border"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
           />
@@ -78,7 +78,7 @@ const ChangePasswordPage = () => {
           <input
             type="password"
             id="confirmPassword"
-            className="w-80 p-2 text-xl"
+            className="w-80 p-2 text-xl border"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
           />

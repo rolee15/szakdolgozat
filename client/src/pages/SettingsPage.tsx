@@ -53,7 +53,7 @@ const SettingsPage = () => {
           <input
             type="number"
             id="dailyLessonLimit"
-            className="w-80 p-2 text-xl"
+            className="w-80 p-2 text-xl border"
             {...register("dailyLessonLimit", {
               valueAsNumber: true,
               min: { value: 1, message: "Minimum value is 1" },
@@ -73,7 +73,7 @@ const SettingsPage = () => {
           <input
             type="number"
             id="reviewBatchSize"
-            className="w-80 p-2 text-xl"
+            className="w-80 p-2 text-xl border"
             {...register("reviewBatchSize", {
               valueAsNumber: true,
               min: { value: 10, message: "Minimum value is 10" },
@@ -92,7 +92,7 @@ const SettingsPage = () => {
           </label>
           <select
             id="jlptLevel"
-            className="w-80 p-2 text-xl"
+            className="w-80 p-2 text-xl border"
             {...register("jlptLevel")}
           >
             {JLPT_LEVELS.map((level) => (

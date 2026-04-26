@@ -27,6 +27,7 @@ const LoginPage = () => {
 
   return (
     <div className="mx-auto my-24 max-w-md p-4">
+      <h1 className="text-2xl font-semibold mb-6">Login to your account</h1>
       <form onSubmit={handleSubmit}>
         <div className="flex flex-col gap-y-2 mb-4">
           <label htmlFor="email" className="text-xl">
@@ -36,7 +37,7 @@ const LoginPage = () => {
             type="email"
             id="email"
             name="email"
-            className="w-80 p-2 text-xl"
+            className="w-80 p-2 text-xl border"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -49,7 +50,7 @@ const LoginPage = () => {
             type="password"
             id="password"
             name="password"
-            className="w-80 p-2 text-xl"
+            className="w-80 p-2 text-xl border"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
@@ -67,6 +68,11 @@ const LoginPage = () => {
         <Button type="submit" className="mt-8" disabled={isSubmitting}>
           {isSubmitting ? "Logging in..." : "Login"}
         </Button>
+        <div className="mt-4">
+          <NavLink to="/register" className="text-blue-500">
+            Don't have an account? Register here
+          </NavLink>
+        </div>
       </form>
     </div>
   );

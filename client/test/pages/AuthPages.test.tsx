@@ -51,6 +51,18 @@ describe('Auth pages', () => {
       })
     })
 
+    it('renders a register link that points to /register', () => {
+      render(
+        <MemoryRouter>
+          <LoginPage />
+        </MemoryRouter>
+      )
+
+      const link = screen.getByRole('link', { name: /register here/i })
+      expect(link).toBeInTheDocument()
+      expect(link).toHaveAttribute('href', '/register')
+    })
+
     it('shows error message on failed login', async () => {
       mockLogin.mockRejectedValue(new Error('Invalid credentials'))
 
