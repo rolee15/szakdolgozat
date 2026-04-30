@@ -13,7 +13,7 @@ describe('Logo', () => {
 
     const link = screen.getByRole('link')
     expect(link).toHaveAttribute('href', '/')
-    expect(screen.getByAltText('Vite logo')).toBeInTheDocument()
+    expect(screen.getByAltText('KanjiKa logo')).toBeInTheDocument()
     expect(screen.getByText('KanjiKa')).toBeInTheDocument()
   })
 })
