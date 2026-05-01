@@ -3,19 +3,20 @@
 @tailwind utilities;
 
 :root {
-  --color-primary: 99 102 241;
-  --color-primary-hover: 79 70 229;
-  --color-secondary: 168 85 247;
-  --color-secondary-hover: 147 51 234;
-  --color-accent: 14 165 233;
-  --color-accent-hover: 2 132 199;
+  --color-primary: 79 70 229;
+  --color-primary-hover: 67 56 202;
+  --color-secondary: 124 58 237;
+  --color-secondary-hover: 109 40 217;
+  --color-accent: 2 132 199;
+  --color-accent-hover: 3 105 161;
+  --color-on-primary: 255 255 255;
 
-  --color-bar: 17 24 39;
-  --color-on-bar: 255 255 255;
+  --color-bar: 255 255 255;
+  --color-on-bar: 0 0 0;
 
   --color-bg: 255 255 255;
   --color-surface: 249 250 251;
-  --color-foreground: 17 24 39;
+  --color-foreground: 0 0 0;
   --color-muted: 107 114 128;
 
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -34,6 +35,7 @@ html.dark {
   --color-secondary-hover: 168 85 247;
   --color-accent: 56 189 248;
   --color-accent-hover: 14 165 233;
+  --color-on-primary: 255 255 255;
 
   --color-bar: 0 0 0;
   --color-on-bar: 255 255 255;

@@ -34,10 +34,10 @@ const Navbar = () => {
   }, []);
 
   const dropdownPanelClass =
-    'absolute top-full mt-1 left-0 z-50 bg-bar border border-primary/40 rounded-md shadow-lg py-1 min-w-max';
+    'absolute top-full mt-1 left-0 z-50 bg-surface border border-primary/40 rounded-md shadow-lg py-1 min-w-max';
 
   const profileDropdownPanelClass =
-    'absolute top-full mt-1 right-0 z-50 bg-bar border border-primary/40 rounded-md shadow-lg py-1 min-w-max';
+    'absolute top-full mt-1 right-0 z-50 bg-surface border border-primary/40 rounded-md shadow-lg py-1 min-w-max';
 
   const avatarLetter = username ? username[0].toUpperCase() : '?';
 
@@ -102,7 +102,7 @@ const Navbar = () => {
                     aria-label="Profile menu"
                     aria-expanded={openDropdown === 'profile'}
                     aria-haspopup="true"
-                    className="w-8 h-8 rounded-full bg-secondary text-on-bar text-sm font-medium flex items-center justify-center hover:bg-secondary-hover focus:outline-none cursor-pointer transition-colors"
+                    className="w-8 h-8 rounded-full bg-secondary text-on-primary text-sm font-medium flex items-center justify-center hover:bg-secondary-hover focus:outline-none cursor-pointer transition-colors"
                   >
                     {avatarLetter}
                   </button>

@@ -19,6 +19,7 @@ export default {
         },
         bar: "rgb(var(--color-bar) / <alpha-value>)",
         "on-bar": "rgb(var(--color-on-bar) / <alpha-value>)",
+        "on-primary": "rgb(var(--color-on-primary) / <alpha-value>)",
         bg: "rgb(var(--color-bg) / <alpha-value>)",
         surface: "rgb(var(--color-surface) / <alpha-value>)",
         foreground: "rgb(var(--color-foreground) / <alpha-value>)",

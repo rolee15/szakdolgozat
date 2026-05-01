@@ -36,7 +36,7 @@ const MoonIcon = () => (
 const optionClass = (isSelected: boolean) =>
   `flex items-center justify-center w-7 h-7 rounded transition-colors cursor-pointer ${
     isSelected
-      ? 'bg-primary text-on-bar'
+      ? 'bg-primary text-on-primary'
       : 'text-on-bar/60 hover:text-on-bar'
   }`;
 
