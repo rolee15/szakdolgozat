@@ -130,7 +130,6 @@ const ReviewLessonsPage = () => {
           key={itemKey}
           characterType={currentItem.data.characterType}
           onSubmit={onSubmit}
-          disabled={feedback.result !== null}
           buttonClassName={buttonClass}
         />
       )}
