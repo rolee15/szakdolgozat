@@ -4,7 +4,7 @@ import { ThemeContext, Theme } from './useTheme';
 const STORAGE_KEY = 'theme';
 
 function readInitialTheme(): Theme {
-  if (typeof globalThis.window === 'undefined') return 'light';
+  if (globalThis.window === undefined) return 'light';
   const stored = globalThis.localStorage.getItem(STORAGE_KEY);
   if (stored === 'light' || stored === 'dark') return stored;
   if (globalThis.matchMedia?.('(prefers-color-scheme: dark)').matches) return 'dark';
