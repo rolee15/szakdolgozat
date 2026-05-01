@@ -2,14 +2,46 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --color-primary: 99 102 241;
+    --color-primary-hover: 79 70 229;
+    --color-secondary: 168 85 247;
+    --color-secondary-hover: 147 51 234;
+    --color-accent: 14 165 233;
+    --color-accent-hover: 2 132 199;
+
+    --color-bar: 17 24 39;
+    --color-on-bar: 255 255 255;
+
+    --color-bg: 255 255 255;
+    --color-surface: 249 250 251;
+    --color-foreground: 17 24 39;
+    --color-muted: 107 114 128;
+  }
+
+  .dark {
+    --color-primary: 129 140 248;
+    --color-primary-hover: 99 102 241;
+    --color-secondary: 192 132 252;
+    --color-secondary-hover: 168 85 247;
+    --color-accent: 56 189 248;
+    --color-accent-hover: 14 165 233;
+
+    --color-bar: 0 0 0;
+    --color-on-bar: 255 255 255;
+
+    --color-bg: 0 0 0;
+    --color-surface: 10 10 10;
+    --color-foreground: 255 255 255;
+    --color-muted: 156 163 175;
+  }
+}
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -27,19 +59,11 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background-color: rgb(var(--color-bg));
+  color: rgb(var(--color-foreground));
 }
 
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
 }

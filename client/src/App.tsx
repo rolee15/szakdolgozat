@@ -31,6 +31,7 @@ import UnitDetailPage from "@/pages/UnitDetailPage";
 import UnitTestPage from "@/pages/UnitTestPage";
 import ActivatePage from "@/pages/ActivatePage";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
+import { ThemeProvider } from "@/context/ThemeContext";
 
 const queryClient = new QueryClient();
 
@@ -263,11 +264,13 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <RouterProvider router={router} />
-      </AuthProvider>
-    </QueryClientProvider>
+    <ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <RouterProvider router={router} />
+        </AuthProvider>
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }
 
