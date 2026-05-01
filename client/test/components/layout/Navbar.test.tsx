@@ -1,8 +1,7 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import Navbar from '@/components/layout/Navbar'
-import { ThemeProvider } from '@/context/ThemeContext'
 
 vi.mock('@/components/layout/Logo', () => ({ default: () => <div data-testid="logo">Logo</div> }))
 
@@ -13,7 +12,7 @@ vi.mock('react-router-dom', async () => {
 })
 
 const mockUseAuth = vi.fn()
-vi.mock('@/context/useAuth', () => ({
+vi.mock('@/context/AuthContext', () => ({
   useAuth: () => mockUseAuth(),
 }))
 
@@ -24,18 +23,11 @@ const authAdmin = { isAuthenticated: true, username: 'adminuser', isAdmin: true,
 function renderNavbar(auth = defaultAuth) {
   mockUseAuth.mockReturnValue(auth)
   return render(
-    <ThemeProvider>
-      <MemoryRouter>
-        <Navbar />
-      </MemoryRouter>
-    </ThemeProvider>
+    <MemoryRouter>
+      <Navbar />
+    </MemoryRouter>
   )
 }
-
-beforeEach(() => {
-  localStorage.clear()
-  document.documentElement.classList.remove('dark')
-})
 
 describe('Navbar', () => {
   it('renders the Logo', () => {

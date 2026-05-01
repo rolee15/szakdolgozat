@@ -2,8 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import Logo from "./Logo";
 import MenuItem from "./MenuItem";
-import ThemeToggle from "@/components/common/ThemeToggle";
-import { useAuth } from "@/context/useAuth";
+import { useAuth } from "@/context/AuthContext";
 
 type DropdownName = 'lessons' | 'reviews' | 'profile' | null;
 
@@ -34,28 +33,26 @@ const Navbar = () => {
   }, []);
 
   const dropdownPanelClass =
-    'absolute top-full mt-1 left-0 z-50 bg-bar border border-primary/40 rounded-md shadow-lg py-1 min-w-max';
+    'absolute top-full mt-1 left-0 z-50 bg-brand-surface border border-brand-primary-deep rounded-md shadow-lg py-1 min-w-max';
 
   const profileDropdownPanelClass =
-    'absolute top-full mt-1 right-0 z-50 bg-bar border border-primary/40 rounded-md shadow-lg py-1 min-w-max';
+    'absolute top-full mt-1 right-0 z-50 bg-brand-surface border border-brand-primary-deep rounded-md shadow-lg py-1 min-w-max';
 
   const avatarLetter = username ? username[0].toUpperCase() : '?';
 
   return (
-    <header className="w-screen bg-bar shadow-sm">
+    <header className="w-screen bg-black shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" ref={navRef}>
         <div className="flex items-center h-16">
           <Logo />
 
           <div className="hidden md:flex items-center gap-4 ml-auto">
-            <ThemeToggle />
-
             {isAuthenticated && (
               <>
                 <div className="relative">
                   <button
                     onClick={() => toggleDropdown('lessons')}
-                    className="text-on-bar text-sm flex items-center gap-1 cursor-pointer"
+                    className="text-white text-sm flex items-center gap-1 cursor-pointer"
                     aria-expanded={openDropdown === 'lessons'}
                     aria-haspopup="true"
                   >
@@ -75,7 +72,7 @@ const Navbar = () => {
                 <div className="relative">
                   <button
                     onClick={() => toggleDropdown('reviews')}
-                    className="text-on-bar text-sm flex items-center gap-1 cursor-pointer"
+                    className="text-white text-sm flex items-center gap-1 cursor-pointer"
                     aria-expanded={openDropdown === 'reviews'}
                     aria-haspopup="true"
                   >
@@ -102,7 +99,7 @@ const Navbar = () => {
                     aria-label="Profile menu"
                     aria-expanded={openDropdown === 'profile'}
                     aria-haspopup="true"
-                    className="w-8 h-8 rounded-full bg-secondary text-on-bar text-sm font-medium flex items-center justify-center hover:bg-secondary-hover focus:outline-none cursor-pointer transition-colors"
+                    className="w-8 h-8 rounded-full bg-gray-600 text-white text-sm font-medium flex items-center justify-center hover:bg-gray-500 focus:outline-none cursor-pointer"
                   >
                     {avatarLetter}
                   </button>
@@ -111,7 +108,7 @@ const Navbar = () => {
                       <MenuItem to="/settings" variant="dropdown" onClick={() => setOpenDropdown(null)}>Settings</MenuItem>
                       <button
                         onClick={handleLogout}
-                        className="block w-full text-left px-4 py-2 text-sm text-on-bar hover:bg-primary/20 bg-transparent border-0 rounded-none cursor-pointer transition-colors"
+                        className="block w-full text-left px-4 py-2 text-sm text-brand-text hover:bg-brand-primary-deep bg-transparent border-0 rounded-none cursor-pointer transition-colors"
                       >
                         Log out
                       </button>
@@ -123,25 +120,24 @@ const Navbar = () => {
 
             {!isAuthenticated && (
               <>
-                <NavLink to="/login" className="text-on-bar text-sm hover:text-primary transition-colors">Login</NavLink>
-                <NavLink to="/register" className="text-on-bar text-sm hover:text-primary transition-colors">Register</NavLink>
+                <NavLink to="/login" className="text-white text-sm hover:text-gray-300">Login</NavLink>
+                <NavLink to="/register" className="text-white text-sm hover:text-gray-300">Register</NavLink>
               </>
             )}
           </div>
 
           <div className="flex md:hidden items-center gap-3 ml-auto">
-            <ThemeToggle />
             {!isAuthenticated && (
               <>
-                <NavLink to="/login" className="text-on-bar text-sm hover:text-primary transition-colors">Login</NavLink>
-                <NavLink to="/register" className="text-on-bar text-sm hover:text-primary transition-colors">Register</NavLink>
+                <NavLink to="/login" className="text-white text-sm hover:text-gray-300">Login</NavLink>
+                <NavLink to="/register" className="text-white text-sm hover:text-gray-300">Register</NavLink>
               </>
             )}
             {isAuthenticated && (
               <button
                 aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
                 onClick={() => setMobileOpen((prev) => !prev)}
-                className="text-on-bar text-2xl focus:outline-none cursor-pointer"
+                className="text-white text-2xl focus:outline-none cursor-pointer"
               >
                 {mobileOpen ? '✕' : '☰'}
               </button>
@@ -152,7 +148,7 @@ const Navbar = () => {
         {mobileOpen && isAuthenticated && (
           <nav className="md:hidden pb-4 flex flex-col gap-4">
             <div>
-              <p className="text-muted text-xs uppercase tracking-wider mb-1">Lessons</p>
+              <p className="text-gray-500 text-xs uppercase tracking-wider mb-1">Lessons</p>
               <div className="flex flex-col gap-1 pl-2">
                 <MenuItem to="/hiragana" onClick={() => setMobileOpen(false)}>Hiragana</MenuItem>
                 <MenuItem to="/katakana" onClick={() => setMobileOpen(false)}>Katakana</MenuItem>
@@ -163,7 +159,7 @@ const Navbar = () => {
             </div>
 
             <div>
-              <p className="text-muted text-xs uppercase tracking-wider mb-1">Reviews</p>
+              <p className="text-gray-500 text-xs uppercase tracking-wider mb-1">Reviews</p>
               <div className="flex flex-col gap-1 pl-2">
                 <MenuItem to="/flashcards" onClick={() => setMobileOpen(false)}>Flash Cards</MenuItem>
                 <MenuItem to="/lessons/review" onClick={() => setMobileOpen(false)}>Review</MenuItem>
@@ -172,7 +168,7 @@ const Navbar = () => {
             </div>
 
             <div>
-              <p className="text-muted text-xs uppercase tracking-wider mb-1">Path</p>
+              <p className="text-gray-500 text-xs uppercase tracking-wider mb-1">Path</p>
               <div className="flex flex-col gap-1 pl-2">
                 <MenuItem to="/path" onClick={() => setMobileOpen(false)}>Learning Path</MenuItem>
               </div>
@@ -183,12 +179,12 @@ const Navbar = () => {
             )}
 
             <div>
-              <p className="text-muted text-xs uppercase tracking-wider mb-1">{username}</p>
+              <p className="text-gray-500 text-xs uppercase tracking-wider mb-1">{username}</p>
               <div className="flex flex-col gap-1 pl-2">
                 <MenuItem to="/settings" onClick={() => setMobileOpen(false)}>Settings</MenuItem>
                 <button
                   onClick={handleLogout}
-                  className="text-left text-on-bar/80 hover:text-on-bar text-sm bg-transparent border-0 rounded-none p-0 cursor-pointer transition-colors"
+                  className="text-left text-gray-300 hover:text-white text-sm bg-transparent border-0 rounded-none p-0 cursor-pointer"
                 >
                   Log out
                 </button>

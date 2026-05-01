@@ -5,7 +5,7 @@ import ChangePasswordPage from '@/pages/ChangePasswordPage'
 
 const mockClearMustChangePassword = vi.fn()
 const mockUseAuth = vi.fn()
-vi.mock('@/context/useAuth', () => ({
+vi.mock('@/context/AuthContext', () => ({
   useAuth: () => mockUseAuth(),
 }))
 
