@@ -325,6 +325,28 @@ public class ProductionDataSeeder : IDataSeeder
         if (await Context.LearningUnits.AnyAsync())
             return;
 
+        // Kanji entity IDs are auto-assigned by EF when KANJIDIC2 is parsed and inserted,
+        // so we look up the IDs by literal character at seed-time.
+        string[] requiredKanji =
+        [
+            "一", "二", "三", "四", "五", "六", "七", "八", "九", "十",
+            "月", "火", "水", "木", "金", "土", "日",
+            "人", "男", "女", "子"
+        ];
+        Dictionary<string, int> kanjiId = await Context.Kanjis
+            .Where(k => requiredKanji.Contains(k.Character))
+            .ToDictionaryAsync(k => k.Character, k => k.Id);
+
+        List<GrammarPoint> grammarPoints = await Context.GrammarPoints
+            .Include(g => g.Exercises)
+            .OrderBy(g => g.SortOrder)
+            .ToListAsync();
+
+        List<ReadingPassage> readingPassages = await Context.ReadingPassages
+            .Include(p => p.Questions.OrderBy(q => q.SortOrder))
+            .OrderBy(p => p.SortOrder)
+            .ToListAsync();
+
         var units = new List<LearningUnit>
         {
             new()
@@ -516,16 +538,16 @@ public class ProductionDataSeeder : IDataSeeder
                 SortOrder = 9,
                 Contents =
                 [
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 70, SortOrder = 1 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 71, SortOrder = 2 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 72, SortOrder = 3 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 73, SortOrder = 4 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 74, SortOrder = 5 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 75, SortOrder = 6 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 76, SortOrder = 7 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 77, SortOrder = 8 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 78, SortOrder = 9 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 79, SortOrder = 10 }
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 103, SortOrder = 1 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 104, SortOrder = 2 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 105, SortOrder = 3 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 106, SortOrder = 4 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 107, SortOrder = 5 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 108, SortOrder = 6 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 109, SortOrder = 7 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 110, SortOrder = 8 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 111, SortOrder = 9 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 112, SortOrder = 10 }
                 ],
                 Tests =
                 [
@@ -543,11 +565,11 @@ public class ProductionDataSeeder : IDataSeeder
                 SortOrder = 10,
                 Contents =
                 [
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 80, SortOrder = 1 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 81, SortOrder = 2 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 82, SortOrder = 3 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 83, SortOrder = 4 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 84, SortOrder = 5 }
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 113, SortOrder = 1 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 114, SortOrder = 2 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 115, SortOrder = 3 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 116, SortOrder = 4 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 117, SortOrder = 5 }
                 ],
                 Tests =
                 [
@@ -565,16 +587,16 @@ public class ProductionDataSeeder : IDataSeeder
                 SortOrder = 11,
                 Contents =
                 [
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 85, SortOrder = 1 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 86, SortOrder = 2 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 87, SortOrder = 3 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 88, SortOrder = 4 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 89, SortOrder = 5 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 90, SortOrder = 6 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 91, SortOrder = 7 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 92, SortOrder = 8 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 93, SortOrder = 9 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 94, SortOrder = 10 }
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 118, SortOrder = 1 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 119, SortOrder = 2 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 120, SortOrder = 3 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 121, SortOrder = 4 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 122, SortOrder = 5 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 123, SortOrder = 6 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 124, SortOrder = 7 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 125, SortOrder = 8 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 126, SortOrder = 9 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 127, SortOrder = 10 }
                 ],
                 Tests =
                 [
@@ -592,11 +614,11 @@ public class ProductionDataSeeder : IDataSeeder
                 SortOrder = 12,
                 Contents =
                 [
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 95, SortOrder = 1 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 96, SortOrder = 2 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 97, SortOrder = 3 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 98, SortOrder = 4 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 99, SortOrder = 5 }
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 128, SortOrder = 1 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 129, SortOrder = 2 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 130, SortOrder = 3 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 131, SortOrder = 4 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 132, SortOrder = 5 }
                 ],
                 Tests =
                 [
@@ -614,14 +636,14 @@ public class ProductionDataSeeder : IDataSeeder
                 SortOrder = 13,
                 Contents =
                 [
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 100, SortOrder = 1 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 101, SortOrder = 2 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 102, SortOrder = 3 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 103, SortOrder = 4 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 104, SortOrder = 5 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 105, SortOrder = 6 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 106, SortOrder = 7 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 107, SortOrder = 8 }
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 133, SortOrder = 1 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 134, SortOrder = 2 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 135, SortOrder = 3 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 136, SortOrder = 4 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 137, SortOrder = 5 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 138, SortOrder = 6 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 139, SortOrder = 7 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 140, SortOrder = 8 }
                 ],
                 Tests =
                 [
@@ -639,14 +661,14 @@ public class ProductionDataSeeder : IDataSeeder
                 SortOrder = 14,
                 Contents =
                 [
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 108, SortOrder = 1 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 109, SortOrder = 2 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 110, SortOrder = 3 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 111, SortOrder = 4 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 112, SortOrder = 5 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 113, SortOrder = 6 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 114, SortOrder = 7 },
-                    new UnitContent { ContentType = ContentType.Kana, ContentId = 115, SortOrder = 8 }
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 141, SortOrder = 1 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 142, SortOrder = 2 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 143, SortOrder = 3 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 144, SortOrder = 4 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 145, SortOrder = 5 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 146, SortOrder = 6 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 147, SortOrder = 7 },
+                    new UnitContent { ContentType = ContentType.Kana, ContentId = 148, SortOrder = 8 }
                 ],
                 Tests =
                 [
@@ -659,24 +681,147 @@ public class ProductionDataSeeder : IDataSeeder
             },
             new()
             {
-                Title = "Mixed N5 Review",
-                Description = "Review mix of N5 grammar and reading comprehension to consolidate your learning.",
+                Title = "Kanji Numbers",
+                Description = "Learn the kanji for the numbers 1–10: 一、二、三、四、五、六、七、八、九、十.",
                 SortOrder = 15,
                 Contents =
                 [
-                    new UnitContent { ContentType = ContentType.Grammar, ContentId = 1, SortOrder = 1 },
-                    new UnitContent { ContentType = ContentType.Grammar, ContentId = 2, SortOrder = 2 },
-                    new UnitContent { ContentType = ContentType.Reading, ContentId = 1, SortOrder = 3 },
-                    new UnitContent { ContentType = ContentType.Reading, ContentId = 2, SortOrder = 4 }
+                    new UnitContent { ContentType = ContentType.Kanji, ContentId = kanjiId["一"], SortOrder = 1 },
+                    new UnitContent { ContentType = ContentType.Kanji, ContentId = kanjiId["二"], SortOrder = 2 },
+                    new UnitContent { ContentType = ContentType.Kanji, ContentId = kanjiId["三"], SortOrder = 3 },
+                    new UnitContent { ContentType = ContentType.Kanji, ContentId = kanjiId["四"], SortOrder = 4 },
+                    new UnitContent { ContentType = ContentType.Kanji, ContentId = kanjiId["五"], SortOrder = 5 },
+                    new UnitContent { ContentType = ContentType.Kanji, ContentId = kanjiId["六"], SortOrder = 6 },
+                    new UnitContent { ContentType = ContentType.Kanji, ContentId = kanjiId["七"], SortOrder = 7 },
+                    new UnitContent { ContentType = ContentType.Kanji, ContentId = kanjiId["八"], SortOrder = 8 },
+                    new UnitContent { ContentType = ContentType.Kanji, ContentId = kanjiId["九"], SortOrder = 9 },
+                    new UnitContent { ContentType = ContentType.Kanji, ContentId = kanjiId["十"], SortOrder = 10 }
                 ],
                 Tests =
                 [
-                    new UnitTest { QuestionText = "Which particle marks the topic of a sentence?", OptionA = "が", OptionB = "を", OptionC = "に", OptionD = "は", CorrectOption = 'D', ContentType = ContentType.Grammar, SortOrder = 1 },
-                    new UnitTest { QuestionText = "Which particle marks the subject of a sentence?", OptionA = "は", OptionB = "が", OptionC = "を", OptionD = "で", CorrectOption = 'B', ContentType = ContentType.Grammar, SortOrder = 2 },
-                    new UnitTest { QuestionText = "How do you say 'This is a pen' in Japanese?", OptionA = "これをペンです。", OptionB = "これはペンです。", OptionC = "これがペンです。", OptionD = "ペンはこれです。", CorrectOption = 'B', ContentType = ContentType.Grammar, SortOrder = 3 },
-                    new UnitTest { QuestionText = "What does 'まいあさ' mean?", OptionA = "every evening", OptionB = "every night", OptionC = "every morning", OptionD = "every afternoon", CorrectOption = 'C', ContentType = ContentType.Reading, SortOrder = 4 },
-                    new UnitTest { QuestionText = "What does 'てんきがいい' mean?", OptionA = "The weather is bad.", OptionB = "The weather is cold.", OptionC = "The weather is hot.", OptionD = "The weather is good.", CorrectOption = 'D', ContentType = ContentType.Reading, SortOrder = 5 }
+                    new UnitTest { QuestionText = "Which kanji means 'one'?", OptionA = "二", OptionB = "一", OptionC = "三", OptionD = "四", CorrectOption = 'B', ContentType = ContentType.Kanji, SortOrder = 1 },
+                    new UnitTest { QuestionText = "Which kanji means 'five'?", OptionA = "三", OptionB = "四", OptionC = "五", OptionD = "六", CorrectOption = 'C', ContentType = ContentType.Kanji, SortOrder = 2 },
+                    new UnitTest { QuestionText = "Which kanji means 'ten'?", OptionA = "七", OptionB = "八", OptionC = "九", OptionD = "十", CorrectOption = 'D', ContentType = ContentType.Kanji, SortOrder = 3 },
+                    new UnitTest { QuestionText = "What does 七 mean?", OptionA = "six", OptionB = "seven", OptionC = "eight", OptionD = "nine", CorrectOption = 'B', ContentType = ContentType.Kanji, SortOrder = 4 },
+                    new UnitTest { QuestionText = "What does 二 mean?", OptionA = "one", OptionB = "two", OptionC = "three", OptionD = "four", CorrectOption = 'B', ContentType = ContentType.Kanji, SortOrder = 5 }
                 ]
+            },
+            new()
+            {
+                Title = "Kanji Days of the Week",
+                Description = "Learn the seven kanji used for the days of the week and the elements: 月、火、水、木、金、土、日.",
+                SortOrder = 16,
+                Contents =
+                [
+                    new UnitContent { ContentType = ContentType.Kanji, ContentId = kanjiId["月"], SortOrder = 1 },
+                    new UnitContent { ContentType = ContentType.Kanji, ContentId = kanjiId["火"], SortOrder = 2 },
+                    new UnitContent { ContentType = ContentType.Kanji, ContentId = kanjiId["水"], SortOrder = 3 },
+                    new UnitContent { ContentType = ContentType.Kanji, ContentId = kanjiId["木"], SortOrder = 4 },
+                    new UnitContent { ContentType = ContentType.Kanji, ContentId = kanjiId["金"], SortOrder = 5 },
+                    new UnitContent { ContentType = ContentType.Kanji, ContentId = kanjiId["土"], SortOrder = 6 },
+                    new UnitContent { ContentType = ContentType.Kanji, ContentId = kanjiId["日"], SortOrder = 7 }
+                ],
+                Tests =
+                [
+                    new UnitTest { QuestionText = "Which kanji is used for 'Monday' (moon-day)?", OptionA = "月", OptionB = "火", OptionC = "水", OptionD = "土", CorrectOption = 'A', ContentType = ContentType.Kanji, SortOrder = 1 },
+                    new UnitTest { QuestionText = "Which kanji means 'fire'?", OptionA = "水", OptionB = "火", OptionC = "木", OptionD = "土", CorrectOption = 'B', ContentType = ContentType.Kanji, SortOrder = 2 },
+                    new UnitTest { QuestionText = "What does 水 mean?", OptionA = "fire", OptionB = "water", OptionC = "earth", OptionD = "gold", CorrectOption = 'B', ContentType = ContentType.Kanji, SortOrder = 3 },
+                    new UnitTest { QuestionText = "Which kanji means 'tree' or 'wood'?", OptionA = "水", OptionB = "火", OptionC = "木", OptionD = "土", CorrectOption = 'C', ContentType = ContentType.Kanji, SortOrder = 4 },
+                    new UnitTest { QuestionText = "Which kanji is used for 'Sunday' (sun-day)?", OptionA = "月", OptionB = "火", OptionC = "日", OptionD = "土", CorrectOption = 'C', ContentType = ContentType.Kanji, SortOrder = 5 }
+                ]
+            },
+            new()
+            {
+                Title = "Kanji People",
+                Description = "Learn the foundational kanji for people: 人、男、女、子.",
+                SortOrder = 17,
+                Contents =
+                [
+                    new UnitContent { ContentType = ContentType.Kanji, ContentId = kanjiId["人"], SortOrder = 1 },
+                    new UnitContent { ContentType = ContentType.Kanji, ContentId = kanjiId["男"], SortOrder = 2 },
+                    new UnitContent { ContentType = ContentType.Kanji, ContentId = kanjiId["女"], SortOrder = 3 },
+                    new UnitContent { ContentType = ContentType.Kanji, ContentId = kanjiId["子"], SortOrder = 4 }
+                ],
+                Tests =
+                [
+                    new UnitTest { QuestionText = "What does 人 mean?", OptionA = "person", OptionB = "man", OptionC = "woman", OptionD = "child", CorrectOption = 'A', ContentType = ContentType.Kanji, SortOrder = 1 },
+                    new UnitTest { QuestionText = "Which kanji means 'man'?", OptionA = "男", OptionB = "女", OptionC = "子", OptionD = "人", CorrectOption = 'A', ContentType = ContentType.Kanji, SortOrder = 2 },
+                    new UnitTest { QuestionText = "Which kanji means 'woman'?", OptionA = "男", OptionB = "女", OptionC = "子", OptionD = "人", CorrectOption = 'B', ContentType = ContentType.Kanji, SortOrder = 3 },
+                    new UnitTest { QuestionText = "Which kanji means 'child'?", OptionA = "男", OptionB = "女", OptionC = "子", OptionD = "人", CorrectOption = 'C', ContentType = ContentType.Kanji, SortOrder = 4 },
+                    new UnitTest { QuestionText = "What does 女 mean?", OptionA = "man", OptionB = "woman", OptionC = "child", OptionD = "person", CorrectOption = 'B', ContentType = ContentType.Kanji, SortOrder = 5 }
+                ]
+            },
+            new()
+            {
+                Title = "Grammar Particles I",
+                Description = "Practice the basic Japanese particles は、が、を、に、で、の. Read the explanations on the Grammar page first, then test yourself here.",
+                SortOrder = 18,
+                Contents = grammarPoints.Take(6).Select((p, i) => new UnitContent
+                {
+                    ContentType = ContentType.Grammar,
+                    ContentId = p.Id,
+                    SortOrder = i + 1
+                }).ToList(),
+                Tests = grammarPoints.Take(6).Select((p, i) => new UnitTest
+                {
+                    QuestionText = p.Exercises[0].Sentence,
+                    OptionA = p.Exercises[0].CorrectAnswer,
+                    OptionB = p.Exercises[0].Distractor1,
+                    OptionC = p.Exercises[0].Distractor2,
+                    OptionD = p.Exercises[0].Distractor3,
+                    CorrectOption = 'A',
+                    ContentType = ContentType.Grammar,
+                    SortOrder = i + 1
+                }).ToList()
+            },
+            new()
+            {
+                Title = "Grammar Particles II",
+                Description = "Practice the remaining N5 particles も、と、から、まで、ね、よ. Read the explanations on the Grammar page first, then test yourself here.",
+                SortOrder = 19,
+                Contents = grammarPoints.Skip(6).Take(6).Select((p, i) => new UnitContent
+                {
+                    ContentType = ContentType.Grammar,
+                    ContentId = p.Id,
+                    SortOrder = i + 1
+                }).ToList(),
+                Tests = grammarPoints.Skip(6).Take(6).Select((p, i) => new UnitTest
+                {
+                    QuestionText = p.Exercises[0].Sentence,
+                    OptionA = p.Exercises[0].CorrectAnswer,
+                    OptionB = p.Exercises[0].Distractor1,
+                    OptionC = p.Exercises[0].Distractor2,
+                    OptionD = p.Exercises[0].Distractor3,
+                    CorrectOption = 'A',
+                    ContentType = ContentType.Grammar,
+                    SortOrder = i + 1
+                }).ToList()
+            },
+            new()
+            {
+                Title = "Reading Comprehension",
+                Description = "Final challenge — read the N5 passages on the Reading page first, then answer the comprehension questions.",
+                SortOrder = 20,
+                Contents = readingPassages.Select((p, i) => new UnitContent
+                {
+                    ContentType = ContentType.Reading,
+                    ContentId = p.Id,
+                    SortOrder = i + 1
+                }).ToList(),
+                Tests = readingPassages
+                    .SelectMany(p => p.Questions)
+                    .Select((q, i) => new UnitTest
+                    {
+                        QuestionText = q.QuestionText,
+                        OptionA = q.OptionA,
+                        OptionB = q.OptionB,
+                        OptionC = q.OptionC,
+                        OptionD = q.OptionD,
+                        CorrectOption = q.CorrectOption,
+                        ContentType = ContentType.Reading,
+                        SortOrder = i + 1
+                    })
+                    .ToList()
             }
         };
 

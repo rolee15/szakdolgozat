@@ -2,23 +2,43 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import ReviewLessonsPage from '@/pages/ReviewLessonsPage'
 
-// Mock the input component to simplify submission flow
 vi.mock('@/components/lessons/LessonReviewInput', () => ({
-  default: ({ onSubmit }: { onSubmit: (a: string) => void }) => (
-    <button onClick={() => onSubmit('ans')}>SubmitMock</button>
+  default: ({ onSubmit, buttonClassName }: { onSubmit: (a: string) => void; buttonClassName?: string }) => (
+    <button data-testid="reading-input" data-button-class={buttonClassName} onClick={() => onSubmit('ans')}>
+      ReadingMock
+    </button>
+  ),
+}))
+
+vi.mock('@/components/lessons/WritingInput', () => ({
+  default: ({ onSubmit, buttonClassName }: { onSubmit: (a: string) => void; buttonClassName?: string }) => (
+    <button data-testid="writing-input" data-button-class={buttonClassName} onClick={() => onSubmit('ans')}>
+      WritingMock
+    </button>
   ),
 }))
 
 vi.mock('@/services/lessonService', () => ({
   default: {
     getLessonReviews: vi.fn(),
+    getWritingReviews: vi.fn(),
     postLessonReviewCheck: vi.fn(),
-  }
+    postWritingReviewCheck: vi.fn(),
+  },
 }))
 
 import lessonService from '@/services/lessonService'
 
-describe('ReviewLessonsPage', () => {
+type SvcMocks = {
+  getLessonReviews: ReturnType<typeof vi.fn>
+  getWritingReviews: ReturnType<typeof vi.fn>
+  postLessonReviewCheck: ReturnType<typeof vi.fn>
+  postWritingReviewCheck: ReturnType<typeof vi.fn>
+}
+
+const svc = lessonService as unknown as SvcMocks
+
+describe('ReviewLessonsPage (merged reading + writing)', () => {
   beforeEach(() => {
     vi.restoreAllMocks()
   })
@@ -26,129 +46,200 @@ describe('ReviewLessonsPage', () => {
     vi.clearAllMocks()
   })
 
-  it('shows no items message when empty', async () => {
-    const svc = lessonService as unknown as { getLessonReviews: ReturnType<typeof vi.fn> }
+  it('shows no items message when both queues are empty', async () => {
     svc.getLessonReviews.mockResolvedValue([])
+    svc.getWritingReviews.mockResolvedValue([])
 
     render(<ReviewLessonsPage />)
 
     expect(await screen.findByText(/no more items to review/i)).toBeInTheDocument()
   })
 
-  it('submits, shows feedback, and advances on click', async () => {
-    const svc = lessonService as unknown as { getLessonReviews: ReturnType<typeof vi.fn>, postLessonReviewCheck: ReturnType<typeof vi.fn> }
-    svc.getLessonReviews.mockResolvedValue([{ question: 'Q1' }, { question: 'Q2' }])
+  it('renders the reading input with reading-coloured button for a reading question', async () => {
+    svc.getLessonReviews.mockResolvedValue([{ question: 'あ' }])
+    svc.getWritingReviews.mockResolvedValue([])
+
+    render(<ReviewLessonsPage />)
+
+    expect(await screen.findByText('あ')).toBeInTheDocument()
+    expect(await screen.findByText('Reading')).toBeInTheDocument()
+
+    const button = await screen.findByTestId('reading-input')
+    expect(button.getAttribute('data-button-class')).toMatch(/purple/)
+  })
+
+  it('renders the writing input with writing-coloured button for a writing question', async () => {
+    svc.getLessonReviews.mockResolvedValue([])
+    svc.getWritingReviews.mockResolvedValue([
+      { characterId: 1, romanization: 'a', characterType: 'hiragana' },
+    ])
+
+    render(<ReviewLessonsPage />)
+
+    expect(await screen.findByText('a')).toBeInTheDocument()
+    expect(await screen.findByText('Writing · Hiragana')).toBeInTheDocument()
+
+    const button = await screen.findByTestId('writing-input')
+    expect(button.getAttribute('data-button-class')).toMatch(/orange/)
+  })
+
+  it('interleaves reading and writing items so types alternate', async () => {
+    svc.getLessonReviews.mockResolvedValue([{ question: 'あ' }, { question: 'い' }])
+    svc.getWritingReviews.mockResolvedValue([
+      { characterId: 1, romanization: 'a', characterType: 'hiragana' },
+    ])
+    svc.postLessonReviewCheck.mockResolvedValue({ isCorrect: true, correctAnswer: 'a' })
+    svc.postWritingReviewCheck.mockResolvedValue({ isCorrect: true, correctAnswer: 'あ' })
+
+    render(<ReviewLessonsPage />)
+
+    // Item 1: first reading question
+    expect(await screen.findByText('あ')).toBeInTheDocument()
+    fireEvent.click(screen.getByTestId('reading-input'))
+    fireEvent.click(await screen.findByRole('button', { name: /continue/i }))
+
+    // Item 2: writing question (interleaved)
+    expect(await screen.findByText('a')).toBeInTheDocument()
+    fireEvent.click(screen.getByTestId('writing-input'))
+    fireEvent.click(await screen.findByRole('button', { name: /continue/i }))
+
+    // Item 3: second reading question
+    expect(await screen.findByText('い')).toBeInTheDocument()
+  })
+
+  it('submits a reading answer and shows correct feedback', async () => {
+    svc.getLessonReviews.mockResolvedValue([{ question: 'あ' }])
+    svc.getWritingReviews.mockResolvedValue([])
     svc.postLessonReviewCheck.mockResolvedValue({ isCorrect: true, correctAnswer: 'a' })
 
     render(<ReviewLessonsPage />)
 
-    // initial question
-    expect(await screen.findByText('Q1')).toBeInTheDocument()
+    fireEvent.click(await screen.findByTestId('reading-input'))
 
-    // click the mocked submit button -> triggers onSubmit('ans')
-    fireEvent.click(screen.getByRole('button', { name: 'SubmitMock' }))
-
-    // Feedback renders for the correct answer
     expect(await screen.findByText(/correct!/i)).toBeInTheDocument()
-
-    // Click Continue button to advance
-    fireEvent.click(screen.getByRole('button', { name: /continue/i }))
-
-    // The next question should appear
-    expect(await screen.findByText('Q2')).toBeInTheDocument()
+    expect(svc.postLessonReviewCheck).toHaveBeenCalledWith('あ', 'ans')
   })
 
-  it('shows incorrect feedback with correct answer when answer is wrong', async () => {
-    const svc = lessonService as unknown as { getLessonReviews: ReturnType<typeof vi.fn>, postLessonReviewCheck: ReturnType<typeof vi.fn> }
-    svc.getLessonReviews.mockResolvedValue([{ question: 'Q1' }, { question: 'Q2' }])
-    svc.postLessonReviewCheck.mockResolvedValue({ isCorrect: false, correctAnswer: 'correct_ans' })
+  it('submits a writing answer and shows correct feedback', async () => {
+    svc.getLessonReviews.mockResolvedValue([])
+    svc.getWritingReviews.mockResolvedValue([
+      { characterId: 7, romanization: 'a', characterType: 'hiragana' },
+    ])
+    svc.postWritingReviewCheck.mockResolvedValue({ isCorrect: true, correctAnswer: 'あ' })
 
     render(<ReviewLessonsPage />)
 
-    expect(await screen.findByText('Q1')).toBeInTheDocument()
+    fireEvent.click(await screen.findByTestId('writing-input'))
 
-    fireEvent.click(screen.getByRole('button', { name: 'SubmitMock' }))
-
-    expect(await screen.findByText(/incorrect/i)).toBeInTheDocument()
-    expect(await screen.findByText('correct_ans')).toBeInTheDocument()
+    expect(await screen.findByText(/correct!/i)).toBeInTheDocument()
+    expect(svc.postWritingReviewCheck).toHaveBeenCalledWith(7, 'ans')
   })
 
-  it('shows error when getLessonReviews fails', async () => {
-    const svc = lessonService as unknown as { getLessonReviews: ReturnType<typeof vi.fn> }
+  it('shows incorrect feedback with correct answer when wrong', async () => {
+    svc.getLessonReviews.mockResolvedValue([{ question: 'あ' }])
+    svc.getWritingReviews.mockResolvedValue([])
+    svc.postLessonReviewCheck.mockResolvedValue({ isCorrect: false, correctAnswer: 'a' })
+
+    render(<ReviewLessonsPage />)
+
+    fireEvent.click(await screen.findByTestId('reading-input'))
+
+    expect(await screen.findByText(/incorrect/i)).toBeInTheDocument()
+    expect(await screen.findByText('a')).toBeInTheDocument()
+  })
+
+  it('cycles incorrect items to end of queue so the session is not complete', async () => {
+    svc.getLessonReviews.mockResolvedValue([{ question: 'あ' }])
+    svc.getWritingReviews.mockResolvedValue([])
+    svc.postLessonReviewCheck.mockResolvedValue({ isCorrect: false, correctAnswer: 'a' })
+
+    render(<ReviewLessonsPage />)
+
+    fireEvent.click(await screen.findByTestId('reading-input'))
+    fireEvent.click(await screen.findByRole('button', { name: /continue/i }))
+
+    // The same prompt is still visible — the item cycled to the end of the queue
+    expect(await screen.findByText('あ')).toBeInTheDocument()
+    expect(screen.queryByText(/no more items to review/i)).not.toBeInTheDocument()
+  })
+
+  it('removes correctly-answered items from the queue', async () => {
+    svc.getLessonReviews.mockResolvedValue([{ question: 'あ' }])
+    svc.getWritingReviews.mockResolvedValue([])
+    svc.postLessonReviewCheck.mockResolvedValue({ isCorrect: true, correctAnswer: 'a' })
+
+    render(<ReviewLessonsPage />)
+
+    fireEvent.click(await screen.findByTestId('reading-input'))
+    fireEvent.click(await screen.findByRole('button', { name: /continue/i }))
+
+    expect(await screen.findByText(/no more items to review/i)).toBeInTheDocument()
+  })
+
+  it('shows error when fetching fails', async () => {
     svc.getLessonReviews.mockRejectedValue(new Error('Network failure'))
+    svc.getWritingReviews.mockResolvedValue([])
 
     render(<ReviewLessonsPage />)
 
     expect(await screen.findByText(/error: network failure/i)).toBeInTheDocument()
   })
 
-  it('shows error when postLessonReviewCheck fails', async () => {
-    const svc = lessonService as unknown as { getLessonReviews: ReturnType<typeof vi.fn>, postLessonReviewCheck: ReturnType<typeof vi.fn> }
-    svc.getLessonReviews.mockResolvedValue([{ question: 'Q1' }])
+  it('uses fallback message when fetch rejects with non-Error value', async () => {
+    svc.getLessonReviews.mockRejectedValue('boom')
+    svc.getWritingReviews.mockResolvedValue([])
+
+    render(<ReviewLessonsPage />)
+
+    expect(await screen.findByText(/failed to load reviews/i)).toBeInTheDocument()
+  })
+
+  it('shows error when reading check fails', async () => {
+    svc.getLessonReviews.mockResolvedValue([{ question: 'あ' }])
+    svc.getWritingReviews.mockResolvedValue([])
     svc.postLessonReviewCheck.mockRejectedValue(new Error('Check failed'))
 
     render(<ReviewLessonsPage />)
 
-    expect(await screen.findByText('Q1')).toBeInTheDocument()
-
-    fireEvent.click(screen.getByRole('button', { name: 'SubmitMock' }))
+    fireEvent.click(await screen.findByTestId('reading-input'))
 
     expect(await screen.findByText(/error: check failed/i)).toBeInTheDocument()
   })
 
-  it('advances to next item after clicking continue on incorrect answer', async () => {
-    const svc = lessonService as unknown as { getLessonReviews: ReturnType<typeof vi.fn>, postLessonReviewCheck: ReturnType<typeof vi.fn> }
-    svc.getLessonReviews.mockResolvedValue([{ question: 'Q1' }, { question: 'Q2' }])
-    svc.postLessonReviewCheck.mockResolvedValue({ isCorrect: false, correctAnswer: 'correct_ans' })
+  it('shows error when writing check fails', async () => {
+    svc.getLessonReviews.mockResolvedValue([])
+    svc.getWritingReviews.mockResolvedValue([
+      { characterId: 1, romanization: 'a', characterType: 'hiragana' },
+    ])
+    svc.postWritingReviewCheck.mockRejectedValue(new Error('Writing check failed'))
 
     render(<ReviewLessonsPage />)
 
-    expect(await screen.findByText('Q1')).toBeInTheDocument()
+    fireEvent.click(await screen.findByTestId('writing-input'))
 
-    fireEvent.click(screen.getByRole('button', { name: 'SubmitMock' }))
-    expect(await screen.findByText(/incorrect/i)).toBeInTheDocument()
-
-    // Click Continue — should advance to next item (incorrect branch: index increments)
-    fireEvent.click(screen.getByRole('button', { name: /continue/i }))
-
-    expect(await screen.findByText('Q2')).toBeInTheDocument()
+    expect(await screen.findByText(/error: writing check failed/i)).toBeInTheDocument()
   })
 
-  it('keeps index within bounds when correct answer removes non-last item', async () => {
-    const svc = lessonService as unknown as { getLessonReviews: ReturnType<typeof vi.fn>, postLessonReviewCheck: ReturnType<typeof vi.fn> }
-    // 3 items, start at index 0; after removing item 0, the updated length is 2, index 0 < 2 — no adjustment needed
-    svc.getLessonReviews.mockResolvedValue([{ question: 'Q1' }, { question: 'Q2' }, { question: 'Q3' }])
-    svc.postLessonReviewCheck.mockResolvedValue({ isCorrect: true, correctAnswer: 'a' })
+  it('uses fallback message when check rejects with non-Error value', async () => {
+    svc.getLessonReviews.mockResolvedValue([{ question: 'あ' }])
+    svc.getWritingReviews.mockResolvedValue([])
+    svc.postLessonReviewCheck.mockRejectedValue('boom')
 
     render(<ReviewLessonsPage />)
 
-    expect(await screen.findByText('Q1')).toBeInTheDocument()
-    fireEvent.click(screen.getByRole('button', { name: 'SubmitMock' }))
-    fireEvent.click(await screen.findByRole('button', { name: /continue/i }))
-
-    // After removing Q1 at index 0, Q2 is now at index 0 — still within bounds
-    expect(await screen.findByText('Q2')).toBeInTheDocument()
-  })
-
-  it('uses fallback message when non-Error is thrown from getLessonReviews', async () => {
-    const svc = lessonService as unknown as { getLessonReviews: ReturnType<typeof vi.fn> }
-    svc.getLessonReviews.mockRejectedValue('string error')
-
-    render(<ReviewLessonsPage />)
-
-    expect(await screen.findByText(/failed to load lesson reviews/i)).toBeInTheDocument()
-  })
-
-  it('uses fallback message when non-Error is thrown from postLessonReviewCheck', async () => {
-    const svc = lessonService as unknown as { getLessonReviews: ReturnType<typeof vi.fn>, postLessonReviewCheck: ReturnType<typeof vi.fn> }
-    svc.getLessonReviews.mockResolvedValue([{ question: 'Q1' }])
-    svc.postLessonReviewCheck.mockRejectedValue('string error')
-
-    render(<ReviewLessonsPage />)
-
-    expect(await screen.findByText('Q1')).toBeInTheDocument()
-    fireEvent.click(screen.getByRole('button', { name: 'SubmitMock' }))
+    fireEvent.click(await screen.findByTestId('reading-input'))
 
     expect(await screen.findByText(/failed to check answer/i)).toBeInTheDocument()
+  })
+
+  it('shows the writing-katakana label for katakana writing items', async () => {
+    svc.getLessonReviews.mockResolvedValue([])
+    svc.getWritingReviews.mockResolvedValue([
+      { characterId: 3, romanization: 'a', characterType: 'katakana' },
+    ])
+
+    render(<ReviewLessonsPage />)
+
+    expect(await screen.findByText('Writing · Katakana')).toBeInTheDocument()
   })
 })

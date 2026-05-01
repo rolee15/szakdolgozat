@@ -9,8 +9,6 @@ import KatakanaPage from "@/pages/KatakanaPage";
 import CharacterDetail from "@/components/common/CharacterDetail";
 import LoginPage from "@/pages/LoginPage";
 import RegisterPage from "@/pages/RegisterPage";
-import LessonsPage from "@/pages/LessonsPage";
-import NewLessonsPage from "@/pages/NewLessonsPage";
 import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
 import ReviewLessonsPage from "@/pages/ReviewLessonsPage";
 import FlashCardPage from "@/pages/FlashCardPage";
@@ -21,7 +19,6 @@ import SettingsPage from "@/pages/SettingsPage";
 import AdminDashboardPage from "@/pages/admin/AdminDashboardPage";
 import AdminUsersPage from "@/pages/admin/AdminUsersPage";
 import AdminUserDetailPage from "@/pages/admin/AdminUserDetailPage";
-import WritingPracticePage from "@/pages/WritingPracticePage";
 import GrammarListPage from "@/pages/GrammarListPage";
 import GrammarDetailPage from "@/pages/GrammarDetailPage";
 import ReadingListPage from "@/pages/ReadingListPage";
@@ -114,22 +111,6 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "lessons",
-        element: (
-          <ProtectedRoute>
-            <LessonsPage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "lessons/new",
-        element: (
-          <ProtectedRoute>
-            <NewLessonsPage />
-          </ProtectedRoute>
-        ),
-      },
-      {
         path: "lessons/review",
         element: (
           <ProtectedRoute>
@@ -142,14 +123,6 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <FlashCardPage />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "lessons/writing",
-        element: (
-          <ProtectedRoute>
-            <WritingPracticePage />
           </ProtectedRoute>
         ),
       },

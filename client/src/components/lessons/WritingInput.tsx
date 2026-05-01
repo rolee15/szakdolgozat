@@ -4,10 +4,12 @@ import * as wanakana from "wanakana";
 interface WritingInputProps {
   characterType: "hiragana" | "katakana";
   onSubmit: (answer: string) => void;
-  disabled?: boolean;
+  buttonClassName?: string;
 }
 
-const WritingInput: React.FC<WritingInputProps> = ({ characterType, onSubmit, disabled }) => {
+const DEFAULT_BUTTON_CLASS = "bg-blue-600 hover:bg-blue-700";
+
+const WritingInput: React.FC<WritingInputProps> = ({ characterType, onSubmit, buttonClassName }) => {
   const [value, setValue] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -27,7 +29,6 @@ const WritingInput: React.FC<WritingInputProps> = ({ characterType, onSubmit, di
 
   const submit = () => {
     const answer = (inputRef.current?.value ?? value).trim();
-    if (!answer) return;
     onSubmit(answer);
     setValue("");
     if (inputRef.current) inputRef.current.value = "";
@@ -55,7 +56,6 @@ const WritingInput: React.FC<WritingInputProps> = ({ characterType, onSubmit, di
             value={value}
             onChange={handleChange}
             onKeyDown={handleKeyDown}
-            disabled={disabled}
             className="w-full px-4 py-2 border border-gray-300 rounded-l-md text-center"
             placeholder="Type romaji to convert..."
             aria-label="Writing answer"
@@ -64,8 +64,7 @@ const WritingInput: React.FC<WritingInputProps> = ({ characterType, onSubmit, di
         </div>
         <button
           type="submit"
-          disabled={disabled}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 rounded-r-md disabled:opacity-50"
+          className={`px-4 py-2 text-white rounded-md rounded-r-md ${buttonClassName ?? DEFAULT_BUTTON_CLASS}`}
           aria-label="Submit answer"
         >
           &gt;

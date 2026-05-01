@@ -1,6 +1,6 @@
 const Footer = () => (
   <footer className="py-4 bg-black text-center text-white text-sm">
-    © {new Date().getFullYear()} Kanji Ka. All rights reserved.
+    © 2026 Kanjika. All rights reserved.
   </footer>
 );
 

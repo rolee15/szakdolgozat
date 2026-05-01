@@ -6,6 +6,7 @@ export default {
       colors: {
         brand: {
           surface: "#242424",
+          elevated: "#2e2e2e",
           primary: {
             light: "#818cf8",
             DEFAULT: "#6366f1",

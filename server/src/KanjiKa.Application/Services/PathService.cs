@@ -124,10 +124,25 @@ public class PathService : IPathService
         if (unit == null)
             throw new KeyNotFoundException($"Learning unit {unitId} not found.");
 
-        int correctCount = unit.Tests.Count(t => {
+        var wrongAnswers = new List<UnitTestWrongAnswerDto>();
+        var correctCount = 0;
+        foreach (UnitTest t in unit.Tests)
+        {
             submitDto.Answers.TryGetValue(t.Id, out string? chosen);
-            return string.Equals(chosen, t.CorrectOption.ToString(), StringComparison.OrdinalIgnoreCase);
-        });
+            bool isCorrect = string.Equals(chosen, t.CorrectOption.ToString(), StringComparison.OrdinalIgnoreCase);
+            if (isCorrect)
+            {
+                correctCount++;
+                continue;
+            }
+            wrongAnswers.Add(new UnitTestWrongAnswerDto
+            {
+                QuestionId = t.Id,
+                QuestionText = t.QuestionText,
+                UserAnswer = ResolveOption(t, chosen),
+                CorrectAnswer = ResolveOption(t, t.CorrectOption.ToString()) ?? string.Empty
+            });
+        }
 
         int totalQuestions = unit.Tests.Count;
         int score = totalQuestions > 0 ? correctCount * 100 / totalQuestions : 0;
@@ -154,7 +169,17 @@ public class PathService : IPathService
             Score = score,
             IsPassed = isPassed,
             CorrectCount = correctCount,
-            TotalQuestions = totalQuestions
+            TotalQuestions = totalQuestions,
+            WrongAnswers = wrongAnswers
         };
     }
+
+    private static string? ResolveOption(UnitTest test, string? letter) => letter?.ToUpperInvariant() switch
+    {
+        "A" => test.OptionA,
+        "B" => test.OptionB,
+        "C" => test.OptionC,
+        "D" => test.OptionD,
+        _ => null
+    };
 }

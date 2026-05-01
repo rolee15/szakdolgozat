@@ -58,7 +58,7 @@ public class EmailTest(CustomWebApplicationFactory factory) : IAsyncLifetime
         var forgotRequest = new { Email = "resetuser@example.com" };
 
         // Act
-        await factory.HttpClient.PostAsJsonAsync("/api/users/forgotPassword", forgotRequest);
+        await factory.HttpClient.PostAsJsonAsync("/api/users/forgot-password", forgotRequest);
 
         // Assert
         Assert.Single(factory.FakeEmail.SentEmails);

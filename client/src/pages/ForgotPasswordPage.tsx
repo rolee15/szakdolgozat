@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import userService from "@/services/userService";
+import Button from "@/components/common/Button";
 
 type EmailFormValues = {
   email: string;
@@ -109,13 +110,13 @@ const ForgotPasswordPage = () => {
               {error}
             </p>
           )}
-          <button
+          <Button
             type="submit"
             disabled={resetForm.formState.isSubmitting}
-            className="text-xl mt-8"
+            className="mt-8"
           >
             {resetForm.formState.isSubmitting ? "Resetting..." : "Reset Password"}
-          </button>
+          </Button>
         </form>
       </div>
     );
@@ -143,13 +144,13 @@ const ForgotPasswordPage = () => {
             {error}
           </p>
         )}
-        <button
+        <Button
           type="submit"
           disabled={emailForm.formState.isSubmitting}
-          className="text-xl mt-8"
+          className="mt-8"
         >
           {emailForm.formState.isSubmitting ? "Sending..." : "Send reset code"}
-        </button>
+        </Button>
       </form>
     </div>
   );

@@ -76,6 +76,7 @@ const passedResult: UnitTestResult = {
   isPassed: true,
   correctCount: 2,
   totalQuestions: 2,
+  wrongAnswers: [],
 };
 
 const failedResult: UnitTestResult = {
@@ -83,6 +84,9 @@ const failedResult: UnitTestResult = {
   isPassed: false,
   correctCount: 1,
   totalQuestions: 2,
+  wrongAnswers: [
+    { questionId: 2, questionText: 'Q2?', userAnswer: 'Ans A', correctAnswer: 'Ans C' },
+  ],
 };
 
 describe('UnitTestPage', () => {
@@ -213,6 +217,68 @@ describe('UnitTestPage', () => {
     expect(await screen.findByText('50%')).toBeInTheDocument();
     expect(screen.getByText('Failed')).toBeInTheDocument();
     expect(await screen.findByText(/you need 70%/i)).toBeInTheDocument();
+  });
+
+  it('lists wrong answers with the user choice and correct answer when failed', async () => {
+    const svc = pathService as unknown as {
+      getUnitDetail: ReturnType<typeof vi.fn>;
+      getUnitTest: ReturnType<typeof vi.fn>;
+      submitTest: ReturnType<typeof vi.fn>;
+    };
+    svc.getUnitDetail.mockResolvedValue(unlockedUnitDetail);
+    svc.getUnitTest.mockResolvedValue(sampleTest);
+    svc.submitTest.mockResolvedValue(failedResult);
+
+    renderPage();
+
+    await screen.findByText('Q1?');
+    fireEvent.click(screen.getByRole('button', { name: /submit/i }));
+
+    expect(await screen.findByText(/review wrong answers/i)).toBeInTheDocument();
+    expect(screen.getByText('Ans A')).toBeInTheDocument();
+    expect(screen.getByText('Ans C')).toBeInTheDocument();
+  });
+
+  it('does not show the wrong-answers section when there are none', async () => {
+    const svc = pathService as unknown as {
+      getUnitDetail: ReturnType<typeof vi.fn>;
+      getUnitTest: ReturnType<typeof vi.fn>;
+      submitTest: ReturnType<typeof vi.fn>;
+    };
+    svc.getUnitDetail.mockResolvedValue(unlockedUnitDetail);
+    svc.getUnitTest.mockResolvedValue(sampleTest);
+    svc.submitTest.mockResolvedValue(passedResult);
+
+    renderPage();
+
+    await screen.findByText('Q1?');
+    fireEvent.click(screen.getByRole('button', { name: /submit/i }));
+
+    await screen.findByText('100%');
+    expect(screen.queryByText(/review wrong answers/i)).not.toBeInTheDocument();
+  });
+
+  it('renders "(no answer)" when the user did not pick an option for a wrong question', async () => {
+    const svc = pathService as unknown as {
+      getUnitDetail: ReturnType<typeof vi.fn>;
+      getUnitTest: ReturnType<typeof vi.fn>;
+      submitTest: ReturnType<typeof vi.fn>;
+    };
+    svc.getUnitDetail.mockResolvedValue(unlockedUnitDetail);
+    svc.getUnitTest.mockResolvedValue(sampleTest);
+    svc.submitTest.mockResolvedValue({
+      ...failedResult,
+      wrongAnswers: [
+        { questionId: 2, questionText: 'Q2?', userAnswer: null, correctAnswer: 'Ans C' },
+      ],
+    });
+
+    renderPage();
+
+    await screen.findByText('Q1?');
+    fireEvent.click(screen.getByRole('button', { name: /submit/i }));
+
+    expect(await screen.findByText(/\(no answer\)/i)).toBeInTheDocument();
   });
 
   it('shows submit error when mutation fails', async () => {

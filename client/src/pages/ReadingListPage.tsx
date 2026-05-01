@@ -33,7 +33,7 @@ const ReadingListPage = () => {
             >
               <div className="flex items-center justify-between mb-2">
                 <h2 className="text-lg font-semibold text-white">{passage.title}</h2>
-                <span className="text-xs bg-blue-700 text-blue-100 px-2 py-1 rounded-full font-medium">
+                <span className="text-xs bg-indigo-700 text-indigo-100 px-2 py-1 rounded-full font-medium">
                   N{passage.jlptLevel}
                 </span>
               </div>
@@ -52,7 +52,7 @@ const ReadingListPage = () => {
                     Passed — {passage.score}%
                   </span>
                 ) : (
-                  <span className="text-yellow-400 text-sm">
+                  <span className="text-indigo-300 text-sm">
                     Score: {passage.score}%
                   </span>
                 )}

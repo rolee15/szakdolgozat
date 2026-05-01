@@ -322,6 +322,65 @@ public class PathServiceTest
     }
 
     [Fact]
+    public async Task SubmitTestAsync_WrongAnswers_ReturnsQuestionAndChoiceText()
+    {
+        // Arrange
+        var repo = new Mock<IPathRepository>();
+        LearningUnit unit = MakeUnit(1);
+        unit.Tests.Add(MakeTest(1, 'A'));
+        unit.Tests.Add(MakeTest(2, 'C'));
+        repo.Setup(r => r.GetUnitWithTestAsync(1)).ReturnsAsync(unit);
+        repo.Setup(r => r.GetProgressForUserAsync(1, It.IsAny<List<int>>()))
+            .ReturnsAsync(new Dictionary<int, UnitProgress>());
+        repo.Setup(r => r.UpsertProgressAsync(It.IsAny<UnitProgress>())).Returns(Task.CompletedTask);
+        repo.Setup(r => r.SaveChangesAsync()).Returns(Task.CompletedTask);
+
+        var service = new PathService(repo.Object);
+        var submitDto = new UnitSubmitDto
+        {
+            // Q1 correct (A=A), Q2 wrong (B vs correct C)
+            Answers = new Dictionary<int, string> { [1] = "A", [2] = "B" }
+        };
+
+        // Act
+        UnitTestResultDto result = await service.SubmitTestAsync(1, 1, submitDto);
+
+        // Assert
+        UnitTestWrongAnswerDto wrong = Assert.Single(result.WrongAnswers);
+        Assert.Multiple(
+            () => Assert.Equal(2, wrong.QuestionId),
+            () => Assert.Equal("Question 2?", wrong.QuestionText),
+            () => Assert.Equal("B", wrong.UserAnswer),
+            () => Assert.Equal("C", wrong.CorrectAnswer)
+        );
+    }
+
+    [Fact]
+    public async Task SubmitTestAsync_NoAnswerForQuestion_WrongAnswerHasNullUserAnswer()
+    {
+        // Arrange
+        var repo = new Mock<IPathRepository>();
+        LearningUnit unit = MakeUnit(1);
+        unit.Tests.Add(MakeTest(1, 'A'));
+        repo.Setup(r => r.GetUnitWithTestAsync(1)).ReturnsAsync(unit);
+        repo.Setup(r => r.GetProgressForUserAsync(1, It.IsAny<List<int>>()))
+            .ReturnsAsync(new Dictionary<int, UnitProgress>());
+        repo.Setup(r => r.UpsertProgressAsync(It.IsAny<UnitProgress>())).Returns(Task.CompletedTask);
+        repo.Setup(r => r.SaveChangesAsync()).Returns(Task.CompletedTask);
+
+        var service = new PathService(repo.Object);
+        var submitDto = new UnitSubmitDto { Answers = new Dictionary<int, string>() };
+
+        // Act
+        UnitTestResultDto result = await service.SubmitTestAsync(1, 1, submitDto);
+
+        // Assert
+        UnitTestWrongAnswerDto wrong = Assert.Single(result.WrongAnswers);
+        Assert.Null(wrong.UserAnswer);
+        Assert.Equal("A", wrong.CorrectAnswer);
+    }
+
+    [Fact]
     public async Task SubmitTestAsync_ExistingProgress_IncrementsAttemptCount()
     {
         // Arrange

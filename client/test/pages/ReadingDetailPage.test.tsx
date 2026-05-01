@@ -1,12 +1,11 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 vi.mock('@/services/readingService', () => ({
   default: {
     getPassageDetail: vi.fn(),
-    submitAnswers: vi.fn(),
   },
 }));
 
@@ -50,22 +49,6 @@ const sampleDetail: ReadingPassageDetail = {
       questionText: 'What season is described?',
       options: { A: 'Spring', B: 'Summer', C: 'Autumn', D: 'Winter' },
     },
-    {
-      id: 11,
-      questionText: 'How is the day described?',
-      options: { A: 'Cold', B: 'Warm', C: 'Rainy', D: 'Windy' },
-    },
-  ],
-};
-
-const sampleResult: ReadingResult = {
-  score: 100,
-  isPassed: true,
-  correctCount: 2,
-  totalQuestions: 2,
-  results: [
-    { questionId: 10, isCorrect: true, correctOption: 'A', chosenOption: 'A' },
-    { questionId: 11, isCorrect: false, correctOption: 'B', chosenOption: 'C' },
   ],
 };
 
@@ -125,131 +108,18 @@ describe('ReadingDetailPage', () => {
     expect(screen.queryByText(/source:/i)).not.toBeInTheDocument();
   });
 
-  it('renders comprehension questions with radio options', async () => {
+  it('points the user to the Learning Path final unit instead of rendering comprehension questions', async () => {
     const svc = readingService as unknown as { getPassageDetail: ReturnType<typeof vi.fn> };
     svc.getPassageDetail.mockResolvedValue(sampleDetail);
 
     renderPage();
-
-    expect(await screen.findByText('What season is described?')).toBeInTheDocument();
-    expect(screen.getByText(/A: Spring/)).toBeInTheDocument();
-    expect(screen.getByText(/B: Summer/)).toBeInTheDocument();
-  });
-
-  it('shows no questions message when questions list is empty', async () => {
-    const svc = readingService as unknown as { getPassageDetail: ReturnType<typeof vi.fn> };
-    svc.getPassageDetail.mockResolvedValue({ ...sampleDetail, questions: [] });
-
-    renderPage();
-
-    expect(await screen.findByText(/no questions available/i)).toBeInTheDocument();
-  });
-
-  it('submits answers and shows results', async () => {
-    const svc = readingService as unknown as {
-      getPassageDetail: ReturnType<typeof vi.fn>;
-      submitAnswers: ReturnType<typeof vi.fn>;
-    };
-    svc.getPassageDetail.mockResolvedValue(sampleDetail);
-    svc.submitAnswers.mockResolvedValue(sampleResult);
-
-    renderPage();
-
-    await screen.findByText('Spring Day');
-    fireEvent.click(screen.getByRole('button', { name: /submit/i }));
-
-    expect(await screen.findByText('Results')).toBeInTheDocument();
-    expect(screen.getByText(/100%/)).toBeInTheDocument();
-    expect(screen.getByText(/Passed/)).toBeInTheDocument();
-    expect(screen.getByText(/2 \/ 2 correct/)).toBeInTheDocument();
-  });
-
-  it('shows failed badge when not passed', async () => {
-    const svc = readingService as unknown as {
-      getPassageDetail: ReturnType<typeof vi.fn>;
-      submitAnswers: ReturnType<typeof vi.fn>;
-    };
-    svc.getPassageDetail.mockResolvedValue(sampleDetail);
-    svc.submitAnswers.mockResolvedValue({
-      ...sampleResult,
-      score: 50,
-      isPassed: false,
-    });
-
-    renderPage();
-
-    await screen.findByText('Spring Day');
-    fireEvent.click(screen.getByRole('button', { name: /submit/i }));
-
-    expect(await screen.findByText('Failed')).toBeInTheDocument();
-  });
-
-  it('shows per-question correct result in results view', async () => {
-    const svc = readingService as unknown as {
-      getPassageDetail: ReturnType<typeof vi.fn>;
-      submitAnswers: ReturnType<typeof vi.fn>;
-    };
-    svc.getPassageDetail.mockResolvedValue(sampleDetail);
-    svc.submitAnswers.mockResolvedValue(sampleResult);
-
-    renderPage();
-
-    await screen.findByText('Spring Day');
-    fireEvent.click(screen.getByRole('button', { name: /submit/i }));
-
-    expect(await screen.findByText('Correct')).toBeInTheDocument();
-  });
-
-  it('shows per-question incorrect result in results view', async () => {
-    const svc = readingService as unknown as {
-      getPassageDetail: ReturnType<typeof vi.fn>;
-      submitAnswers: ReturnType<typeof vi.fn>;
-    };
-    svc.getPassageDetail.mockResolvedValue(sampleDetail);
-    svc.submitAnswers.mockResolvedValue(sampleResult);
-
-    renderPage();
-
-    await screen.findByText('Spring Day');
-    fireEvent.click(screen.getByRole('button', { name: /submit/i }));
 
     expect(
-      await screen.findByText(/incorrect — correct answer: B, your answer: C/i),
+      await screen.findByText(/test your comprehension in the final unit of the learning path/i),
     ).toBeInTheDocument();
-  });
-
-  it('shows submit error when mutation fails', async () => {
-    const svc = readingService as unknown as {
-      getPassageDetail: ReturnType<typeof vi.fn>;
-      submitAnswers: ReturnType<typeof vi.fn>;
-    };
-    svc.getPassageDetail.mockResolvedValue(sampleDetail);
-    svc.submitAnswers.mockRejectedValue(new Error('Network error'));
-
-    renderPage();
-
-    await screen.findByText('Spring Day');
-    fireEvent.click(screen.getByRole('button', { name: /submit/i }));
-
-    expect(await screen.findByText(/failed to submit answers/i)).toBeInTheDocument();
-  });
-
-  it('resets to question form after clicking Try Again', async () => {
-    const svc = readingService as unknown as {
-      getPassageDetail: ReturnType<typeof vi.fn>;
-      submitAnswers: ReturnType<typeof vi.fn>;
-    };
-    svc.getPassageDetail.mockResolvedValue(sampleDetail);
-    svc.submitAnswers.mockResolvedValue(sampleResult);
-
-    renderPage();
-
-    await screen.findByText('Spring Day');
-    fireEvent.click(screen.getByRole('button', { name: /submit/i }));
-    await screen.findByText('Results');
-
-    fireEvent.click(screen.getByRole('button', { name: /try again/i }));
-
-    expect(screen.getByText('Comprehension Questions')).toBeInTheDocument();
+    // Comprehension question UI should be gone — no submit button, no question text, no radios.
+    expect(screen.queryByRole('button', { name: /submit/i })).not.toBeInTheDocument();
+    expect(screen.queryByText('What season is described?')).not.toBeInTheDocument();
+    expect(screen.queryByRole('radio')).not.toBeInTheDocument();
   });
 });

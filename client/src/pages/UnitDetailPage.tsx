@@ -56,7 +56,7 @@ const UnitDetailPage = () => {
       <div className="flex items-center gap-4">
         <button
           onClick={() => navigate(`/path/${unit.id}/test`)}
-          className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-lg font-medium"
+          className="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2 rounded-lg font-medium"
         >
           Take Test
         </button>

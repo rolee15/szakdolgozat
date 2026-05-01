@@ -90,10 +90,31 @@ const UnitTestPage = () => {
             </p>
           )}
         </div>
+        {result.wrongAnswers.length > 0 && (
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold mb-3">Review wrong answers</h2>
+            <ul className="space-y-3">
+              {result.wrongAnswers.map((wa) => (
+                <li key={wa.questionId} className="bg-gray-800 rounded-lg p-4">
+                  <p className="font-medium mb-2">{wa.questionText}</p>
+                  <p className="text-sm text-red-300">
+                    Your answer:{' '}
+                    <span className="font-mono">
+                      {wa.userAnswer ?? <em className="not-italic text-gray-400">(no answer)</em>}
+                    </span>
+                  </p>
+                  <p className="text-sm text-green-300">
+                    Correct answer: <span className="font-mono">{wa.correctAnswer}</span>
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
         <div className="flex gap-4">
           <button
             onClick={handleRetake}
-            className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-lg font-medium"
+            className="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2 rounded-lg font-medium"
           >
             Retake Test
           </button>
@@ -129,24 +150,27 @@ const UnitTestPage = () => {
                 {idx + 1}. <span>{q.questionText}</span>
               </p>
               <div className="space-y-2">
-                {Object.entries(q.options).map(([key, value]) => (
-                  <label
-                    key={key}
-                    className="flex items-center gap-3 cursor-pointer hover:text-gray-200"
-                  >
-                    <input
-                      type="radio"
-                      name={`question-${q.id}`}
-                      value={key}
-                      checked={answers[q.id] === key}
-                      onChange={() => handleOptionChange(q.id, key)}
-                      className="accent-blue-500"
-                    />
-                    <span>
-                      {key}: {value}
-                    </span>
-                  </label>
-                ))}
+                {Object.entries(q.options).map(([key, value], optionIdx) => {
+                  const displayLabel = String.fromCharCode(65 + optionIdx);
+                  return (
+                    <label
+                      key={key}
+                      className="flex items-center gap-3 cursor-pointer hover:text-gray-200"
+                    >
+                      <input
+                        type="radio"
+                        name={`question-${q.id}`}
+                        value={key}
+                        checked={answers[q.id] === key}
+                        onChange={() => handleOptionChange(q.id, key)}
+                        className="accent-indigo-500"
+                      />
+                      <span>
+                        {displayLabel}: {value}
+                      </span>
+                    </label>
+                  );
+                })}
               </div>
             </div>
           ))}
@@ -158,7 +182,7 @@ const UnitTestPage = () => {
           <button
             onClick={() => submitMutation.mutate()}
             disabled={submitMutation.isPending}
-            className="bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white px-6 py-2 rounded-lg font-medium"
+            className="bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white px-6 py-2 rounded-lg font-medium"
           >
             {submitMutation.isPending ? 'Submitting...' : 'Submit'}
           </button>
