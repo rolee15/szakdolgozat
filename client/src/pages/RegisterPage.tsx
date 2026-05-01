@@ -1,6 +1,6 @@
 import { FormEvent, useMemo, useState } from "react";
 import { NavLink } from "react-router-dom";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/useAuth";
 import Button from "@/components/common/Button";
 
 const RegisterPage = () => {

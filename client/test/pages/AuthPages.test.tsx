@@ -8,7 +8,7 @@ import ForgotPasswordPage from '@/pages/ForgotPasswordPage'
 
 const mockLogin = vi.fn()
 const mockRegister = vi.fn()
-vi.mock('@/context/AuthContext', () => ({
+vi.mock('@/context/useAuth', () => ({
   useAuth: () => ({
     login: mockLogin,
     register: mockRegister,

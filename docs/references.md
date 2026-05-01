@@ -57,6 +57,11 @@ Used in: `server/src/KanjiKa.Data/Data/grammar-n5.json`, `server/src/KanjiKa.Dat
 
 ---
 
+[16] Tailwind Labs, "Heroicons," *heroicons.com*, <https://heroicons.com/>. Accessed: 2026-05-01. License: MIT.
+     Used in: `client/src/components/common/ThemeToggle.tsx`
+
+---
+
 ## Notes
 
 - All EDRDG resources require the attribution statement: *"This application uses data from the Electronic Dictionary Research and Development Group (<http://www.edrdg.org>)."*

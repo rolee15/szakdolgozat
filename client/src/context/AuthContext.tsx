@@ -1,25 +1,6 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { useState, ReactNode } from 'react';
 import userService from '@/services/userService';
-
-interface AuthState {
-  token: string | null;
-  refreshToken: string | null;
-  userId: number | null;
-  username: string | null;
-  role: string | null;
-  mustChangePassword: boolean;
-}
-
-interface AuthContextType extends AuthState {
-  login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string) => Promise<void>;
-  logout: () => void;
-  clearMustChangePassword: () => void;
-  isAuthenticated: boolean;
-  isAdmin: boolean;
-}
-
-const AuthContext = createContext<AuthContextType | null>(null);
+import { AuthContext, AuthState } from './useAuth';
 
 function decodeJwtPayload(token: string): Record<string, string | undefined> {
   try {
@@ -114,10 +95,4 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       {children}
     </AuthContext.Provider>
   );
-}
-
-export function useAuth() {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error('useAuth must be used inside AuthProvider');
-  return ctx;
 }
