@@ -33,15 +33,15 @@ const Navbar = () => {
   }, []);
 
   const dropdownPanelClass =
-    'absolute top-full mt-1 left-0 z-50 bg-gray-900 border border-gray-700 rounded-md shadow-lg py-1 min-w-max';
+    'absolute top-full mt-1 left-0 z-50 bg-brand-surface border border-brand-primary-deep rounded-md shadow-lg py-1 min-w-max';
 
   const profileDropdownPanelClass =
-    'absolute top-full mt-1 right-0 z-50 bg-gray-900 border border-gray-700 rounded-md shadow-lg py-1 min-w-max';
+    'absolute top-full mt-1 right-0 z-50 bg-brand-surface border border-brand-primary-deep rounded-md shadow-lg py-1 min-w-max';
 
   const avatarLetter = username ? username[0].toUpperCase() : '?';
 
   return (
-    <header className="w-screen bg-black shadow-sm">
+    <header className="w-screen bg-brand-bar shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" ref={navRef}>
         <div className="flex items-center h-16">
           <Logo />
@@ -108,7 +108,7 @@ const Navbar = () => {
                       <MenuItem to="/settings" variant="dropdown" onClick={() => setOpenDropdown(null)}>Settings</MenuItem>
                       <button
                         onClick={handleLogout}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:text-white bg-transparent border-0 rounded-none cursor-pointer"
+                        className="block w-full text-left px-4 py-2 text-sm text-brand-text hover:bg-brand-primary-deep bg-transparent border-0 rounded-none cursor-pointer transition-colors"
                       >
                         Log out
                       </button>

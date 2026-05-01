@@ -1,5 +1,5 @@
 const Footer = () => (
-  <footer className="py-4 bg-black text-center text-white text-sm">
+  <footer className="py-4 bg-brand-bar text-center text-brand-text text-sm">
     © {new Date().getFullYear()} Kanji Ka. All rights reserved.
   </footer>
 );
