@@ -12,6 +12,8 @@ Precondition: dev DB running, backend started, frontend started (see CLAUDE.md f
 | Mid-learner | `midlearner@test.com` | `almafa123` | ~30 kana at mixed SRS stages (Apprentice1–Guru1) |
 | Advanced | `advanced@test.com` | `almafa123` | All kana at Guru1, no items currently due |
 | Reviewer | `reviewer@test.com` | `almafa123` | 40 kana + 10 kanji all overdue for review |
+| Kanji starter | `kanjistarter@test.com` | `almafa123` | All kana units (1–14) passed, ready to start kanji at unit 15 |
+| Grammar starter | `grammarstarter@test.com` | `almafa123` | All kana + kanji units (1–17) passed; the 21 kanji from units 15–17 are at SRS Guru1 and overdue (so they appear in kanji flash cards); ready to start grammar at unit 18 |
 
 ---
 
@@ -23,19 +25,19 @@ Precondition: dev DB running, backend started, frontend started (see CLAUDE.md f
 - [ ] Submit with invalid email -> validation error shown
 - [ ] Submit with password < 8 chars -> validation error shown
 - [ ] Submit with mismatched passwords -> validation error shown
-- [ ] Submit with valid data -> account created, redirected to `/lessons`
+- [ ] Submit with valid data -> account created, redirected to `/path`
 
 ### 1.2 Login
 
 - [ ] Navigate to `/login`
 - [ ] Submit with wrong credentials -> error message shown
-- [ ] Submit with correct credentials -> redirected to `/lessons`
+- [ ] Submit with correct credentials -> redirected to `/path`
 - [ ] Navbar shows username and Logout button
 
 ### 1.3 Logout
 
 - [ ] Click Logout -> redirected to `/` or `/login`
-- [ ] Visiting a protected route (e.g. `/lessons`) redirects to login
+- [ ] Visiting a protected route (e.g. `/path`) redirects to login
 
 ### 1.4 Forgot Password
 
@@ -54,7 +56,7 @@ Precondition: dev DB running, backend started, frontend started (see CLAUDE.md f
 - [ ] Submit with mismatched passwords -> validation error shown
 - [ ] Submit with new password < 8 chars -> validation error shown
 - [ ] Submit with wrong current password -> error message shown
-- [ ] Submit with valid data -> password changed, redirected to `/lessons`
+- [ ] Submit with valid data -> password changed, redirected to `/path`
 - [ ] Visiting any protected route while `mustChangePassword` is true -> redirected to `/change-password`
 - [ ] After password change, normal navigation works
 
@@ -62,29 +64,20 @@ Precondition: dev DB running, backend started, frontend started (see CLAUDE.md f
 
 ## 2. Navigation
 
-- [ ] Desktop navbar shows "Study ▾" and "Practice ▾" dropdown buttons plus a plain "Learning Path" link
-- [ ] Clicking "Study ▾" opens a dropdown with: Hiragana, Katakana, Kanji, Grammar, Reading
-- [ ] Clicking "Practice ▾" opens a dropdown with: Lessons, Writing (indented sub-item), Flash Cards
-- [ ] Writing in Practice dropdown links to `/lessons/writing`
-- [ ] Only one dropdown can be open at a time (opening Study closes Practice and vice versa)
+- [ ] Desktop navbar shows the items in this order: Learning Path link, "Lessons ▾" dropdown, "Reviews ▾" dropdown, (optional Admin), profile avatar
+- [ ] Clicking "Lessons ▾" opens a dropdown with: Hiragana, Katakana, Kanji, Grammar, Reading
+- [ ] Clicking "Reviews ▾" opens a dropdown with: Flash Cards, Review (no separate Writing item)
+- [ ] Review item links to `/lessons/review`
+- [ ] Only one dropdown can be open at a time (opening Lessons closes Reviews and vice versa)
 - [ ] Clicking outside an open dropdown closes it
 - [ ] "Learning Path" link navigates to `/path` without a dropdown
 - [ ] Admin link visible in navbar for admin users only
 - [ ] Admin link hidden for regular users
 - [ ] Mobile: hamburger button (☰) appears on small screens
-- [ ] Mobile: clicking hamburger opens panel with Study, Practice (Writing indented), Path sections
+- [ ] Mobile: clicking hamburger opens panel with Path, Lessons, Reviews sections (in that order)
 - [ ] Mobile: clicking a nav link closes the mobile menu
-- [ ] Logo/brand link navigates to home or lessons
+- [ ] Logo/brand link navigates to home
 - [ ] 404 page shown for unknown routes (e.g. `/nonexistent`)
-
-## 2a. Home Page Dashboard (`/`)
-
-- [ ] Three stat cards render: "Due Reviews", "New Lessons", "Path Progress"
-- [ ] Due Reviews card shows count and links to `/lessons/reviews`
-- [ ] New Lessons card shows count and links to `/lessons`
-- [ ] Path Progress card shows "X / Y units completed" and links to `/path`
-- [ ] Loading skeleton (pulsing placeholder) shown while data fetches
-- [ ] If an API call fails, card shows "–"
 
 ---
 
@@ -112,55 +105,18 @@ Precondition: dev DB running, backend started, frontend started (see CLAUDE.md f
 
 ---
 
-## 4. Lessons
+## 4. Reviews (`/lessons/review`) — merged reading + writing
 
-### 4.1 Lessons Hub (`/lessons`)
-
-- [ ] "Learn" card shows count of new lessons available
-- [ ] "Review" card shows count of items due for review
-- [ ] Both counts load without error
-
-### 4.2 New Lessons (`/lessons/new`)
-
-- [ ] First character displayed with symbol and romanization
-- [ ] Character type indicator shown (Hiragana/Katakana)
-- [ ] Click "Next" -> advances to next character, progress counter updates
-- [ ] After last character -> redirected back to `/lessons`
-- [ ] Lesson count on hub decreases after completing lessons
-
-### 4.3 Reviews (`/lessons/review`)
-
-- [ ] Review item displayed with large character
-- [ ] Type correct answer -> "Correct" feedback, advances to next item
-- [ ] Type wrong answer -> "Incorrect" feedback with correct answer shown
-- [ ] Wrong answers re-appear in the queue
-- [ ] After all items reviewed -> "No more items to review" message
-- [ ] Review count on hub decreases after completing reviews
-
----
-
-## 5. Writing Practice (`/writing`)
-
-### 5.1 Lessons Hub writing card (`/lessons`)
-
-- [ ] "Writing" card shows count of items due for writing practice
-- [ ] Click the Writing card -> navigates to `/writing`
-
-### 5.2 Writing Practice page (`/writing`)
-
-- [ ] Page shows romanization prompt in large text
-- [ ] Character type label ("Hiragana" / "Katakana") shown above the romanization
-- [ ] Input accepts romaji and auto-converts to hiragana when character type is hiragana
-- [ ] Input accepts romaji and auto-converts to katakana when character type is katakana
-- [ ] Pressing Enter submits the answer
-- [ ] Clicking the submit button submits the answer
-- [ ] Correct answer -> green feedback banner, input is disabled
-- [ ] Incorrect answer -> red feedback banner with user's answer and correct kana shown, input is disabled
+- [ ] Page mixes reading prompts (kana symbol → romanization) and writing prompts (romanization → kana)
+- [ ] Reading question: type label says "Reading", submit button is purple
+- [ ] Writing question: type label says "Writing · Hiragana" or "Writing · Katakana", submit button is orange
+- [ ] Writing input accepts romaji and auto-converts to the matching kana script
+- [ ] Pressing Enter submits the answer; clicking the submit button submits as well
+- [ ] Correct answer -> green feedback banner, item removed from queue
+- [ ] Incorrect answer -> red feedback banner with user's answer and correct value shown; item cycles to the end of the queue
 - [ ] Click "Continue" (or press Enter on feedback banner) -> advances to next item
-- [ ] Correct items are removed from the queue; incorrect items re-appear later
-- [ ] After all items reviewed -> "Writing practice complete!" message shown
-- [ ] When no items are due -> "No items to review." message shown
-- [ ] Writing sub-item in the Practice dropdown navigates to `/lessons/writing`
+- [ ] After all items answered correctly -> "No more items to review." message shown
+- [ ] When no items are due (both queues empty) -> "No more items to review." message shown
 - [ ] API failure -> error state shown, page does not crash
 
 ---
@@ -280,22 +236,16 @@ Precondition: dev DB running, backend started, frontend started (see CLAUDE.md f
 
 - [ ] "Grammar" link in navbar navigates to `/grammar`
 - [ ] Grid of N5 grammar point cards loads
-- [ ] Each card shows title, pattern, and completion badge
-- [ ] Completed points show green checkmark and "Completed"
-- [ ] Incomplete points show "X/3 correct" in yellow
+- [ ] Each card shows title and pattern
+- [ ] No "Completed" badge or "X/3 correct" indicator is rendered (practice now lives in the learning path)
 - [ ] Click a card → navigates to `/grammar/:id`
 
 ### 10.2 Grammar Detail (`/grammar/:id`)
 
 - [ ] Title, pattern, and explanation text displayed
-- [ ] Example sentences shown (Japanese, reading, English)
-- [ ] Exercise fill-in-the-blank sentence displayed
-- [ ] Four option buttons rendered
-- [ ] Click correct answer → green "Correct!" banner, buttons disabled
-- [ ] Click wrong answer → red "Incorrect. Correct answer: X" banner, buttons disabled
-- [ ] "Next" button advances to next exercise
-- [ ] After all exercises → score summary displayed (e.g. "Score: 2/3")
-- [ ] When all 3 correct over time → "Grammar point completed!" shown
+- [ ] At least three example sentences shown (Japanese, reading, English)
+- [ ] No fill-in-the-blank exercise UI or option buttons are rendered on this page
+- [ ] A hint points the user to the Learning Path for practice
 - [ ] Back button returns to `/grammar`
 - [ ] API failure → error state shown, page does not crash
 
@@ -311,11 +261,19 @@ Precondition: dev DB running, backend started, frontend started (see CLAUDE.md f
 
 ## 12. Learning Path
 
-- [ ] Learning path displays 15 units in order
+- [ ] Learning path displays 20 units in order
 - [ ] Units 1–14 are kana-only content (hiragana rows 1–8, katakana rows 9–14)
-- [ ] Unit 15 is the Mixed N5 Review (grammar + reading)
+- [ ] Unit 15 is "Kanji Numbers" (一〜十)
+- [ ] Unit 16 is "Kanji Days of the Week" (月、火、水、木、金、土、日)
+- [ ] Unit 17 is "Kanji People" (人、男、女、子)
+- [ ] Unit 18 is "Grammar Particles I" (は、が、を、に、で、の)
+- [ ] Unit 19 is "Grammar Particles II" (も、と、から、まで、ね、よ)
+- [ ] Unit 20 is "Reading Comprehension" — the final unit, sourcing all six N5 reading passages and their comprehension questions
 - [ ] Completing a unit unlocks the next unit
-- [ ] Unit tests use multiple-choice kana recognition questions
+- [ ] Unit tests use multiple-choice kana / kanji / grammar / reading-comprehension questions
+- [ ] Reading detail pages no longer expose comprehension questions; they direct the user to the final learning-path unit instead
+- [ ] Logging in as `kanjistarter@test.com` shows all kana units passed and unit 15 unlocked
+- [ ] Logging in as `grammarstarter@test.com` shows kana + kanji units passed and unit 18 unlocked
 
 ---
 

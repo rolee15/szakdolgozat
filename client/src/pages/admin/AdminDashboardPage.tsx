@@ -7,10 +7,10 @@ const AdminDashboardPage = () => {
       <div className="grid gap-4">
         <NavLink
           to="/admin/users"
-          className="block p-6 border rounded-lg hover:bg-gray-50 transition"
+          className="block bg-gray-800 hover:bg-gray-700 transition-colors rounded-lg shadow-md p-5"
         >
           <h2 className="text-xl font-semibold mb-2">User Management</h2>
-          <p className="text-gray-600">
+          <p className="text-gray-400">
             View, search, and manage user accounts.
           </p>
         </NavLink>

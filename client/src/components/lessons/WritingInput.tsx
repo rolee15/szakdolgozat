@@ -5,9 +5,12 @@ interface WritingInputProps {
   characterType: "hiragana" | "katakana";
   onSubmit: (answer: string) => void;
   disabled?: boolean;
+  buttonClassName?: string;
 }
 
-const WritingInput: React.FC<WritingInputProps> = ({ characterType, onSubmit, disabled }) => {
+const DEFAULT_BUTTON_CLASS = "bg-blue-600 hover:bg-blue-700";
+
+const WritingInput: React.FC<WritingInputProps> = ({ characterType, onSubmit, disabled, buttonClassName }) => {
   const [value, setValue] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -65,7 +68,7 @@ const WritingInput: React.FC<WritingInputProps> = ({ characterType, onSubmit, di
         <button
           type="submit"
           disabled={disabled}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 rounded-r-md disabled:opacity-50"
+          className={`px-4 py-2 text-white rounded-md rounded-r-md disabled:opacity-50 ${buttonClassName ?? DEFAULT_BUTTON_CLASS}`}
           aria-label="Submit answer"
         >
           &gt;

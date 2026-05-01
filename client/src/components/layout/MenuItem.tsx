@@ -8,7 +8,7 @@ type MenuItemProps = {
 };
 
 const navClass = ({ isActive }: { isActive: boolean }) =>
-  isActive ? "text-brand-primary-light text-sm" : "text-brand-muted hover:text-brand-text text-sm";
+  isActive ? "text-brand-primary-light text-sm" : "text-brand-text hover:text-brand-primary-light text-sm";
 
 const dropdownClass = ({ isActive }: { isActive: boolean }) =>
   `block px-4 py-2 text-sm transition-colors ${

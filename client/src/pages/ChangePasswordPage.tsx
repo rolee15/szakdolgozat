@@ -30,7 +30,7 @@ const ChangePasswordPage = () => {
     try {
       await userService.changePassword(currentPassword, newPassword);
       clearMustChangePassword();
-      navigate("/lessons", { replace: true });
+      navigate("/path", { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to change password");
     } finally {

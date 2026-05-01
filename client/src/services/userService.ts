@@ -81,10 +81,18 @@ const api = {
     },
 
     async activateAccount(token: string): Promise<{ success: boolean; message: string }> {
-        const response = await fetch(`${API_USERS_ACTIVATE_URL}?token=${encodeURIComponent(token)}`, {
-            method: 'POST',
-        });
-        return response.json();
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
+        try {
+            const response = await fetch(`${API_USERS_ACTIVATE_URL}?token=${encodeURIComponent(token)}`, {
+                method: 'POST',
+                signal: controller.signal,
+            });
+            if (!response.ok) throw new Error('Activation request failed');
+            return response.json();
+        } finally {
+            clearTimeout(timeoutId);
+        }
     },
 };
 

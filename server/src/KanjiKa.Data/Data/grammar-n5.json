@@ -15,6 +15,11 @@
         "japanese": "わたしは学生です。",
         "reading": "Watashi wa gakusei desu.",
         "english": "I am a student."
+      },
+      {
+        "japanese": "田中さんは先生です。",
+        "reading": "Tanaka-san wa sensei desu.",
+        "english": "Mr. Tanaka is a teacher."
       }
     ],
     "exercises": [
@@ -50,6 +55,11 @@
         "japanese": "雨が降っています。",
         "reading": "Ame ga futte imasu.",
         "english": "It is raining."
+      },
+      {
+        "japanese": "空が青いです。",
+        "reading": "Sora ga aoi desu.",
+        "english": "The sky is blue."
       }
     ],
     "exercises": [
@@ -85,6 +95,11 @@
         "japanese": "本を読みます。",
         "reading": "Hon wo yomimasu.",
         "english": "I read a book."
+      },
+      {
+        "japanese": "水を飲みます。",
+        "reading": "Mizu wo nomimasu.",
+        "english": "I drink water."
       }
     ],
     "exercises": [
@@ -120,6 +135,11 @@
         "japanese": "三時に起きます。",
         "reading": "Sanji ni okimasu.",
         "english": "I wake up at three o'clock."
+      },
+      {
+        "japanese": "公園に行きました。",
+        "reading": "Kouen ni ikimashita.",
+        "english": "I went to the park."
       }
     ],
     "exercises": [
@@ -155,6 +175,11 @@
         "japanese": "バスで行きます。",
         "reading": "Basu de ikimasu.",
         "english": "I go by bus."
+      },
+      {
+        "japanese": "家でテレビを見ます。",
+        "reading": "Ie de terebi wo mimasu.",
+        "english": "I watch TV at home."
       }
     ],
     "exercises": [
@@ -190,6 +215,11 @@
         "japanese": "日本語の先生です。",
         "reading": "Nihongo no sensei desu.",
         "english": "He is a Japanese language teacher."
+      },
+      {
+        "japanese": "これは父の車です。",
+        "reading": "Kore wa chichi no kuruma desu.",
+        "english": "This is my father's car."
       }
     ],
     "exercises": [
@@ -225,6 +255,11 @@
         "japanese": "わたしも行きます。",
         "reading": "Watashi mo ikimasu.",
         "english": "I will go too."
+      },
+      {
+        "japanese": "アリスさんも日本語を話します。",
+        "reading": "Arisu-san mo nihongo wo hanashimasu.",
+        "english": "Alice also speaks Japanese."
       }
     ],
     "exercises": [
@@ -260,6 +295,11 @@
         "japanese": "友達と映画を見ます。",
         "reading": "Tomodachi to eiga wo mimasu.",
         "english": "I watch a movie with a friend."
+      },
+      {
+        "japanese": "母と買い物に行きます。",
+        "reading": "Haha to kaimono ni ikimasu.",
+        "english": "I go shopping with my mother."
       }
     ],
     "exercises": [
@@ -295,6 +335,11 @@
         "japanese": "東京から来ました。",
         "reading": "Toukyou kara kimashita.",
         "english": "I came from Tokyo."
+      },
+      {
+        "japanese": "家から駅まで五分です。",
+        "reading": "Ie kara eki made gofun desu.",
+        "english": "It is five minutes from home to the station."
       }
     ],
     "exercises": [
@@ -330,6 +375,11 @@
         "japanese": "駅まで歩きます。",
         "reading": "Eki made arukimasu.",
         "english": "I walk to the station."
+      },
+      {
+        "japanese": "朝から夜まで勉強します。",
+        "reading": "Asa kara yoru made benkyou shimasu.",
+        "english": "I study from morning until night."
       }
     ],
     "exercises": [
@@ -365,6 +415,11 @@
         "japanese": "おいしいですね。",
         "reading": "Oishii desu ne.",
         "english": "It's delicious, right?"
+      },
+      {
+        "japanese": "この本は面白いですね。",
+        "reading": "Kono hon wa omoshiroi desu ne.",
+        "english": "This book is interesting, isn't it?"
       }
     ],
     "exercises": [
@@ -400,6 +455,11 @@
         "japanese": "これは辛いですよ。",
         "reading": "Kore wa karai desu yo.",
         "english": "This is spicy, I'm telling you."
+      },
+      {
+        "japanese": "その映画は面白いですよ。",
+        "reading": "Sono eiga wa omoshiroi desu yo.",
+        "english": "That movie is interesting, you know."
       }
     ],
     "exercises": [

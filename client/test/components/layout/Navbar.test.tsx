@@ -75,7 +75,7 @@ describe('Navbar', () => {
 
     expect(screen.getByRole('link', { name: 'Flash Cards' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Review' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Writing' })).toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'Writing' })).not.toBeInTheDocument()
   })
 
   it('renders Learning Path link with href /path when authenticated', () => {

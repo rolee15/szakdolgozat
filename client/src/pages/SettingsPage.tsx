@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import userService from "@/services/userService";
+import Button from "@/components/common/Button";
 
 const JLPT_LEVELS = ["N5", "N4", "N3", "N2", "N1"] as const;
 
@@ -112,13 +113,9 @@ const SettingsPage = () => {
             {mutation.error.message}
           </p>
         )}
-        <button
-          type="submit"
-          className="text-xl mt-8"
-          disabled={mutation.isPending}
-        >
+        <Button type="submit" className="mt-8" disabled={mutation.isPending}>
           {mutation.isPending ? "Saving..." : "Save Settings"}
-        </button>
+        </Button>
       </form>
     </div>
   );

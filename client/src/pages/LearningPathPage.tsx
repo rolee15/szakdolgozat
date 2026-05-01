@@ -36,7 +36,7 @@ const LearningPathPage = () => {
                       ? 'bg-green-600 text-white'
                       : isLocked
                         ? 'bg-gray-700 text-gray-500'
-                        : 'bg-blue-600 text-white'
+                        : 'bg-indigo-600 text-white'
                   }`}
                 >
                   {unit.isPassed ? (
@@ -79,7 +79,7 @@ const LearningPathPage = () => {
                       </span>
                     )}
                     {!unit.isPassed && !isLocked && (
-                      <span className="text-xs bg-blue-700 text-blue-100 px-2 py-1 rounded-full font-medium">
+                      <span className="text-xs bg-indigo-700 text-indigo-100 px-2 py-1 rounded-full font-medium">
                         Unlocked
                       </span>
                     )}

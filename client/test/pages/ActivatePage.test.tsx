@@ -38,14 +38,6 @@ describe('ActivatePage', () => {
     vi.clearAllMocks()
   })
 
-  it('renders loading state while activating', async () => {
-    svc.activateAccount.mockReturnValue(new Promise(() => {}))
-
-    renderPage('?token=abc123')
-
-    expect(await screen.findByText(/activating your account/i)).toBeInTheDocument()
-  })
-
   it('renders success message on successful activation', async () => {
     svc.activateAccount.mockResolvedValue({
       success: true,

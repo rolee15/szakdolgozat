@@ -106,7 +106,7 @@ describe('ChangePasswordPage', () => {
     await vi.waitFor(() => {
       expect(svc.changePassword).toHaveBeenCalledWith('oldpass123', 'newpassword1')
       expect(mockClearMustChangePassword).toHaveBeenCalled()
-      expect(navigateSpy).toHaveBeenCalledWith('/lessons', { replace: true })
+      expect(navigateSpy).toHaveBeenCalledWith('/path', { replace: true })
     })
   })
 

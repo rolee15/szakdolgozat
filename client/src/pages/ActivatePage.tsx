@@ -8,7 +8,7 @@ const ActivatePage = () => {
   const token = searchParams.get("token");
   const hasTriggered = useRef(false);
 
-  const { mutate, isPending, isSuccess, isError, data, error } = useMutation({
+  const { mutate, isError, data, error } = useMutation({
     mutationFn: (t: string) => userService.activateAccount(t),
   });
 
@@ -31,26 +31,6 @@ const ActivatePage = () => {
     );
   }
 
-  if (isPending) {
-    return (
-      <div className="mx-auto my-24 max-w-md p-4">
-        <p>Activating your account...</p>
-      </div>
-    );
-  }
-
-  if (isSuccess) {
-    return (
-      <div className="mx-auto my-24 max-w-md p-4">
-        <h1 className="text-2xl font-semibold mb-4">Account activated</h1>
-        <p className="mb-4">{data?.message ?? "Account activated. You can now log in."}</p>
-        <Link to="/login" className="text-blue-500">
-          Go to login
-        </Link>
-      </div>
-    );
-  }
-
   if (isError) {
     return (
       <div className="mx-auto my-24 max-w-md p-4">
@@ -65,7 +45,15 @@ const ActivatePage = () => {
     );
   }
 
-  return null;
+  return (
+    <div className="mx-auto my-24 max-w-md p-4">
+      <h1 className="text-2xl font-semibold mb-4">Account activated</h1>
+      <p className="mb-4">{data?.message ?? "Account activated. You can now log in."}</p>
+      <Link to="/login" className="text-blue-500">
+        Go to login
+      </Link>
+    </div>
+  );
 };
 
 export default ActivatePage;

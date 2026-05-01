@@ -3,6 +3,7 @@ using KanjiKa.Domain.Entities.Grammar;
 using KanjiKa.Domain.Entities.Kana;
 using KanjiKa.Domain.Entities.Kanji;
 using KanjiKa.Domain.Entities.Learning;
+using KanjiKa.Domain.Entities.Path;
 using KanjiKa.Domain.Entities.Users;
 using KanjiKa.Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,7 @@ public class DevelopmentDataSeeder : ProductionDataSeeder
         await base.SeedAsync();
         await SeedTestUsers();
         await SeedGrammarProficiencies();
+        await SeedPathProgressUsers();
     }
 
     private async Task SeedTestUsers()
@@ -172,6 +174,71 @@ public class DevelopmentDataSeeder : ProductionDataSeeder
         }
 
         await Context.SaveChangesAsync();
+    }
+
+    private async Task SeedPathProgressUsers()
+    {
+        if (await Context.Users.AnyAsync(u => u.Username == "kanjistarter@test.com"))
+            return;
+
+        List<LearningUnit> units = await Context.LearningUnits
+            .Include(u => u.Contents)
+            .OrderBy(u => u.SortOrder)
+            .ToListAsync();
+        if (units.Count == 0) return;
+
+        // kanjistarter — has passed every kana unit (sortOrder 1..14), so the first
+        // kanji unit (sortOrder 15) is the next unlocked one.
+        User kanjiStarter = CreateUser("kanjistarter@test.com", "almafa123");
+        await Context.Users.AddAsync(kanjiStarter);
+        await Context.SaveChangesAsync();
+        await AddUnitProgressAsync(kanjiStarter.Id, units.Where(u => u.SortOrder <= 14));
+
+        // grammarstarter — has passed every kana and kanji unit (sortOrder 1..17), so the
+        // first grammar unit (sortOrder 18) is the next unlocked one.
+        User grammarStarter = CreateUser("grammarstarter@test.com", "almafa123");
+        await Context.Users.AddAsync(grammarStarter);
+        await Context.SaveChangesAsync();
+        await AddUnitProgressAsync(grammarStarter.Id, units.Where(u => u.SortOrder <= 17));
+
+        // grammarstarter is ahead of the kanji curriculum, so seed Guru1 proficiencies for
+        // every kanji that appears as content in the passed kanji units (15..17). The review
+        // date is set to the past so the kanji show up in the flash-card / review stack.
+        List<int> taughtKanjiIds = units
+            .Where(u => u.SortOrder is >= 15 and <= 17)
+            .SelectMany(u => u.Contents)
+            .Where(c => c.ContentType == ContentType.Kanji)
+            .Select(c => c.ContentId)
+            .Distinct()
+            .ToList();
+        if (taughtKanjiIds.Count > 0)
+        {
+            DateTimeOffset dueDate = DateTimeOffset.UtcNow.AddHours(-1);
+            List<KanjiProficiency> grammarStarterKanjiProficiencies = taughtKanjiIds.Select(id => new KanjiProficiency
+            {
+                UserId = grammarStarter.Id,
+                KanjiId = id,
+                SrsStage = SrsStage.Guru1,
+                NextReviewDate = dueDate
+            }).ToList();
+            await Context.KanjiProficiencies.AddRangeAsync(grammarStarterKanjiProficiencies);
+        }
+
+        await Context.SaveChangesAsync();
+    }
+
+    private async Task AddUnitProgressAsync(int userId, IEnumerable<LearningUnit> passedUnits)
+    {
+        List<UnitProgress> progress = passedUnits.Select(u => new UnitProgress
+        {
+            UserId = userId,
+            LearningUnitId = u.Id,
+            IsPassed = true,
+            BestScore = 100,
+            AttemptCount = 1,
+            LastAttemptAt = DateTimeOffset.UtcNow
+        }).ToList();
+        await Context.UnitProgresses.AddRangeAsync(progress);
     }
 
     private User CreateUser(string username, string password)

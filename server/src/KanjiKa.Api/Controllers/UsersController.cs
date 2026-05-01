@@ -72,7 +72,7 @@ public class UsersController : ControllerBase
     }
 
     [AllowAnonymous]
-    [HttpPost("forgotPassword")]
+    [HttpPost("forgot-password")]
     [Consumes("application/json")]
     [ProducesResponseType(typeof(ForgotPasswordDto), StatusCodes.Status200OK)]
     public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
@@ -82,7 +82,7 @@ public class UsersController : ControllerBase
     }
 
     [AllowAnonymous]
-    [HttpPost("resetPassword")]
+    [HttpPost("reset-password")]
     [Consumes("application/json")]
     [ProducesResponseType(typeof(ResetPasswordDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResetPasswordDto), StatusCodes.Status400BadRequest)]

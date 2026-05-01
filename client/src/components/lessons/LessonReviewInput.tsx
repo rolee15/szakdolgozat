@@ -2,9 +2,12 @@ import React, { useState, KeyboardEvent, FormEvent } from "react";
 
 interface LessonReviewInputProps {
   onSubmit: (answer: string) => void;
+  buttonClassName?: string;
 }
 
-const LessonReviewInput: React.FC<LessonReviewInputProps> = ({ onSubmit }) => {
+const DEFAULT_BUTTON_CLASS = "bg-blue-600 hover:bg-blue-700";
+
+const LessonReviewInput: React.FC<LessonReviewInputProps> = ({ onSubmit, buttonClassName }) => {
   const [answer, setAnswer] = useState<string>("");
 
 
@@ -42,7 +45,7 @@ const LessonReviewInput: React.FC<LessonReviewInputProps> = ({ onSubmit }) => {
 
         <button
           type="submit"
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 rounded-r-md"
+          className={`px-4 py-2 text-white rounded-md rounded-r-md ${buttonClassName ?? DEFAULT_BUTTON_CLASS}`}
           aria-label="Submit answer"
         >
           &gt;

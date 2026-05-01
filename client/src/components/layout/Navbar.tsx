@@ -33,10 +33,10 @@ const Navbar = () => {
   }, []);
 
   const dropdownPanelClass =
-    'absolute top-full mt-1 left-0 z-50 bg-brand-surface border border-brand-primary-deep rounded-md shadow-lg py-1 min-w-max';
+    'absolute top-full mt-1 left-0 z-50 bg-brand-elevated border border-brand-primary-deep rounded-md shadow-lg py-1 min-w-max';
 
   const profileDropdownPanelClass =
-    'absolute top-full mt-1 right-0 z-50 bg-brand-surface border border-brand-primary-deep rounded-md shadow-lg py-1 min-w-max';
+    'absolute top-full mt-1 right-0 z-50 bg-brand-elevated border border-brand-primary-deep rounded-md shadow-lg py-1 min-w-max';
 
   const avatarLetter = username ? username[0].toUpperCase() : '?';
 
@@ -49,6 +49,8 @@ const Navbar = () => {
           <div className="hidden md:flex items-center gap-4 ml-auto">
             {isAuthenticated && (
               <>
+                <MenuItem to="/path">Learning Path</MenuItem>
+
                 <div className="relative">
                   <button
                     onClick={() => toggleDropdown('lessons')}
@@ -82,12 +84,9 @@ const Navbar = () => {
                     <div className={dropdownPanelClass} role="menu">
                       <MenuItem to="/flashcards" variant="dropdown" onClick={() => setOpenDropdown(null)}>Flash Cards</MenuItem>
                       <MenuItem to="/lessons/review" variant="dropdown" onClick={() => setOpenDropdown(null)}>Review</MenuItem>
-                      <MenuItem to="/lessons/writing" variant="dropdown" onClick={() => setOpenDropdown(null)}>Writing</MenuItem>
                     </div>
                   )}
                 </div>
-
-                <MenuItem to="/path">Learning Path</MenuItem>
 
                 {isAdmin && (
                   <MenuItem to="/admin">Admin</MenuItem>
@@ -148,6 +147,13 @@ const Navbar = () => {
         {mobileOpen && isAuthenticated && (
           <nav className="md:hidden pb-4 flex flex-col gap-4">
             <div>
+              <p className="text-gray-500 text-xs uppercase tracking-wider mb-1">Path</p>
+              <div className="flex flex-col gap-1 pl-2">
+                <MenuItem to="/path" onClick={() => setMobileOpen(false)}>Learning Path</MenuItem>
+              </div>
+            </div>
+
+            <div>
               <p className="text-gray-500 text-xs uppercase tracking-wider mb-1">Lessons</p>
               <div className="flex flex-col gap-1 pl-2">
                 <MenuItem to="/hiragana" onClick={() => setMobileOpen(false)}>Hiragana</MenuItem>
@@ -163,14 +169,6 @@ const Navbar = () => {
               <div className="flex flex-col gap-1 pl-2">
                 <MenuItem to="/flashcards" onClick={() => setMobileOpen(false)}>Flash Cards</MenuItem>
                 <MenuItem to="/lessons/review" onClick={() => setMobileOpen(false)}>Review</MenuItem>
-                <MenuItem to="/lessons/writing" onClick={() => setMobileOpen(false)}>Writing</MenuItem>
-              </div>
-            </div>
-
-            <div>
-              <p className="text-gray-500 text-xs uppercase tracking-wider mb-1">Path</p>
-              <div className="flex flex-col gap-1 pl-2">
-                <MenuItem to="/path" onClick={() => setMobileOpen(false)}>Learning Path</MenuItem>
               </div>
             </div>
 

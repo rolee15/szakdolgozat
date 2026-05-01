@@ -59,7 +59,7 @@ const AdminUsersPage = () => {
             </thead>
             <tbody>
               {data.items.map((user) => (
-                <tr key={user.id} className="border-b hover:bg-gray-50">
+                <tr key={user.id} className="border-b hover:bg-gray-800">
                   <td className="p-2">{user.id}</td>
                   <td className="p-2">
                     <NavLink
@@ -92,7 +92,7 @@ const AdminUsersPage = () => {
           </table>
 
           <div className="mt-4 flex justify-between items-center">
-            <span className="text-gray-600">
+            <span className="text-gray-400">
               Showing {data.items.length} of {data.totalCount} users
             </span>
             <div className="flex gap-2">

@@ -104,6 +104,7 @@ describe('pathService.submitTest', () => {
       isPassed: true,
       correctCount: 4,
       totalQuestions: 5,
+      wrongAnswers: [],
     };
     mockApiFetch.mockResolvedValue(makeMockResponse(true, data));
 

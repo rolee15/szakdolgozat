@@ -15,7 +15,7 @@ const KanaButton: React.FC<KanaButtonProps> = ({ type, character, romanization, 
   return (
     <div className="relative flex flex-col items-center">
       <button
-        className="w-20 h-20 rounded border border-blue-500 flex flex-col items-center justify-center text-2xl font-bold hover:bg-blue-500 hover:text-white transition-colors"
+        className="w-20 h-20 rounded bg-gray-800 hover:bg-gray-700 flex flex-col items-center justify-center text-2xl font-bold transition-colors"
         aria-label={`Kana ${character}, Proficiency Level ${Math.floor(validProficiency / 20) + 1}`}
         onClick={() => navigate(`/${type}/${character}`)}
       >

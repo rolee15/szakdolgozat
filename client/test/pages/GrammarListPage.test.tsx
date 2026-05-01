@@ -89,22 +89,15 @@ describe('GrammarListPage', () => {
     expect(screen.getByText('が (ga) — Subject Marker')).toBeInTheDocument();
   });
 
-  it('shows completed badge for completed grammar points', async () => {
+  it('does not display the legacy "Completed" badge or "X/3 correct" indicator', async () => {
     const svc = grammarService as unknown as { getGrammarPoints: ReturnType<typeof vi.fn> };
     svc.getGrammarPoints.mockResolvedValue(samplePoints);
 
     renderPage();
 
-    expect(await screen.findByText('Completed')).toBeInTheDocument();
-  });
-
-  it('shows X/3 correct for incomplete grammar points', async () => {
-    const svc = grammarService as unknown as { getGrammarPoints: ReturnType<typeof vi.fn> };
-    svc.getGrammarPoints.mockResolvedValue(samplePoints);
-
-    renderPage();
-
-    expect(await screen.findByText('1/3 correct')).toBeInTheDocument();
+    await screen.findByText('は (wa) — Topic Marker');
+    expect(screen.queryByText('Completed')).not.toBeInTheDocument();
+    expect(screen.queryByText('1/3 correct')).not.toBeInTheDocument();
   });
 
   it('shows error state on fetch error', async () => {

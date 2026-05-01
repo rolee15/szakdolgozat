@@ -30,9 +30,17 @@ type UnitTest = {
   questions: UnitTestQuestion[];
 };
 
+type UnitTestWrongAnswer = {
+  questionId: number;
+  questionText: string;
+  userAnswer: string | null;
+  correctAnswer: string;
+};
+
 type UnitTestResult = {
   score: number;
   isPassed: boolean;
   correctCount: number;
   totalQuestions: number;
+  wrongAnswers: UnitTestWrongAnswer[];
 };

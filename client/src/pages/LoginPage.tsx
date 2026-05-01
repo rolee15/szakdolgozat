@@ -17,7 +17,7 @@ const LoginPage = () => {
     setIsSubmitting(true);
     try {
       await login(email, password);
-      navigate("/lessons", { replace: true });
+      navigate("/path", { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
     } finally {
