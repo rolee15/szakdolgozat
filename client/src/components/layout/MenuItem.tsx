@@ -8,14 +8,10 @@ type MenuItemProps = {
 };
 
 const navClass = ({ isActive }: { isActive: boolean }) =>
-  isActive ? "text-primary text-sm" : "text-on-bar/80 hover:text-on-bar text-sm";
+  isActive ? "text-indigo-400 text-sm" : "text-gray-300 hover:text-white text-sm";
 
 const dropdownClass = ({ isActive }: { isActive: boolean }) =>
-  `block px-4 py-2 text-sm transition-colors ${
-    isActive
-      ? "text-primary hover:bg-primary/20"
-      : "text-on-bar hover:bg-primary/20"
-  }`;
+  `block px-4 py-2 text-sm ${isActive ? "text-indigo-400" : "text-gray-300 hover:text-white"}`;
 
 const MenuItem = ({ to, children, onClick, variant = "nav" }: MenuItemProps) => (
   <NavLink
