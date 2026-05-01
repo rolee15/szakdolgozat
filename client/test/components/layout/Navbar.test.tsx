@@ -13,7 +13,7 @@ vi.mock('react-router-dom', async () => {
 })
 
 const mockUseAuth = vi.fn()
-vi.mock('@/context/AuthContext', () => ({
+vi.mock('@/context/useAuth', () => ({
   useAuth: () => mockUseAuth(),
 }))
 

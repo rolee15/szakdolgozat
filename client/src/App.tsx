@@ -30,7 +30,8 @@ import LearningPathPage from "@/pages/LearningPathPage";
 import UnitDetailPage from "@/pages/UnitDetailPage";
 import UnitTestPage from "@/pages/UnitTestPage";
 import ActivatePage from "@/pages/ActivatePage";
-import { AuthProvider, useAuth } from "@/context/AuthContext";
+import { AuthProvider } from "@/context/AuthContext";
+import { useAuth } from "@/context/useAuth";
 import { ThemeProvider } from "@/context/ThemeContext";
 
 const queryClient = new QueryClient();

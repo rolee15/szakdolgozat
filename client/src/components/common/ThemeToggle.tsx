@@ -1,5 +1,5 @@
 import { useId } from 'react';
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from '@/context/useTheme';
 
 // [16] Heroicons outline sun/moon paths — https://heroicons.com (accessed 2026-05-01)
 const SunIcon = () => (

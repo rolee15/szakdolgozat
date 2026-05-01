@@ -3,7 +3,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import Logo from "./Logo";
 import MenuItem from "./MenuItem";
 import ThemeToggle from "@/components/common/ThemeToggle";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/useAuth";
 
 type DropdownName = 'lessons' | 'reviews' | 'profile' | null;
 

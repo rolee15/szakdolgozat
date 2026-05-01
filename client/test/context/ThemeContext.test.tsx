@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
-import { ThemeProvider, useTheme } from '@/context/ThemeContext'
+import { ThemeProvider } from '@/context/ThemeContext'
+import { useTheme } from '@/context/useTheme'
 
 const Probe = () => {
   const { theme, toggleTheme, setTheme } = useTheme()
