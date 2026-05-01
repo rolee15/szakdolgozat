@@ -41,7 +41,7 @@ const Navbar = () => {
   const avatarLetter = username ? username[0].toUpperCase() : '?';
 
   return (
-    <header className="w-screen bg-brand-bar shadow-sm">
+    <header className="w-screen bg-black shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" ref={navRef}>
         <div className="flex items-center h-16">
           <Logo />
